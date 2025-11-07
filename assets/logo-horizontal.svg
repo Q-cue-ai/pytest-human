@@ -3,23 +3,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 800" width="1500" height="800">
 <style>
 #text-human {
-fill: #0b2b6a;
+  fill: #0b2b6a;
 }
 .disc-border {
-stroke: #f5f2f2;
+  stroke: #f5f2f2;
 }
 
 @media (prefers-color-scheme: dark) {
-#text-human {
-fill: #2bb7f0;
-}
-.disc-border {
-stroke: #555555;
-}
+  #text-human {
+    fill: #2bb7f0;
+  }
+  .disc-border {
+    stroke: #555555;
+  }
 }
 </style>
-
-<rect width="1500" height="800" fill="white" />
 
 <defs>
 <clipPath id="discClip">
