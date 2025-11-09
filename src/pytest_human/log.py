@@ -193,7 +193,9 @@ def _get_class_name(func: Callable) -> str:
     return func_components[0]
 
 
-def _format_call_string(func: Callable, args: tuple, kwargs: dict) -> str:
+def _format_call_string(
+    func: Callable, args: tuple, kwargs: dict, suppress_params: bool = False
+) -> str:
     sig = inspect.signature(func)
     bound_args = sig.bind(*args, **kwargs)
     bound_args.apply_defaults()
@@ -201,15 +203,21 @@ def _format_call_string(func: Callable, args: tuple, kwargs: dict) -> str:
     class_name = _get_class_name(func)
     func_name = func.__name__
     params = []
+    param_str = ""
     for name, value in bound_args.arguments.items():
         if name == "self":
             continue
         params.append(f"{name}={value!r}")
 
-    return f"{class_name}.{func_name}({', '.join(params)})"
+    if not suppress_params:
+        param_str = ", ".join(params)
+
+    return f"{class_name}.{func_name}({param_str})"
 
 
-def log_method_call(*, log_level: int = logging.INFO, suppress_return: bool = False):  # noqa: ANN201
+def log_method_call(
+    *, log_level: int = logging.INFO, suppress_return: bool = False, suppress_params: bool = False
+) -> Callable[[Callable], Callable]:
     """Decorate log method calls with parameters and return values.
 
     :param log_level: The log level that will be used for logging.
@@ -228,7 +236,7 @@ def log_method_call(*, log_level: int = logging.INFO, suppress_return: bool = Fa
                 if not logger.isEnabledFor(log_level):
                     return await func(*args, **kwargs)
 
-                func_str = _format_call_string(func, args, kwargs)
+                func_str = _format_call_string(func, args, kwargs, suppress_params=suppress_params)
                 with logger.span(log_level, f"async {func_str}", highlight=True):
                     try:
                         result = await func(*args, **kwargs)
@@ -246,7 +254,7 @@ def log_method_call(*, log_level: int = logging.INFO, suppress_return: bool = Fa
             if not logger.isEnabledFor(log_level):
                 return func(*args, **kwargs)
 
-            func_str = _format_call_string(func, args, kwargs)
+            func_str = _format_call_string(func, args, kwargs, suppress_params=suppress_params)
             with logger.span(log_level, func_str, highlight=True):
                 try:
                     result = func(*args, **kwargs)
@@ -305,6 +313,17 @@ def _patch_method_logger(target: Callable, **kwargs: Any) -> None:
     return
 
 
+def _get_public_methods(container: Any) -> list[Callable]:
+    """Get all public methods of a class or module."""
+    methods = []
+    for name, member in inspect.getmembers(container):
+        if name.startswith("_"):
+            continue
+        if inspect.isfunction(member) or inspect.ismethod(member):
+            methods.append(member)
+    return methods
+
+
 @contextmanager
 def patch_method_logger(  # noqa: ANN201
     *args: Callable, **kwargs: Any
@@ -323,6 +342,21 @@ def patch_method_logger(  # noqa: ANN201
             current = getattr(container, method_name)
             if getattr(current, "_is_patched_logger", False):
                 setattr(container, method_name, target)
+
+
+@contextmanager
+def patch_all_public_methods(  # noqa: ANN201
+    *args: Any, **kwargs: Any
+):
+    """Context manager to log calls to all public methods of a class or module.
+
+    This is useful to log 3rd party library methods without modifying their source code.
+    """
+    methods = []
+    for container in args:
+        methods.extend(_get_public_methods(container))
+    with patch_method_logger(*methods, **kwargs):
+        yield
 
 
 def get_logger(name: str) -> TestLogger:

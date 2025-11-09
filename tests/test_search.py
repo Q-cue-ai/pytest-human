@@ -1,33 +1,9 @@
 import re
-from collections.abc import Iterator
 
 import pytest
-from playwright.sync_api import Locator, LocatorAssertionsImpl, Page, expect
+from playwright.sync_api import Page, expect
 
-from pytest_human.log import patch_method_logger
 from tests import utils
-
-
-@pytest.fixture(autouse=True)
-def log_3rdparty_methods() -> Iterator[None]:
-    """
-    Setup logging for 3rd party methods used in tests.
-
-    Will only work in this test if using --runpytest subprocess, because of a conflict
-    with the sub-pytest html logging.
-    """
-    with patch_method_logger(
-        Page.goto,
-        pytest.Pytester.runpytest,
-        pytest.Pytester.makepyfile,
-        Page.locator,
-        Locator.fill,
-        Locator.press,
-        LocatorAssertionsImpl.to_have_text,
-        LocatorAssertionsImpl.to_be_focused,
-        LocatorAssertionsImpl.to_have_class,
-    ):
-        yield
 
 
 def test_search_simple_keyboard(pytester: pytest.Pytester, page: Page) -> None:
