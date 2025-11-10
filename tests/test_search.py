@@ -1,6 +1,7 @@
 import re
 
 import pytest
+from _pytest.config import ExitCode
 from playwright.sync_api import Page, expect
 
 from tests import utils
@@ -16,7 +17,7 @@ def test_search_simple_keyboard(pytester: pytest.Pytester, page: Page) -> None:
 
     result = pytester.runpytest("--enable-html-log", "--log-level=info")
     html_path = utils.find_test_log_location(result)
-    assert result.ret == 0
+    assert result.ret == ExitCode.OK
 
     page.goto(html_path.as_uri())
     page.locator("body").press("/")
@@ -41,7 +42,7 @@ def test_search_simple(pytester: pytest.Pytester, page: Page) -> None:
 
     result = pytester.runpytest("--enable-html-log", "--log-level=info")
     html_path = utils.find_test_log_location(result)
-    assert result.ret == 0
+    assert result.ret == ExitCode.OK
 
     page.goto(html_path.as_uri())
 
@@ -70,7 +71,7 @@ def test_search_multiple_results_keyboard(pytester: pytest.Pytester, page: Page)
 
     result = pytester.runpytest("--enable-html-log", "--log-level=info")
     html_path = utils.find_test_log_location(result)
-    assert result.ret == 0
+    assert result.ret == ExitCode.OK
 
     page.goto(html_path.as_uri())
     page.locator("body").press("/")
@@ -110,7 +111,7 @@ def test_search_multiple_results(pytester: pytest.Pytester, page: Page) -> None:
 
     result = pytester.runpytest("--enable-html-log", "--log-level=info")
     html_path = utils.find_test_log_location(result)
-    assert result.ret == 0
+    assert result.ret == ExitCode.OK
 
     page.goto(html_path.as_uri())
 
@@ -152,7 +153,7 @@ def test_search_wrap_around(pytester: pytest.Pytester, page: Page) -> None:
 
     result = pytester.runpytest("--enable-html-log", "--log-level=info")
     html_path = utils.find_test_log_location(result)
-    assert result.ret == 0
+    assert result.ret == ExitCode.OK
 
     page.goto(html_path.as_uri())
 
@@ -195,7 +196,7 @@ def test_search_within_spans_expands(pytester: pytest.Pytester, page: Page) -> N
 
     result = pytester.runpytest("--enable-html-log", "--log-level=info")
     html_path = utils.find_test_log_location(result)
-    assert result.ret == 0
+    assert result.ret == ExitCode.OK
 
     page.goto(html_path.as_uri())
     expect(page.get_by_role("row", name="expeditious")).to_be_hidden()
