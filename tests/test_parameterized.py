@@ -40,11 +40,12 @@ def test_parameterized_test_expect_parameter_in_title(
     pytester.makepyfile("""
         import pytest
 
-        @pytest.mark.parametrize("some_value", [
-            (5),
+        @pytest.mark.parametrize("some_value, other_value", [
+            (5, "test"),
         ])
-        def test_parameter(some_value):
+        def test_parameter(some_value, other_value):
             assert some_value == 5
+            assert other_value == "test"
     """)
 
     result = pytester.runpytest("--enable-html-log", "--log-level=debug")
@@ -52,7 +53,7 @@ def test_parameterized_test_expect_parameter_in_title(
     assert result.ret == ExitCode.OK
 
     page.goto(html_path.as_uri())
-    expect(page).to_have_title("test_parameter[5]")
+    expect(page).to_have_title("test_parameter[5-test]")
 
     header_title = page.locator(".report-header h1")
-    expect(header_title).to_have_text("test_parameter[5]")
+    expect(header_title).to_have_text("test_parameter[5-test]")
