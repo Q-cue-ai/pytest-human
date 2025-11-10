@@ -381,7 +381,10 @@ def test_logging_log_public_api_module(pytester: pytest.Pytester, page: Page) ->
     expect(sqrt_call.locator("td.msg-cell").last).to_contain_text("math.sqrt(x=16) -> 4.0")
 
     factorial_call = utils.open_span(page, "math.factorial(")
-    expect(factorial_call.locator("td.msg-cell").last).to_contain_text("math.factorial(x=5) -> 120")
+    # factorial either uses `n` or `x` as parameter name.
+    expect(factorial_call.locator("td.msg-cell").last).to_contain_text(
+        re.compile(r"math\.factorial\(\w+=5\) -> 120")
+    )
 
 
 def test_logging_log_public_api_class(pytester: pytest.Pytester, page: Page) -> None:
@@ -415,7 +418,7 @@ def test_logging_log_public_api_class(pytester: pytest.Pytester, page: Page) -> 
     sqrt_call = utils.open_span(page, "TestClass.fobulator(")
     expect(sqrt_call.locator("td.msg-cell").last).to_contain_text("TestClass.fobulator(x=4) -> 5")
 
-    factorial_call = utils.open_span(page, "TestClass.sandwich(")
-    expect(factorial_call.locator("td.msg-cell").last).to_contain_text(
+    sandwich_call = utils.open_span(page, "TestClass.sandwich(")
+    expect(sandwich_call.locator("td.msg-cell").last).to_contain_text(
         "TestClass.sandwich(y=5) -> 10"
     )

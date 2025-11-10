@@ -194,15 +194,15 @@ Available span methods:
 ```python
 import logging
 import time
-from pytest_human.log import log_method_call, get_logger
+from pytest_human.log import log_call, get_logger
 
-@log_method_call()
+@log_call()
 def save_login(login):
     log = get_logger(__name__)
     log.info("a log inside save_login")
     return update_db(login)
 
-@log_method_call(log_level=logging.TRACE)
+@log_call(log_level=logging.TRACE)
 def update_db(login):
     log = get_logger(__name__)
     delay_time = 2
@@ -215,7 +215,7 @@ def test_method_tracing(human):
     assert delay == 2
 ```
 
-By adding the `@log_method_call` decorator, the method will be
+By adding the `@log_call` decorator, the method will be
 automatically logged when called and finished executing. The call
 will be placed in a nested span, which will also include all further logging inside the function scope.
 
