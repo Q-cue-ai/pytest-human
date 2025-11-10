@@ -3,6 +3,7 @@
 import functools
 import inspect
 import logging
+import threading
 from collections.abc import Callable, Iterator, MutableMapping
 from contextlib import AbstractContextManager, contextmanager
 from typing import Any, Optional
@@ -15,6 +16,8 @@ _SPAN_START_TAG = "span_start"
 _SPAN_END_TAG = "span_end"
 _SYNTAX_HIGHLIGHT_TAG = "syntax"
 _HIGHLIGHT_EXTRA = {_SYNTAX_HIGHLIGHT_TAG: True}
+
+_log_local = threading.local()
 
 
 class TestLogger(logging.LoggerAdapter):
@@ -217,6 +220,33 @@ def _format_call_string(
     return f"{class_name}.{func_name}({param_str})"
 
 
+def is_in_trace() -> bool:
+    """Return whether we are currently already tracing a @log_call."""
+    return getattr(_log_local, "in_trace", False)
+
+
+@contextmanager
+def in_trace() -> Iterator[None]:
+    """Context manager to set the in_trace flag."""
+    previous = getattr(_log_local, "in_trace", False)
+    _log_local.in_trace = True
+    try:
+        yield
+    finally:
+        _log_local.in_trace = previous
+
+
+@contextmanager
+def out_of_trace() -> Iterator[None]:
+    """Context manager to unset the in_trace flag."""
+    previous = getattr(_log_local, "in_trace", False)
+    _log_local.in_trace = False
+    try:
+        yield
+    finally:
+        _log_local.in_trace = previous
+
+
 def log_call(
     *, log_level: int = logging.INFO, suppress_return: bool = False, suppress_params: bool = False
 ) -> Callable[[Callable], Callable]:
@@ -235,37 +265,49 @@ def log_call(
 
             @functools.wraps(func)
             async def async_wrapper(*args: Any, **kwargs: Any):  # noqa: ANN202
+                if is_in_trace():
+                    return await func(*args, **kwargs)
+
                 if not logger.isEnabledFor(log_level):
                     return await func(*args, **kwargs)
 
-                func_str = _format_call_string(func, args, kwargs, suppress_params=suppress_params)
-                with logger.span(log_level, f"async {func_str}", highlight=True):
-                    try:
-                        result = await func(*args, **kwargs)
-                        result_str = "<suppressed>" if suppress_return else pretty_repr(result)
-                        logger.debug(f"async {func_str} -> {result_str}", highlight=True)
-                        return result
-                    except Exception as e:
-                        logger.error(f"async {func_str} !-> {e!r}", highlight=True)
-                        raise e
+                with in_trace():
+                    func_str = _format_call_string(
+                        func, args, kwargs, suppress_params=suppress_params
+                    )
+                    with logger.span(log_level, f"async {func_str}", highlight=True):
+                        try:
+                            with out_of_trace():
+                                result = await func(*args, **kwargs)
+                            result_str = "<suppressed>" if suppress_return else pretty_repr(result)
+                            logger.debug(f"async {func_str} -> {result_str}", highlight=True)
+                            return result
+                        except Exception as e:
+                            logger.error(f"async {func_str} !-> {e!r}", highlight=True)
+                            raise e
 
             return async_wrapper
 
         @functools.wraps(func)
         def sync_wrapper(*args: Any, **kwargs: Any):  # noqa: ANN202
+            if is_in_trace():
+                return func(*args, **kwargs)
+
             if not logger.isEnabledFor(log_level):
                 return func(*args, **kwargs)
 
-            func_str = _format_call_string(func, args, kwargs, suppress_params=suppress_params)
-            with logger.span(log_level, func_str, highlight=True):
-                try:
-                    result = func(*args, **kwargs)
-                    result_str = "<suppressed>" if suppress_return else pretty_repr(result)
-                    logger.debug(f"{func_str} -> {result_str}", highlight=True)
-                    return result
-                except Exception as e:
-                    logger.error(f"{func_str} !-> {e!r}", highlight=True)
-                    raise e
+            with in_trace():
+                func_str = _format_call_string(func, args, kwargs, suppress_params=suppress_params)
+                with logger.span(log_level, func_str, highlight=True):
+                    try:
+                        with out_of_trace():
+                            result = func(*args, **kwargs)
+                        result_str = "<suppressed>" if suppress_return else pretty_repr(result)
+                        logger.debug(f"{func_str} -> {result_str}", highlight=True)
+                        return result
+                    except Exception as e:
+                        logger.error(f"{func_str} !-> {e!r}", highlight=True)
+                        raise e
 
         return sync_wrapper
 

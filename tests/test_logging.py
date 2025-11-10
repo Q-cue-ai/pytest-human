@@ -304,7 +304,6 @@ def test_logging_log_calls(pytester: pytest.Pytester, page: Page) -> None:
         import base64
 
         def test_example(human):
-            a = [1, 2, 3]
             os.path.join("path", "one")
 
             with log_calls(os.path.join, base64.b64encode):
@@ -328,6 +327,31 @@ def test_logging_log_calls(pytester: pytest.Pytester, page: Page) -> None:
     base_call = utils.open_span(page, "base64.b64encode(")
     expect(base_call.locator("td.msg-cell").last).to_contain_text(
         re.compile(r"base64.b64encode\(.*-> b'dGhyZWU='")
+    )
+
+
+def test_logging_log_calls_infinite_recursion(pytester: pytest.Pytester, page: Page) -> None:
+    """
+    The logging system itself calls os.path.basename, so this test make sure
+    we don't get into an infinite recursion.
+    """
+    pytester.makepyfile("""
+        from pytest_human.log import log_calls
+        import os
+
+        def test_example(human):
+            with log_calls(os.path.basename):
+                os.path.basename("path/two")
+    """)
+
+    result = pytester.runpytest("--enable-html-log", "--log-level=debug")
+    html_path = utils.find_test_log_location(result)
+    assert result.ret == 0
+
+    page.goto(html_path.as_uri())
+    base_call = utils.open_span(page, "posixpath.basename(")
+    expect(base_call.locator("td.msg-cell").last).to_contain_text(
+        re.compile(r"posixpath.basename\(.*-> 'two'")
     )
 
 
