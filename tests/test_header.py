@@ -10,7 +10,7 @@ def test_header_title(pytester: pytest.Pytester, page: Page) -> None:
             human.warning("This is an INFO log message.")
     """)
 
-    result = pytester.runpytest("--enable-html-log")
+    result = pytester.runpytest_subprocess("--enable-html-log")
     html_path = utils.find_test_log_location(result)
     assert result.ret == 0
 
@@ -29,7 +29,7 @@ def test_header_description(pytester: pytest.Pytester, page: Page) -> None:
             human.warning("This is an INFO log message.")
     """)
 
-    result = pytester.runpytest("--enable-html-log")
+    result = pytester.runpytest_subprocess("--enable-html-log")
     html_path = utils.find_test_log_location(result)
     assert result.ret == 0
 

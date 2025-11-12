@@ -17,7 +17,7 @@ def test_exception_test_throws(pytester: pytest.Pytester, page: Page) -> None:
             test_log.warning("After exception.")
     """)
 
-    result = pytester.runpytest("--enable-html-log")
+    result = pytester.runpytest_subprocess("--enable-html-log")
     html_path = utils.find_test_log_location(result)
     assert result.ret == ExitCode.TESTS_FAILED
 

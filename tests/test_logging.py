@@ -12,7 +12,7 @@ def test_logging_log_levels_trace(pytester: pytest.Pytester, page: Page) -> None
             human.trace("This is a TRACE log message.")
     """)
 
-    result = pytester.runpytest("--enable-html-log", "--log-level=trace")
+    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=trace")
     html_path = utils.find_test_log_location(result)
     assert result.ret == 0
 
@@ -30,7 +30,7 @@ def test_logging_log_levels_debug(pytester: pytest.Pytester, page: Page) -> None
             human.debug("This is a DEBUG log message.")
     """)
 
-    result = pytester.runpytest("--enable-html-log", "--log-level=debug")
+    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=debug")
     html_path = utils.find_test_log_location(result)
     assert result.ret == 0
 
@@ -48,7 +48,7 @@ def test_logging_log_levels_info(pytester: pytest.Pytester, page: Page) -> None:
             human.info("This is an INFO log message.")
     """)
 
-    result = pytester.runpytest("--enable-html-log", "--log-level=info")
+    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=info")
     html_path = utils.find_test_log_location(result)
     assert result.ret == 0
 
@@ -70,7 +70,7 @@ def test_logging_log_levels_warning(pytester: pytest.Pytester, page: Page) -> No
             human.warning("This is a WARNING log message.")
     """)
 
-    result = pytester.runpytest("--enable-html-log")
+    result = pytester.runpytest_subprocess("--enable-html-log")
     html_path = utils.find_test_log_location(result)
     assert result.ret == 0
 
@@ -88,7 +88,7 @@ def test_logging_log_levels_error(pytester: pytest.Pytester, page: Page) -> None
             human.error("This is an ERROR log message.")
     """)
 
-    result = pytester.runpytest("--enable-html-log")
+    result = pytester.runpytest_subprocess("--enable-html-log")
     html_path = utils.find_test_log_location(result)
     assert result.ret == 0
 
@@ -106,7 +106,7 @@ def test_logging_log_levels_critical(pytester: pytest.Pytester, page: Page) -> N
             human.critical("This is a CRITICAL log message.")
     """)
 
-    result = pytester.runpytest("--enable-html-log")
+    result = pytester.runpytest_subprocess("--enable-html-log")
     html_path = utils.find_test_log_location(result)
     assert result.ret == 0
 
@@ -125,7 +125,7 @@ def test_logging_span_simple(pytester: pytest.Pytester, page: Page) -> None:
                 human.info("This is an INFO log message inside a span.")
     """)
 
-    result = pytester.runpytest("--enable-html-log", "--log-level=info")
+    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=info")
     html_path = utils.find_test_log_location(result)
     assert result.ret == 0
 
@@ -153,7 +153,7 @@ def test_logging_span_error_propagates(pytester: pytest.Pytester, page: Page) ->
                     human.error("This is an ERROR log message inside a span.")
     """)
 
-    result = pytester.runpytest("--enable-html-log", "--log-level=info")
+    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=info")
     html_path = utils.find_test_log_location(result)
     assert result.ret == 0
 
@@ -184,7 +184,7 @@ def test_logging_span_critical_propagates(pytester: pytest.Pytester, page: Page)
                     human.error("This is an ERROR log message inside a span.")
     """)
 
-    result = pytester.runpytest("--enable-html-log", "--log-level=info")
+    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=info")
     html_path = utils.find_test_log_location(result)
     assert result.ret == 0
 
@@ -223,7 +223,7 @@ def test_logging_log_fixtures_setup(pytester: pytest.Pytester, page: Page) -> No
             assert True
     """)
 
-    result = pytester.runpytest("--enable-html-log", "--log-level=debug")
+    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=debug")
     html_path = utils.find_test_log_location(result)
     assert result.ret == 0
 
@@ -290,7 +290,7 @@ def test_logging_log_fixtures_teardown(pytester: pytest.Pytester, page: Page) ->
             assert True
     """)
 
-    result = pytester.runpytest("--enable-html-log", "--log-level=debug")
+    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=debug")
     html_path = utils.find_test_log_location(result)
     assert result.ret == 0
 
@@ -351,7 +351,7 @@ def test_logging_log_call(pytester: pytest.Pytester, page: Page) -> None:
             a(1)
     """)
 
-    result = pytester.runpytest("--enable-html-log", "--log-level=debug")
+    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=debug")
     html_path = utils.find_test_log_location(result)
     assert result.ret == 0
 
@@ -400,7 +400,7 @@ def test_logging_log_call_suppress_return(pytester: pytest.Pytester, page: Page)
             a(1)
     """)
 
-    result = pytester.runpytest("--enable-html-log", "--log-level=debug")
+    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=debug")
     html_path = utils.find_test_log_location(result)
     assert result.ret == 0
 
@@ -421,7 +421,7 @@ def test_logging_log_call_suppress_params(pytester: pytest.Pytester, page: Page)
             a(1, y=2)
     """)
 
-    result = pytester.runpytest("--enable-html-log", "--log-level=debug")
+    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=debug")
     html_path = utils.find_test_log_location(result)
     assert result.ret == 0
 
@@ -443,7 +443,7 @@ def test_logging_log_call_log_level(pytester: pytest.Pytester, page: Page) -> No
             a(1, y=2)
     """)
 
-    result = pytester.runpytest("--enable-html-log", "--log-level=trace")
+    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=trace")
     html_path = utils.find_test_log_location(result)
     assert result.ret == 0
 
@@ -473,7 +473,7 @@ def test_logging_log_calls(pytester: pytest.Pytester, page: Page) -> None:
             os.path.join("path", "three")
     """)
 
-    result = pytester.runpytest("--enable-html-log", "--log-level=debug")
+    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=debug")
     html_path = utils.find_test_log_location(result)
     assert result.ret == 0
 
@@ -503,7 +503,7 @@ def test_logging_log_calls_infinite_recursion(pytester: pytest.Pytester, page: P
                 os.path.basename("path/two")
     """)
 
-    result = pytester.runpytest("--enable-html-log", "--log-level=debug")
+    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=debug")
     html_path = utils.find_test_log_location(result)
     assert result.ret == 0
 
@@ -531,7 +531,7 @@ def test_logging_log_public_api_module(pytester: pytest.Pytester, page: Page) ->
             math.sqrt(25)
     """)
 
-    result = pytester.runpytest("--enable-html-log", "--log-level=debug")
+    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=debug")
     html_path = utils.find_test_log_location(result)
     assert result.ret == 0
 
@@ -569,7 +569,7 @@ def test_logging_log_public_api_class(pytester: pytest.Pytester, page: Page) -> 
             x.sandwich(6)
     """)
 
-    result = pytester.runpytest("--enable-html-log", "--log-level=debug")
+    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=debug")
     html_path = utils.find_test_log_location(result)
     assert result.ret == 0
 

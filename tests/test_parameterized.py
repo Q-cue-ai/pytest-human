@@ -20,7 +20,7 @@ def test_parameterized_fixture_expect_parameter_in_title(
             assert some_value == "blah"
     """)
 
-    result = pytester.runpytest("--enable-html-log", "--log-level=debug")
+    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=debug")
     html_path = utils.find_test_log_location(result)
     assert result.ret == ExitCode.OK
 
@@ -46,7 +46,7 @@ def test_parameterized_test_expect_parameter_in_title(
             assert other_value == "test"
     """)
 
-    result = pytester.runpytest("--enable-html-log", "--log-level=debug")
+    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=debug")
     html_path = utils.find_test_log_location(result)
     assert result.ret == ExitCode.OK
 

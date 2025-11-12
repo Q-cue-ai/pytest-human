@@ -15,7 +15,7 @@ def test_search_simple_keyboard(pytester: pytest.Pytester, page: Page) -> None:
             human.info("funkadelic.")
     """)
 
-    result = pytester.runpytest("--enable-html-log", "--log-level=info")
+    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=info")
     html_path = utils.find_test_log_location(result)
     assert result.ret == ExitCode.OK
 
@@ -40,7 +40,7 @@ def test_search_simple(pytester: pytest.Pytester, page: Page) -> None:
             human.info("searching for this quintessential text")
     """)
 
-    result = pytester.runpytest("--enable-html-log", "--log-level=info")
+    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=info")
     html_path = utils.find_test_log_location(result)
     assert result.ret == ExitCode.OK
 
@@ -69,7 +69,7 @@ def test_search_multiple_results_keyboard(pytester: pytest.Pytester, page: Page)
             human.info("fourth test occurrence")
     """)
 
-    result = pytester.runpytest("--enable-html-log", "--log-level=info")
+    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=info")
     html_path = utils.find_test_log_location(result)
     assert result.ret == ExitCode.OK
 
@@ -109,7 +109,7 @@ def test_search_multiple_results(pytester: pytest.Pytester, page: Page) -> None:
             human.info("fourth test occurrence")
     """)
 
-    result = pytester.runpytest("--enable-html-log", "--log-level=info")
+    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=info")
     html_path = utils.find_test_log_location(result)
     assert result.ret == ExitCode.OK
 
@@ -151,7 +151,7 @@ def test_search_wrap_around(pytester: pytest.Pytester, page: Page) -> None:
             human.info("second test occurrence")
     """)
 
-    result = pytester.runpytest("--enable-html-log", "--log-level=info")
+    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=info")
     html_path = utils.find_test_log_location(result)
     assert result.ret == ExitCode.OK
 
@@ -194,7 +194,7 @@ def test_search_within_spans_expands(pytester: pytest.Pytester, page: Page) -> N
                     human.info("expeditious")
     """)
 
-    result = pytester.runpytest("--enable-html-log", "--log-level=info")
+    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=info")
     html_path = utils.find_test_log_location(result)
     assert result.ret == ExitCode.OK
 
