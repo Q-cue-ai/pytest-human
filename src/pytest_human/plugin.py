@@ -107,7 +107,7 @@ class HtmlLogPlugin:
             return
 
         terminal.ensure_newline()
-        terminal.write("Test ")
+        terminal.write("🌎 Test ")
         terminal.write(f"{item.name}", bold=True)
         terminal.write(" HTML log at ")
         terminal.write(f"{log_path.resolve().as_uri()}", bold=True, cyan=True)
@@ -123,10 +123,6 @@ class HtmlLogPlugin:
         """Set up HTML log handler for the test and clean up afterwards."""
         root_logger = logging.getLogger()
         log_path = self._get_log_path(item)
-
-        # Test directory logs are moved later in the test lifecycle
-        if not is_output_to_test_tmp(item.config):
-            self.write_html_log_path(item, log_path, flush=True)
 
         item.stash[self.log_path_key] = log_path
 
@@ -221,7 +217,6 @@ class HtmlLogPlugin:
             return
 
         new_log_path = tmp_path / "test.html"
-        self.write_html_log_path(item, new_log_path)
         logging.info(f"Relocating HTML log file to {new_log_path}")
 
         handler = item.stash[self.html_log_handler_key]

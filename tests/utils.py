@@ -11,7 +11,7 @@ from pytest_human.log import log_call
 def find_test_log_location(result: RunResult) -> Path:
     """Find the test log location from the pytest output."""
     for line in result.outlines:
-        matches = re.match(r"Test (?P<test_name>.*) HTML log at (?P<log_path>file://.+)", line)
+        matches = re.match(r". Test (?P<test_name>.*) HTML log at (?P<log_path>file://.+)", line)
 
         if matches is None:
             continue
