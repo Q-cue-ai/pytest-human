@@ -220,13 +220,13 @@ def _format_call_string(
     return f"{class_name}.{func_name}({param_str})"
 
 
-def is_in_trace() -> bool:
+def _is_in_trace() -> bool:
     """Return whether we are currently already tracing a @log_call."""
     return getattr(_log_local, "in_trace", False)
 
 
 @contextmanager
-def in_trace() -> Iterator[None]:
+def _in_trace() -> Iterator[None]:
     """Context manager to set the in_trace flag."""
     previous = getattr(_log_local, "in_trace", False)
     _log_local.in_trace = True
@@ -237,7 +237,7 @@ def in_trace() -> Iterator[None]:
 
 
 @contextmanager
-def out_of_trace() -> Iterator[None]:
+def _out_of_trace() -> Iterator[None]:
     """Context manager to unset the in_trace flag."""
     previous = getattr(_log_local, "in_trace", False)
     _log_local.in_trace = False
@@ -265,19 +265,19 @@ def log_call(
 
             @functools.wraps(func)
             async def async_wrapper(*args: Any, **kwargs: Any):  # noqa: ANN202
-                if is_in_trace():
+                if _is_in_trace():
                     return await func(*args, **kwargs)
 
                 if not logger.isEnabledFor(log_level):
                     return await func(*args, **kwargs)
 
-                with in_trace():
+                with _in_trace():
                     func_str = _format_call_string(
                         func, args, kwargs, suppress_params=suppress_params
                     )
                     with logger.span(log_level, f"async {func_str}", highlight=True):
                         try:
-                            with out_of_trace():
+                            with _out_of_trace():
                                 result = await func(*args, **kwargs)
                             result_str = "<suppressed>" if suppress_return else pretty_repr(result)
                             logger.debug(f"async {func_str} -> {result_str}", highlight=True)
@@ -290,17 +290,17 @@ def log_call(
 
         @functools.wraps(func)
         def sync_wrapper(*args: Any, **kwargs: Any):  # noqa: ANN202
-            if is_in_trace():
+            if _is_in_trace():
                 return func(*args, **kwargs)
 
             if not logger.isEnabledFor(log_level):
                 return func(*args, **kwargs)
 
-            with in_trace():
+            with _in_trace():
                 func_str = _format_call_string(func, args, kwargs, suppress_params=suppress_params)
                 with logger.span(log_level, func_str, highlight=True):
                     try:
-                        with out_of_trace():
+                        with _out_of_trace():
                             result = func(*args, **kwargs)
                         result_str = "<suppressed>" if suppress_return else pretty_repr(result)
                         logger.debug(f"{func_str} -> {result_str}", highlight=True)
