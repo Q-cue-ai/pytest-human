@@ -296,6 +296,7 @@ class HtmlFileFormatter(logging.Formatter):
                 margin: 4px 0 0;
                 font-size: 13px;
                 opacity: 0.8;
+                max-width: 70%;
             }
 
             .search-container {
