@@ -8,21 +8,9 @@
 
 A pytest plugin for generating beautiful, human-readable HTML reports for individual tests with collapsible nested logging spans and syntax highlighting. Inspired by Robot Framework and Playwright reports.
 
-Unlike other pytest HTML report plugins, **pytest-human** creates a separate HTML log file for each test, this allows to dive into specific parts of the test that are relevant for debugging.
+Unlike other pytest HTML report plugins, **pytest-human** creates a separate HTML log file for each test, aimed at diving into specific parts of the test that are relevant for debugging.
 
 ![Screenshot](assets/test_example.png)
-
-
-## Features
-
-- 📝 **Per-Test HTML Reports** - Individual HTML log file for each test
-- 🎨 **Syntax Highlighting** - Rich code formatting with Pygments
-- 📊 **Collapsible Spans** - Nested, expandable log sections for better organization
-- 🎯 **Multiple Log Levels** - Support for TRACE, DEBUG, INFO, WARNING, ERROR, and CRITICAL
-- 🔍 **Test Documentation** - Automatically includes test docstrings in reports
-- 🎭 **Rich Logger Integration** - Uses `rich` library for pretty-printing complex objects
-- ⚙️ **Flexible Output Locations** - Session directory, test directory, or custom paths
-- 🚀 **Easy to Use** - Simple fixtures and intuitive API
 
 
 ## Installation
@@ -46,20 +34,26 @@ pytest --enable-html-log --log-level DEBUG
 2. Use the `human` fixture in your tests:
 
 ```python
+from pytest_human.log import log_call
+
+@log_call()
+def insert_db(data):
+    logging.info("executing query")
+    return len(data)
+
 def test_example(human):
     """This test demonstrates pytest-human logging."""
-    human.info("Starting test execution")
-    
-    with human.span_info("Processing data"):
-        human.debug("Loading data...")
+    human.info("Established test agent connection")
+
+    with human.span_info("Generating sample data"):
         data = [1, 2, 3, 4, 5]
-        human.info(f"Loaded {len(data)} items", highlight=True)
-        
-        with human.span_debug("Calculating sum"):
+        human.info(f"Loaded sample data {data=} {len(data)=}", highlight=True)
+        insert_db(data)
+
+        with human.span_debug("Validating sample"):
             result = sum(data)
-            human.debug(f"Sum result: {result}")
-    
-    human.info("Test completed successfully")
+            human.debug(f"Sum {result=}", highlight=True)
+
     assert result == 15
 ```
 
