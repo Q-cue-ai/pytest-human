@@ -1,3 +1,5 @@
+"""Example tests from README.md"""
+
 import inspect
 import logging
 import time
@@ -105,9 +107,9 @@ def test_artifacts(human):
 
     print("logging something to stdout")
 
-    log_content = """
-    [10:00:01] This is a sample log file.
+    log_content = inspect.cleandoc("""
+    [10:00:01] First line of the log.
     [10:00:03] Line 2 of the log.
     [10:00:05] Line 3 of the log.
-    """
+    """)
     human.artifacts.add_log_text(log_content, "sample.log", description="Sample log file")
