@@ -101,7 +101,7 @@ class HtmlLogPlugin:
     def write_html_log_path(cls, item: pytest.Item, log_path: Path, flush: bool = False) -> None:
         """Log the HTML log path to the terminal."""
 
-        if item.config.getoption("html_quiet"):
+        if item.config.getoption("quiet", item.config.getoption("html_quiet")):
             return
 
         terminal: pytest.TerminalReporter | None = item.config.pluginmanager.get_plugin(
