@@ -2,10 +2,10 @@ import inspect
 import logging
 import time
 
-from pytest_human.log import get_logger, log_call
+from pytest_human.log import get_logger, traced
 
 
-@log_call()
+@traced()
 def insert_db(data):
     query = "INSERT INTO flowers (petals) VALUES ('{{1,2,3,4,5}}');"
     logging.info(f"executing {query=}")
@@ -79,14 +79,14 @@ def test_spans(human):
     human.info("Operation completed")
 
 
-@log_call()
+@traced()
 def save_login(login):
     log = get_logger(__name__)
     log.info("a log inside save_login")
     return update_db(login)
 
 
-@log_call(log_level=logging.TRACE)
+@traced(log_level=logging.TRACE)
 def update_db(login):
     log = get_logger(__name__)
     delay_time = 2

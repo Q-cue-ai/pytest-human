@@ -335,15 +335,15 @@ def test_logging_log_fixtures_teardown_async(pytester: pytest.Pytester, page: Pa
     ).to_have_count(1)
 
 
-def test_logging_log_call(pytester: pytest.Pytester, page: Page) -> None:
+def test_logging_traced(pytester: pytest.Pytester, page: Page) -> None:
     pytester.makepyfile("""
-        from pytest_human.log import log_call
+        from pytest_human.log import traced
 
-        @log_call()
+        @traced()
         def a(x):
             return b(x+1)
 
-        @log_call()
+        @traced()
         def b(x):
             return x + 1
 
@@ -362,12 +362,12 @@ def test_logging_log_call(pytester: pytest.Pytester, page: Page) -> None:
     expect(a_call.locator("td.msg-cell").last).to_contain_text("a(x=1) -> 3")
 
 
-def test_logging_log_call_async(pytester: pytest.Pytester, page: Page) -> None:
+def test_logging_traced_async(pytester: pytest.Pytester, page: Page) -> None:
     pytester.makepyfile("""
-        from pytest_human.log import log_call
+        from pytest_human.log import traced
         import pytest
 
-        @log_call()
+        @traced()
         async def a(x):
             return x + 1
 
@@ -388,11 +388,11 @@ def test_logging_log_call_async(pytester: pytest.Pytester, page: Page) -> None:
     expect(a_call.locator("td.msg-cell").last).to_contain_text("a(x=1) -> 2")
 
 
-def test_logging_log_call_suppress_return(pytester: pytest.Pytester, page: Page) -> None:
+def test_logging_traced_suppress_return(pytester: pytest.Pytester, page: Page) -> None:
     pytester.makepyfile("""
-        from pytest_human.log import log_call
+        from pytest_human.log import traced
 
-        @log_call(suppress_return=True)
+        @traced(suppress_return=True)
         def a(x):
             return x+1
 
@@ -409,11 +409,11 @@ def test_logging_log_call_suppress_return(pytester: pytest.Pytester, page: Page)
     expect(a_call.locator("td.msg-cell").last).to_contain_text("a(x=1) -> <suppressed>")
 
 
-def test_logging_log_call_suppress_params(pytester: pytest.Pytester, page: Page) -> None:
+def test_logging_traced_suppress_params(pytester: pytest.Pytester, page: Page) -> None:
     pytester.makepyfile("""
-        from pytest_human.log import log_call
+        from pytest_human.log import traced
 
-        @log_call(suppress_params=True)
+        @traced(suppress_params=True)
         def a(x, y):
             return x+1
 
@@ -430,12 +430,12 @@ def test_logging_log_call_suppress_params(pytester: pytest.Pytester, page: Page)
     expect(a_call.locator("td.msg-cell").last).to_contain_text("a() -> 2")
 
 
-def test_logging_log_call_log_level(pytester: pytest.Pytester, page: Page) -> None:
+def test_logging_traced_log_level(pytester: pytest.Pytester, page: Page) -> None:
     pytester.makepyfile("""
-        from pytest_human.log import log_call
+        from pytest_human.log import traced
         import logging
 
-        @log_call(log_level=logging.TRACE)
+        @traced(log_level=logging.TRACE)
         def a(x, y):
             return x+1
 
@@ -456,16 +456,16 @@ def test_logging_log_call_log_level(pytester: pytest.Pytester, page: Page) -> No
     expect(log_lines.locator("td.msg-cell")).to_contain_text("a(x=1, y=2)")
 
 
-def test_logging_log_calls(pytester: pytest.Pytester, page: Page) -> None:
+def test_logging_trace_calls(pytester: pytest.Pytester, page: Page) -> None:
     pytester.makepyfile("""
-        from pytest_human.log import log_calls
+        from pytest_human.log import trace_calls
         import os
         import base64
 
         def test_example(human):
             os.path.join("path", "one")
 
-            with log_calls(os.path.join, base64.b64encode):
+            with trace_calls(os.path.join, base64.b64encode):
                 os.path.join("path", "two")
                 base64.b64encode(b"three")
 
@@ -489,17 +489,17 @@ def test_logging_log_calls(pytester: pytest.Pytester, page: Page) -> None:
     )
 
 
-def test_logging_log_calls_infinite_recursion(pytester: pytest.Pytester, page: Page) -> None:
+def test_logging_trace_calls_infinite_recursion(pytester: pytest.Pytester, page: Page) -> None:
     """
     The logging system itself calls os.path.basename, so this test make sure
     we don't get into an infinite recursion.
     """
     pytester.makepyfile("""
-        from pytest_human.log import log_calls
+        from pytest_human.log import trace_calls
         import os
 
         def test_example(human):
-            with log_calls(os.path.basename):
+            with trace_calls(os.path.basename):
                 os.path.basename("path/two")
     """)
 
@@ -514,17 +514,17 @@ def test_logging_log_calls_infinite_recursion(pytester: pytest.Pytester, page: P
     )
 
 
-def test_logging_log_public_api_module(pytester: pytest.Pytester, page: Page) -> None:
+def test_logging_trace_public_api_module(pytester: pytest.Pytester, page: Page) -> None:
     """
     Adds logging to all public methods in a module
     """
     pytester.makepyfile("""
-        from pytest_human.log import log_public_api
+        from pytest_human.log import trace_public_api
         import math
 
         def test_example(human):
             math.sqrt(9)
-            with log_public_api(math):
+            with trace_public_api(math):
                 math.sqrt(16)
                 math.factorial(5)
             math.factorial(4)
@@ -546,12 +546,12 @@ def test_logging_log_public_api_module(pytester: pytest.Pytester, page: Page) ->
     )
 
 
-def test_logging_log_public_api_class(pytester: pytest.Pytester, page: Page) -> None:
+def test_logging_trace_public_api_class(pytester: pytest.Pytester, page: Page) -> None:
     """
     Adds logging to all public methods in a class
     """
     pytester.makepyfile("""
-        from pytest_human.log import log_public_api
+        from pytest_human.log import trace_public_api
 
         class TestClass:
             def fobulator(self, x):
@@ -563,7 +563,7 @@ def test_logging_log_public_api_class(pytester: pytest.Pytester, page: Page) -> 
         def test_example(human):
             x = TestClass()
             x.fobulator(3)
-            with log_public_api(TestClass):
+            with trace_public_api(TestClass):
                 x.fobulator(4)
                 x.sandwich(5)
             x.sandwich(6)

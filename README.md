@@ -46,9 +46,9 @@ pip install pytest-human
 2. Use the `human` objects in your tests:
 
     ```python
-    from pytest_human.log import log_call
+    from pytest_human.log import traced
 
-    @log_call()
+    @traced()
     def insert_db(data):
         query = "INSERT INTO flowers (petals) VALUES ('{{1,2,3,4,5}}');"
         logging.info(f"executing {query=}")
@@ -206,15 +206,15 @@ Available span methods:
 ```python
 import logging
 import time
-from pytest_human.log import log_call, get_logger
+from pytest_human.log import traced, get_logger
 
-@log_call()
+@traced()
 def save_login(login):
     log = get_logger(__name__)
     log.info("a log inside save_login")
     return update_db(login)
 
-@log_call(log_level=logging.TRACE)
+@traced(log_level=logging.TRACE)
 def update_db(login):
     log = get_logger(__name__)
     delay_time = 2
@@ -227,34 +227,34 @@ def test_method_tracing(human):
     assert delay == 2
 ```
 
-By adding the `@log_call` decorator, the method will be
+By adding the `@traced` decorator, the method will be
 automatically logged when called and finished executing. The call
 will be placed in a nested span, which will also include all further logging inside the function scope.
 
-`@log_call` supports the following parameters:
+`@traced` supports the following parameters:
 * `suppress_return` - do not log the return value, useful when it is overly long
 * `suppress_params` - do not log the method parameters, useful when they are overly long
 * `log_level` - set a log level for the method trace
 
 ## Third-party method tracing
 
-The `@log_call` decorator is very useful for debugging but it is unfortunately restricted to code you own.
+The `@traced` decorator is very useful for debugging but it is unfortunately restricted to code you own.
 
-In order to log third-party methods, you can use the `log_calls` and `log_public_api` methods, which monkey patch third party code with human tracing.
+In order to log third-party methods, you can use the `trace_calls` and `trace_public_api` methods, which monkey patch third party code with human tracing.
 
-`log_calls` adds logging to a list of functions, while `log_public_api` adds logging to all public methods of modules/classes.
+`trace_calls` adds logging to a list of functions, while `trace_public_api` adds logging to all public methods of modules/classes.
 
 ```python
 @pytest.fixture(autouse=True)
 def log_3rdparty_methods():
     with (
-        log_calls(
+        trace_calls(
             pytest.Pytester.runpytest,
             pytest.Pytester.makepyfile,
         ),
-        log_calls(Page.screenshot, suppress_return=True),
+        trace_calls(Page.screenshot, suppress_return=True),
         # this skips Page.screenshot as it is already defined above
-        log_public_api(Page, Locator, LocatorAssertionsImpl),
+        trace_public_api(Page, Locator, LocatorAssertionsImpl),
     ):
         yield
 ```

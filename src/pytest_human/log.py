@@ -21,7 +21,7 @@ _log_local = threading.local()
 
 
 class TestLogger(logging.LoggerAdapter):
-    """Custom logger class that adds a trace method, support for spans and syntax highlighting."""
+    """A logger adapter (wrapper) class that adds a trace method, support for spans and syntax highlighting."""
 
     __test__ = False
     TRACE = TRACE_LEVEL_NUM
@@ -221,7 +221,7 @@ def _format_call_string(
 
 
 def _is_in_trace() -> bool:
-    """Return whether we are currently already tracing a @log_call."""
+    """Return whether we are currently already tracing a @traced."""
     return getattr(_log_local, "in_trace", False)
 
 
@@ -247,7 +247,7 @@ def _out_of_trace() -> Iterator[None]:
         _log_local.in_trace = previous
 
 
-def log_call(
+def traced(
     *, log_level: int = logging.INFO, suppress_return: bool = False, suppress_params: bool = False
 ) -> Callable[[Callable], Callable]:
     """Decorate log method calls with parameters and return values.
@@ -338,7 +338,7 @@ def _locate_function(func: Callable) -> tuple[Any, str]:
 
 
 def _patch_method_logger(target: Callable, **kwargs: Any) -> None:
-    """Patch a method or function to log its calls using log_call decorator.
+    """Patch a method or function to log its calls using traced decorator.
 
     This is useful to log 3rd party library methods without modifying their source code.
     """
@@ -348,7 +348,7 @@ def _patch_method_logger(target: Callable, **kwargs: Any) -> None:
 
     container, method_name = _locate_function(target)
 
-    decorated = log_call(**kwargs)(target)
+    decorated = traced(**kwargs)(target)
     decorated._is_patched_logger = True  # noqa: SLF001
 
     setattr(container, method_name, decorated)
@@ -368,10 +368,10 @@ def _get_public_methods(container: Any) -> list[Callable]:
 
 
 @contextmanager
-def log_calls(  # noqa: ANN201
+def trace_calls(  # noqa: ANN201
     *args: Callable, **kwargs: Any
 ):
-    """Context manager to log calls to a method or function using log_call decorator.
+    """Context manager to log calls to a method or function using traced decorator.
 
     This is useful to log 3rd party library methods without modifying their source code
     and adding a decorator.
@@ -389,7 +389,7 @@ def log_calls(  # noqa: ANN201
 
 
 @contextmanager
-def log_public_api(  # noqa: ANN201
+def trace_public_api(  # noqa: ANN201
     *args: Any, **kwargs: Any
 ):
     """Context manager to log calls to all public methods of a class or module.
@@ -400,7 +400,7 @@ def log_public_api(  # noqa: ANN201
     methods = []
     for container in args:
         methods.extend(_get_public_methods(container))
-    with log_calls(*methods, **kwargs):
+    with trace_calls(*methods, **kwargs):
         yield
 
 
