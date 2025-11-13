@@ -278,3 +278,8 @@ class HtmlLogPlugin:
             f"Exception: {excinfo.type.__name__} {excinfo.value}", highlight=True
         ):
             logger.error(f"traceback: {traceback}", highlight=True)
+
+    def pytest_assertion_pass(self, item: pytest.Item, lineno: int, orig: str, expl: str) -> None:
+        """Log successful assertions to the test log."""
+        logger = self._get_test_logger(item)
+        logger.debug(f"assert {orig}", highlight=True)
