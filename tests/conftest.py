@@ -21,8 +21,8 @@ def log_3rdparty_methods() -> Iterator[None]:
             pytest.Pytester.runpytest,
             pytest.Pytester.makepyfile,
         ),
-        trace_calls(Page.screenshot, suppress_return=True),
+        trace_calls(Page.screenshot, suppress_return=True, suppress_self=False),
         # this skips Page.screenshot as it is already defined above
-        trace_public_api(Page, Locator, LocatorAssertionsImpl),
+        trace_public_api(Page, Locator, LocatorAssertionsImpl, suppress_self=False),
     ):
         yield

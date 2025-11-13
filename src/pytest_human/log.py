@@ -213,7 +213,11 @@ def _get_class_name(func: Callable) -> str:
 
 
 def _format_call_string(
-    func: Callable, args: tuple, kwargs: dict, suppress_params: bool = False
+    func: Callable,
+    args: tuple,
+    kwargs: dict,
+    suppress_params: bool = False,
+    suppress_self: bool = True,
 ) -> str:
     sig = inspect.signature(func)
     bound_args = sig.bind(*args, **kwargs)
@@ -224,7 +228,7 @@ def _format_call_string(
     params = []
     param_str = ""
     for name, value in bound_args.arguments.items():
-        if name == "self":
+        if suppress_self and name == "self":
             continue
         params.append(f"{name}={value!r}")
 
@@ -262,7 +266,11 @@ def _out_of_trace() -> Iterator[None]:
 
 
 def traced(
-    *, log_level: int = logging.INFO, suppress_return: bool = False, suppress_params: bool = False
+    *,
+    log_level: int = logging.INFO,
+    suppress_return: bool = False,
+    suppress_params: bool = False,
+    suppress_self: bool = True,
 ) -> Callable[[Callable], Callable]:
     """Decorate log method calls with parameters and return values.
 
@@ -270,6 +278,7 @@ def traced(
                       Errors are always logged with ERROR level.
     :param suppress_return: If True, do not log the return value.
     :param suppress_params: If True, do not log the parameters.
+    :param suppress_self: If True, do not log the 'self' parameter for methods. True by default.
     """
 
     def decorator(func: Callable) -> Callable:
@@ -288,7 +297,11 @@ def traced(
 
                 with _in_trace():
                     func_str = _format_call_string(
-                        func, args, kwargs, suppress_params=suppress_params
+                        func,
+                        args,
+                        kwargs,
+                        suppress_params=suppress_params,
+                        suppress_self=suppress_self,
                     )
                     with logger.span.emit(log_level, f"async {func_str}", highlight=True):
                         try:
@@ -312,7 +325,9 @@ def traced(
                 return func(*args, **kwargs)
 
             with _in_trace():
-                func_str = _format_call_string(func, args, kwargs, suppress_params=suppress_params)
+                func_str = _format_call_string(
+                    func, args, kwargs, suppress_params=suppress_params, suppress_self=suppress_self
+                )
                 with logger.span.emit(log_level, func_str, highlight=True):
                     try:
                         with _out_of_trace():
@@ -390,6 +405,12 @@ def trace_calls(  # noqa: ANN201
 
     This is useful to log 3rd party library methods without modifying their source code
     and adding a decorator.
+
+    :param log_level: The log level that will be used for logging.
+                      Errors are always logged with ERROR level.
+    :param suppress_return: If True, do not log the return value.
+    :param suppress_params: If True, do not log the parameters.
+    :param suppress_self: If True, do not log the 'self' parameter for methods. True by default.
     """
     try:
         for target in args:
@@ -411,6 +432,12 @@ def trace_public_api(  # noqa: ANN201
 
     This is useful to log 3rd party library methods without modifying their source code
     and adding a decorator.
+
+    :param log_level: The log level that will be used for logging.
+                      Errors are always logged with ERROR level.
+    :param suppress_return: If True, do not log the return value.
+    :param suppress_params: If True, do not log the parameters.
+    :param suppress_self: If True, do not log the 'self' parameter for methods. True by default.
     """
     methods = []
     for container in args:
