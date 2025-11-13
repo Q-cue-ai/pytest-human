@@ -110,6 +110,8 @@ class TestLogger(logging.LoggerAdapter):
 
     __test__ = False
     TRACE = TRACE_LEVEL_NUM
+    span: SpanLogger
+    """Logs spans for nested logging."""
 
     def __init__(self, logger: logging.Logger) -> None:
         super().__init__(logger, {})
@@ -267,6 +269,7 @@ def traced(
     :param log_level: The log level that will be used for logging.
                       Errors are always logged with ERROR level.
     :param suppress_return: If True, do not log the return value.
+    :param suppress_params: If True, do not log the parameters.
     """
 
     def decorator(func: Callable) -> Callable:

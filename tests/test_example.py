@@ -103,6 +103,11 @@ def test_method_tracing(human):
 def test_artifacts(human):
     human.log.info("Attaching artifacts to the test report")
 
-    # Attach a log file
-    log_content = "This is a sample log file.\nLine 2 of the log.\nLine 3 of the log."
+    print("logging something to stdout")
+
+    log_content = """
+    [10:00:01] This is a sample log file.
+    [10:00:03] Line 2 of the log.
+    [10:00:05] Line 3 of the log.
+    """
     human.artifacts.add_log_text(log_content, "sample.log", description="Sample log file")

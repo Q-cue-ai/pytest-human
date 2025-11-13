@@ -783,7 +783,7 @@ class HtmlFileFormatter(logging.Formatter):
                     }
                     headerRow.classList.add(cssClass);
                 }
-        """  # noqa: E501, RUF001: Using emdash for width consistency with plus sign.
+        """  # noqa: E501, RUF001
 
 
 class HtmlFileHandler(logging.Handler):

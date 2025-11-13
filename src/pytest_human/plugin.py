@@ -329,7 +329,7 @@ class HtmlLogPlugin:
         for attachment in human.artifacts.logs():
             with human.log.span.info(attachment.file_name):
                 if attachment.description:
-                    human.log.info(attachment.description)
+                    human.log.info(f"# {attachment.description}", highlight=True)
                 content = cast(str, attachment.content)
                 human.log.info(content, highlight=True)
 

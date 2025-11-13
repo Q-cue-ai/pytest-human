@@ -1,4 +1,3 @@
-import re
 from pathlib import Path
 
 import pytest
@@ -82,7 +81,7 @@ def test_artifacts_log_text(pytester: pytest.Pytester, page: Page, tmp_path: Pat
     log_attachment = utils.open_span(test_artifacts, "sample.log")
 
     description_cell = log_attachment.locator("td.msg-cell").first
-    expect(description_cell).to_have_text("Sample log file")
+    expect(description_cell).to_have_text("# Sample log file")
 
     log_cell = log_attachment.locator("td.msg-cell").last
     expect(log_cell).to_have_text("This is a sample log file.")
@@ -109,7 +108,7 @@ def test_artifacts_log_file(pytester: pytest.Pytester, page: Page, tmp_path: Pat
     log_attachment = utils.open_span(test_artifacts, "some.log")
 
     description_cell = log_attachment.locator("td.msg-cell").first
-    expect(description_cell).to_have_text("Sample log file")
+    expect(description_cell).to_have_text("# Sample log file")
 
     log_cell = log_attachment.locator("td.msg-cell").last
     expect(log_cell).to_have_text("This is some text file i have around.")
