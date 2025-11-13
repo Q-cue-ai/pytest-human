@@ -308,9 +308,9 @@ def test_programmatic_logger():
 ### Keyboard navigation
 You can use the keyboard to navigate around the log.
 * Press <kbd>Tab</kbd> and <kbd>Shift</kbd>+<kbd>Tab</kbd> to jump between the expand buttons (+).
-* Press <kbd>Enter</kbd> to expand and collapse a span when hovering a button.
+* Press <kbd>Enter</kbd> to expand and collapse a span when hovering over a button.
 * Press <kbd>/</kbd> to jump to the search box and <kbd>Esc</kbd> to unfocus.
-* When search Use <kbd>Enter</kbd> to jump to the next result and <kbd>Shift</kbd>+<kbd>Enter</kbd> to jump to the previous result.
+* When searching use <kbd>Enter</kbd> to jump to the next result and <kbd>Shift</kbd>+<kbd>Enter</kbd> to jump to the previous result.
 ## Development
 
 ### Running Tests

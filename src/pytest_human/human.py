@@ -88,7 +88,7 @@ class HumanAttachments:
         yield from self._images
 
     def logs(self) -> Iterator[_Attachment]:
-        """Get all attached images."""
+        """Get all attached logs."""
         yield from self._logs
 
 

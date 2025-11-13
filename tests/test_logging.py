@@ -56,8 +56,9 @@ def test_logging_log_levels_info(pytester: pytest.Pytester, page: Page) -> None:
     log_lines = page.locator("tr.log-level-info").filter(visible=True)
     expect(
         log_lines,
-        "There should only be 3 info messages, our log, test setup and test cleanup",
-    ).to_have_count(3)
+        "There should only be 4 info messages, our log, test setup,"
+        " test cleanup and test artifacts",
+    ).to_have_count(4)
     log_lines = log_lines.nth(1)
     expect(log_lines.locator("td.level-cell")).to_have_text("INFO")
     expect(log_lines.locator("td.source-cell")).to_have_text("test_example")

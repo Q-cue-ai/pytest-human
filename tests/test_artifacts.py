@@ -65,7 +65,7 @@ def test_artifacts_stderr(pytester: pytest.Pytester, page: Page) -> None:
 
 
 def test_artifacts_log_text(pytester: pytest.Pytester, page: Page, tmp_path: Path) -> None:
-    """Test that artifacts show attached log file (string)."""
+    """Test that artifacts show attached log text."""
 
     pytester.makepyfile("""
         def test_log_file(human):
@@ -89,7 +89,7 @@ def test_artifacts_log_text(pytester: pytest.Pytester, page: Page, tmp_path: Pat
 
 
 def test_artifacts_log_file(pytester: pytest.Pytester, page: Page, tmp_path: Path) -> None:
-    """Test that artifacts show attached log file (string)."""
+    """Test that artifacts show attached log file."""
 
     log_file = tmp_path / "some.log"
     log_file.write_text("This is some text file i have around.")
