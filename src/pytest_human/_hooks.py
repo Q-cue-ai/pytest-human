@@ -3,7 +3,7 @@ import warnings
 import pytest
 
 import pytest_human._flags as flags
-from pytest_human._exceptions import HumanUsageWarning
+from pytest_human.exceptions import HumanUsageWarning
 from pytest_human.fixtures import human  # noqa: F401
 from pytest_human.log import TRACE_LEVEL_NUM, TestLogger
 from pytest_human.plugin import HtmlLogPlugin
