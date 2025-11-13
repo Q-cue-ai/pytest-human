@@ -29,6 +29,7 @@ class HtmlLogPlugin:
     log_path_key = pytest.StashKey[Path]()
     html_log_handler_key = pytest.StashKey[HtmlFileHandler]()
     human_logger_key = pytest.StashKey[Human]()
+    test_item_key = pytest.StashKey[pytest.Item]()
 
     def __init__(self) -> None:
         self.test_tmp_path = None
@@ -134,6 +135,7 @@ class HtmlLogPlugin:
         log_path = self._get_log_path(item)
 
         item.stash[self.log_path_key] = log_path
+        item.config.stash[self.test_item_key] = item
 
         level = self._get_log_level(item)
 
@@ -358,3 +360,13 @@ class HtmlLogPlugin:
 
             if human:
                 self._log_artifacts(human)
+
+    def pytest_assertrepr_compare(
+        self, config: pytest.Config, op: str, left: object, right: object
+    ) -> Optional[list[str]]:
+        """Log failed assertion comparisons to the HTML log."""
+        test = config.stash[self.test_item_key]
+        logger = self._get_test_logger(test)
+        logger.error(f"assert {pretty_repr(left)} {op} {pretty_repr(right)}", highlight=True)
+
+        return None

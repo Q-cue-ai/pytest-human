@@ -277,7 +277,7 @@ def test_artifacts(human):
     print("logging something to stdout")
 
     log_content = """
-    [10:00:01] This is a sample log file.
+    [10:00:01] First line of the log.
     [10:00:03] Line 2 of the log.
     [10:00:05] Line 3 of the log.
     """
