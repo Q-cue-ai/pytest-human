@@ -289,6 +289,13 @@ class HtmlLogPlugin:
         logger = get_logger(fixturedef.argname)
         logger.debug(f"Tore down fixture {fixturedef.argname}()", highlight=True)
 
+    @staticmethod
+    def _strip_ansi_codes(text: str) -> str:
+        """Remove ANSI escape codes (used for terminal colors) from a string."""
+
+        ansi_escape_pattern = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
+        return ansi_escape_pattern.sub("", text)
+
     def pytest_exception_interact(
         self,
         node: Node,
@@ -302,11 +309,10 @@ class HtmlLogPlugin:
             logger.error("Failed extracting exception info")
             return
 
-        traceback = report.longreprtext
+        traceback = str(report.longreprtext)
 
-        with logger.span.error(
-            f"Exception: {excinfo.type.__name__} {excinfo.value}", highlight=True
-        ):
+        exception_details = f"Exception: {excinfo.type.__name__} {excinfo.value}"
+        with logger.span.error(self._strip_ansi_codes(exception_details), highlight=True):
             logger.error(f"traceback: {traceback}", highlight=True)
 
     def pytest_assertion_pass(self, item: pytest.Item, lineno: int, orig: str, expl: str) -> None:
