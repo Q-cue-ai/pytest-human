@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Optional, cast
 
 import pytest
+from _pytest._code.code import ExceptionRepr
 from _pytest.nodes import Node
 from rich.pretty import pretty_repr
 
@@ -312,6 +313,7 @@ class HtmlLogPlugin:
             return
 
         traceback = str(report.longreprtext)
+        traceback = self._strip_ansi_codes(traceback)
 
         exception_details = f"Exception: {excinfo.type.__name__} {excinfo.value}"
         with logger.span.error(self._strip_ansi_codes(exception_details), highlight=True):
@@ -321,12 +323,18 @@ class HtmlLogPlugin:
     def pytest_runtest_makereport(self, item: pytest.Item, call: pytest.CallInfo) -> Iterator[None]:
         """Hook to create the test report.
 
-        We use it to attach the `item` to the `report` object.
+        We use it to attach the `item` to the `report` object, and track xfail exceptions.
         """  # noqa: D401
         outcome = yield
         report = outcome.get_result()
 
         report.item = item
+
+        # xfail exceptions do not show up in pytest_exception_interact
+        if hasattr(report, "wasxfail") and call.excinfo is not None:
+            logger = get_logger(item.name)
+            exctext = self._strip_ansi_codes(call.excinfo.exconly())
+            logger.warning(f"XFAIL: {report.wasxfail}\n\n{exctext}", highlight=True)
 
     def _log_artifacts(self, human: Human) -> None:
         for attachment in human.artifacts.logs():
@@ -365,3 +373,8 @@ class HtmlLogPlugin:
         logger.debug(f"assert {pretty_repr(left)} {op} {pretty_repr(right)}", highlight=True)
 
         return None
+
+    def pytest_internalerror(self, excrepr: ExceptionRepr) -> None:
+        """Log internal pytest errors to the HTML log."""
+        logger = get_logger("pytest")
+        logger.critical(f"Internal pytest error: {excrepr!s}", highlight=True)
