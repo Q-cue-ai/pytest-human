@@ -85,7 +85,8 @@ class HtmlRecordFormatter(logging.Formatter):
             <td class="time-cell">{html.escape(timestamp)}</td>
             <td class="level-cell">{html.escape(record.levelname)}</td>
             <td class="source-cell">{escaped_source}</td>
-            <td colspan="2" class="msg-cell">{escaped_message}</td>
+            <td class="msg-cell">{escaped_message}</td>
+            <td class="duration-cell"></td>
         </tr>
         """
         if record.levelno >= self.MINIMUM_PROPAGATION_LEVEL and self._block_stack:
@@ -130,8 +131,16 @@ class HtmlRecordFormatter(logging.Formatter):
             <td class="duration-cell" id="{duration_id}">...</td>
         </tr>
         <tr id="{block_id}" class="nested-block" aria-expanded="false" style="display: none;">
-            <td colspan="6">
-                <table class="log-table">
+            <td colspan="6" class ="nested-block-td">
+                <table class="log-table" role="treegrid">
+                    <colgroup>
+                        <col style="width: 3rem;">
+                        <col style="width: 10rem;">
+                        <col style="width: 7rem;">
+                        <col style="width: 14rem;">
+                        <col style="width: 100%;">
+                        <col style="width: 6rem;">
+                    </colgroup>
         """
 
     def _log_level_to_css_class(self, level: int) -> str:
@@ -245,6 +254,14 @@ class HtmlFileFormatter(logging.Formatter):
             </div>
             <div class="log-container">
                 <table class="log-table" role="treegrid">
+                    <colgroup>
+                        <col style="width: 3rem;">
+                        <col style="width: 10rem;">
+                        <col style="width: 7rem;">
+                        <col style="width: 14rem;">
+                        <col style="width: 100%;">
+                        <col style="width: 6rem;">
+                    </colgroup>
         """  # noqa: E501
 
     def format_footer(self) -> str:
@@ -270,7 +287,6 @@ class HtmlFileFormatter(logging.Formatter):
                 color: #24292e;
                 margin: 0;
                 padding: 0;
-                font-size: 14px;
             }
             .report-header {
                 background-color: #1667b7;
@@ -290,12 +306,12 @@ class HtmlFileFormatter(logging.Formatter):
             }
             .report-header h1 {
                 margin: 0;
-                font-size: 22px;
+                font-size: 1.4rem;
                 font-weight: 600;
             }
             .report-header p {
                 margin: 4px 0 0;
-                font-size: 13px;
+                font-size: 0.8rem;
                 opacity: 0.8;
                 max-width: 70%;
             }
@@ -434,13 +450,8 @@ class HtmlFileFormatter(logging.Formatter):
                 border-bottom: 1px solid #e1e4e8;
                 text-align: left;
                 vertical-align: top;
-                font-size: 13px;
+                font-size: 0.8rem;
             }
-            .log-table td:nth-child(1) { width: 25px; }   /* Toggle */
-            .log-table td:nth-child(2) { width: 90px; }   /* Timestamp */
-            .log-table td:nth-child(3) { width: 80px; }   /* Level */
-            .log-table td:nth-child(4) { width: 220px; }  /* Source */
-            .log-table td:nth-child(6) { width: 80px; text-align: right; } /* Duration */
 
             .log-table tr:last-child td { border-bottom: none; }
 
@@ -482,8 +493,21 @@ class HtmlFileFormatter(logging.Formatter):
                     "Liberation Mono", "Courier New", monospace;
                 white-space: pre-wrap;
             }
-            .nested-block td {
-                padding-left: 30px;
+
+            td.duration-cell {
+                text-align: right;
+                font-variant-numeric: tabular-nums;
+            }
+
+            .nested-block > td {
+                padding-left: 2rem;
+            }
+
+            td.nested-block-td {
+                padding-right: 0px;
+            }
+
+            .nested-block > td > table {
                 border-left: 2px solid #f6f8fa;
             }
 
