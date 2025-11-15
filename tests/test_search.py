@@ -201,7 +201,7 @@ def test_search_within_spans_expands(pytester: pytest.Pytester, page: Page) -> N
     assert result.ret == ExitCode.OK
 
     page.goto(html_path.as_uri())
-    expect(page.get_by_role("row", name="expeditious")).to_be_hidden()
+    expect(page.get_by_role("gridcell", name="expeditious")).to_be_hidden()
 
     page.locator("body").press("/")
 
@@ -209,6 +209,6 @@ def test_search_within_spans_expands(pytester: pytest.Pytester, page: Page) -> N
     search_box.fill("expeditious")
 
     expect(page.locator("#search-counter")).to_have_text("1 / 1")
-    nested_span = page.get_by_role("row", name="Nested Span").first
+    nested_span = page.get_by_role("gridcell", name="Nested Span").first
     expect(nested_span).to_be_visible()
-    expect(nested_span.get_by_role("row", name="expeditious").first).to_be_visible()
+    expect(page.get_by_role("gridcell", name="expeditious").first).to_be_visible()
