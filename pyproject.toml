@@ -117,4 +117,3 @@ ignore= [
 
 [tool.pytest.ini_options]
 asyncio_default_fixture_loop_scope = "function"
-enable_assertion_pass_hook = true

@@ -27,20 +27,11 @@ def setup_logging_color(config: pytest.Config) -> None:
     logging_plugin.log_cli_handler.formatter.add_color_level(TRACE_LEVEL_NUM, "white")
 
 
-def validate_ini(config: pytest.Config) -> None:
-    if not config.getini("enable_assertion_pass_hook"):
-        warnings.warn(
-            "Add 'enable_assertion_pass_hook=true' to pytest.ini to support assertion logging.",
-            HumanUsageWarning,
-        )
-
-
 @pytest.hookimpl(trylast=True)
 def pytest_configure(config: pytest.Config) -> None:
     setup_logging_color(config)
     flags.validate_flags(config)
     register_plugin(config)
-    validate_ini(config)
 
 
 def register_plugin(config: pytest.Config) -> None:

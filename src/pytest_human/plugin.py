@@ -317,11 +317,6 @@ class HtmlLogPlugin:
         with logger.span.error(self._strip_ansi_codes(exception_details), highlight=True):
             logger.error(f"traceback: {traceback}", highlight=True)
 
-    def pytest_assertion_pass(self, item: pytest.Item, lineno: int, orig: str, expl: str) -> None:
-        """Log successful assertions to the test log."""
-        logger = self._get_test_logger(item)
-        logger.debug(f"assert {orig}", highlight=True)
-
     @pytest.hookimpl(hookwrapper=True)
     def pytest_runtest_makereport(self, item: pytest.Item, call: pytest.CallInfo) -> Iterator[None]:
         """Hook to create the test report.
@@ -364,9 +359,9 @@ class HtmlLogPlugin:
     def pytest_assertrepr_compare(
         self, config: pytest.Config, op: str, left: object, right: object
     ) -> Optional[list[str]]:
-        """Log failed assertion comparisons to the HTML log."""
+        """Log all assertion comparisons to the HTML log."""
         test = config.stash[self.test_item_key]
         logger = self._get_test_logger(test)
-        logger.error(f"assert {pretty_repr(left)} {op} {pretty_repr(right)}", highlight=True)
+        logger.debug(f"assert {pretty_repr(left)} {op} {pretty_repr(right)}", highlight=True)
 
         return None
