@@ -6,11 +6,12 @@ import time
 import pytest
 
 from pytest_human.log import get_logger, trace_public_api, traced
+from tests.examples.external_delivery import ExternalDeliveryService
 
-log = get_logger(__name__)  # Get human-compatible logger for helpers
+log = get_logger(__name__)
 
 
-@traced()  # This will be traced at INFO level by default
+@traced()
 def prepare_dough(size: str):
     """Prepares the pizza dough."""
     log.info(f"Kneading {size} dough ball.")
@@ -19,7 +20,7 @@ def prepare_dough(size: str):
     return f"{size}_dough"
 
 
-@traced(log_level=logging.DEBUG)  # Set trace level to DEBUG
+@traced(log_level=logging.DEBUG)
 def add_sauce_and_cheese(dough, sauce, cheese):
     """Adds sauce and cheese to the dough."""
     log.info(f"Adding {sauce} sauce and {cheese} cheese.")
@@ -27,14 +28,13 @@ def add_sauce_and_cheese(dough, sauce, cheese):
     return f"{dough}_with_{sauce}_and_{cheese}"
 
 
-@traced(suppress_return=True)  # Don't log the long return value
+@traced(suppress_return=True)
 def add_toppings(pizza_base, toppings: list):
     """Adds a list of toppings to the pizza."""
     log.info(f"Adding {len(toppings)} toppings...")
     for topping in toppings:
-        log.trace(f"Adding {topping}")  # Use TRACE for verbose logs
+        log.trace(f"Adding {topping}")
 
-    # Simulate a complex object being returned
     return {"base": pizza_base, "toppings": toppings, "preparation_time": 0.1}
 
 
@@ -47,7 +47,6 @@ def bake_pizza(pizza_details):
     std_logger = logging.getLogger("kitchen.oven")
     std_logger.info(f"Oven preheated. Baking pizza with {pizza_details['toppings']}")
     time.sleep(0.1)
-    std_logger.warning("Oven temperature fluctuating slightly.")
     std_logger.warning("Onions topping running low, substituting with olives.")
     pizza_details["toppings"][-1] = "olives"
     return f"baked_pizza_with_{'_'.join(pizza_details['toppings'])}"
@@ -60,31 +59,6 @@ def get_current_topping(pizza):
     return pizza["toppings"]
 
 
-class ExternalDeliveryService:
-    """A simulated third-party class we don't own."""
-
-    def __init__(self, address):
-        self._address = address
-        self._driver = "None"
-        logging.getLogger("ExternalDeliveryService").info("Service initialized.")
-
-    def dispatch_driver(self, priority=False):
-        """Dispatches a driver to the address."""
-        logging.getLogger("ExternalDeliveryService").debug("Dispatching...")
-        time.sleep(0.05)
-        self._driver = "Dave"
-        return {"driver_id": "dave-007", "eta_minutes": 15}
-
-    def get_delivery_status(self):
-        """Gets the current delivery status."""
-        if self._driver == "None":
-            return "pending_dispatch"
-        return "out_for_delivery"
-
-    def _calculate_route(self):
-        return "Route calculated"
-
-
 @pytest.fixture(autouse=True)
 def trace_delivery_service():
     """
@@ -95,6 +69,7 @@ def trace_delivery_service():
         yield
 
 
+@pytest.mark.skip(reason="Example test, not meant to be run in CI")
 def test_full_pizza_order_workflow(human):
     """
     Tests the full workflow from ordering a pizza to delivery,
@@ -124,7 +99,6 @@ def test_full_pizza_order_workflow(human):
         human.log.info("Preparation complete. Ready for oven.")
 
     with human.log.span.info("Phase 2: 🔥 Baking Pizza"):
-        # This function isn't traced, but its internal logs are captured
         baked_pizza = bake_pizza(pizza_in_progress)
 
         # This print statement will be captured as stdout
