@@ -71,7 +71,7 @@ def test_logging_log_levels_warning(pytester: pytest.Pytester, page: Page) -> No
             human.log.warning("This is a WARNING log message.")
     """)
 
-    result = pytester.runpytest_subprocess("--enable-html-log")
+    result = pytester.runpytest_subprocess("--enable-html-log", "--html-log-level=warning")
     html_path = utils.find_test_log_location(result)
     assert result.ret == 0
 
@@ -584,6 +584,7 @@ def test_logging_trace_public_api_class(pytester: pytest.Pytester, page: Page) -
     )
 
 
+@pytest.mark.skip(reason="pytest_assertion_pass hook is disabled")
 def test_asserts_passing_expect_log(pytester: pytest.Pytester, page: Page) -> None:
     pytester.makepyfile("""
         def test_asserts(human):

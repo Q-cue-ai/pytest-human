@@ -127,6 +127,30 @@ class HtmlLogPlugin:
         if flush:
             terminal.flush()
 
+    def validate_log_level(self, item: pytest.Item) -> None:
+        """Warn if the root logger level is higher than the HTML log level."""
+        root_logger = logging.getLogger()
+        level = self._get_log_level(item)
+
+        if root_logger.level <= level:
+            return
+
+        msg = (
+            f"The root logger level {logging.getLevelName(root_logger.level)} is higher than "
+            f"the HTML log level {logging.getLevelName(level)}."
+            " This means logs will be missing from the HTML log."
+            "\nConsider lowering the logger level using the --log-level option."
+        )
+
+        if not self._warned_about_log_level:
+            warnings.warn(
+                msg,
+                HumanLogLevelWarning,
+            )
+            self._warned_about_log_level = True
+
+        logging.warning(msg)
+
     @pytest.hookimpl(tryfirst=True, hookwrapper=True)
     def pytest_runtest_protocol(
         self, item: pytest.Item, nextitem: Optional[pytest.Item]
@@ -149,16 +173,7 @@ class HtmlLogPlugin:
         html_handler.setLevel(level)
         root_logger.addHandler(html_handler)
 
-        if not self._warned_about_log_level and root_logger.level > level:
-            warnings.warn(
-                f"The root logger level {logging.getLevelName(root_logger.level)} is higher than "
-                f"the HTML log level {logging.getLevelName(level)}."
-                " This means logs will be missing from the HTML log."
-                "\nConsider setting the root logger level lower using the --log-level option.",
-                HumanLogLevelWarning,
-            )
-            self._warned_about_log_level = True
-
+        self.validate_log_level(item)
         filtered_handlers = []
 
         for handler in root_logger.handlers:
@@ -370,7 +385,7 @@ class HtmlLogPlugin:
         """Log all assertion comparisons to the HTML log."""
         test = config.stash[self.test_item_key]
         logger = self._get_test_logger(test)
-        logger.debug(f"assert {pretty_repr(left)} {op} {pretty_repr(right)}", highlight=True)
+        logger.error(f"assert {pretty_repr(left)} {op} {pretty_repr(right)}", highlight=True)
 
         return None
 

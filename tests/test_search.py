@@ -194,7 +194,9 @@ def test_search_within_spans_expands(pytester: pytest.Pytester, page: Page) -> N
                     human.log.info("expeditious")
     """)
 
-    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=info")
+    result = pytester.runpytest_subprocess(
+        "--enable-html-log", "--log-level=info", "--html-log-level=info"
+    )
     html_path = utils.find_test_log_location(result)
     assert result.ret == ExitCode.OK
 
