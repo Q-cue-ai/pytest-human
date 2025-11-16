@@ -29,7 +29,7 @@ Works with standard python logging, no need to rewrite existing tests to get goi
 
 https://github.com/user-attachments/assets/831b53ea-cf7f-468d-9303-335e444525e9
 
-[Example Report](asserts/test_pizza.html)
+[Example Report](assets/test_pizza.html)
 
 ## Installation
 
