@@ -11,7 +11,8 @@ A pytest plugin for generating beautiful, human-readable HTML reports for indivi
 Unlike other pytest HTML report plugins, **pytest-human** creates a separate HTML log file for each test, aimed at diving into specific parts of the test that are relevant for debugging.
 No need to rewrite existing tests!.
 
-![Screenshot](assets/test_example.png)
+https://github.com/user-attachments/assets/831b53ea-cf7f-468d-9303-335e444525e9
+
 
 ## Features
 * Beautiful test logs
