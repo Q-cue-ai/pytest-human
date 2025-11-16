@@ -8,6 +8,17 @@
       stroke: #f5f2f2;
     }
 
+    .band-1  { fill: #0b1a4a; }
+    .band-2  { fill: #0a2b7a; }
+    .band-3  { fill: #0b3aa0; }
+    .band-4  { fill: #0b57b8; }
+    .band-5  { fill: #0e77cf; }
+    .band-6  { fill: #1293e0; }
+    .band-7  { fill: #1ea6e7; }
+    .band-8  { fill: #2bb7f0; }
+    .band-9  { fill: #3bcdf4; }
+    .band-10 { fill: #54ddff; }
+
     @media (prefers-color-scheme: dark) {
       #text-human {
         fill: #2bb7f0;
@@ -15,7 +26,19 @@
       .disc-border {
         stroke: #555555;
       }
+
+      .band-1  { fill: #0b57b8; } 
+      .band-2  { fill: #0e77cf; }
+      .band-3  { fill: #1293e0; }
+      .band-4  { fill: #1ea6e7; }
+      .band-5  { fill: #2bb7f0; }
+      .band-6  { fill: #3bcdf4; }
+      .band-7  { fill: #54ddff; }
+      .band-8  { fill: #7ce5ff; }
+      .band-9  { fill: #a3eeff; }
+      .band-10 { fill: #cbf7ff; }      
     }
+
   </style>
 
   <defs>
@@ -25,16 +48,16 @@
   </defs>
 
   <g clip-path="url(#discClip)">
-    <rect x="120" y="100" width="600" height="60" fill="#0b1a4a" />
-    <rect x="120" y="160" width="600" height="60" fill="#0a2b7a" />
-    <rect x="120" y="220" width="600" height="60" fill="#0b3aa0" />
-    <rect x="120" y="280" width="600" height="60" fill="#0b57b8" />
-    <rect x="120" y="340" width="600" height="60" fill="#0e77cf" />
-    <rect x="120" y="400" width="600" height="60" fill="#1293e0" />
-    <rect x="120" y="460" width="600" height="60" fill="#1ea6e7" />
-    <rect x="120" y="520" width="600" height="60" fill="#2bb7f0" />
-    <rect x="120" y="580" width="600" height="60" fill="#3bcdf4" />
-    <rect x="120" y="640" width="600" height="60" fill="#54ddff" />
+    <rect x="120" y="100" width="600" height="60" class="band-1" />
+    <rect x="120" y="160" width="600" height="60" class="band-2" />
+    <rect x="120" y="220" width="600" height="60" class="band-3" />
+    <rect x="120" y="280" width="600" height="60" class="band-4" />
+    <rect x="120" y="340" width="600" height="60" class="band-5" />
+    <rect x="120" y="400" width="600" height="60" class="band-6" />
+    <rect x="120" y="460" width="600" height="60" class="band-7" />
+    <rect x="120" y="520" width="600" height="60" class="band-8" />
+    <rect x="120" y="580" width="600" height="60" class="band-9" />
+    <rect x="120" y="640" width="600" height="60" class="band-10" />
   </g>
 
   <circle cx="420" cy="400" r="300" fill="none" stroke-width="1" class="disc-border" />
