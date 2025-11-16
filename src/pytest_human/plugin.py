@@ -35,6 +35,7 @@ class HtmlLogPlugin:
     def __init__(self) -> None:
         self.test_tmp_path = None
         self._warned_about_log_level = False
+        self._test_reports_paths: list[tuple[str, Path]] = []
 
     @classmethod
     def register(cls, config: pytest.Config) -> HtmlLogPlugin:
@@ -161,6 +162,7 @@ class HtmlLogPlugin:
 
         item.stash[self.log_path_key] = log_path
         item.config.stash[self.test_item_key] = item
+        self._test_reports_paths.append((item.name, log_path))
 
         level = self._get_log_level(item)
 
@@ -175,11 +177,12 @@ class HtmlLogPlugin:
 
         self.validate_log_level(item)
         filtered_handlers = []
+        span_filter = _SpanEndFilter()
 
         for handler in root_logger.handlers:
             if handler is not html_handler:
                 # Remove span end messages noise from other handlers
-                handler.addFilter(_SpanEndFilter())
+                handler.addFilter(span_filter)
                 filtered_handlers.append(handler)
 
         yield
@@ -189,7 +192,7 @@ class HtmlLogPlugin:
         html_handler.close()
 
         for handler in filtered_handlers:
-            handler.removeFilter(_SpanEndFilter())
+            handler.removeFilter(span_filter)
 
         log_path = item.stash[self.log_path_key]
         self._write_html_log_path(item, log_path, flush=True)
@@ -397,3 +400,24 @@ class HtmlLogPlugin:
         """Log internal pytest errors to the HTML log."""
         logger = get_logger("pytest")
         logger.critical(f"Internal pytest error: {excrepr!s}", highlight=True)
+
+    @pytest.hookimpl(trylast=True)
+    def pytest_terminal_summary(
+        self, terminalreporter: pytest.TerminalReporter, config: pytest.Config
+    ) -> None:
+        """Log all HTML log paths to the terminal summary."""
+        if self._test_reports_paths:
+            terminalreporter.write_sep("-", "pytest-human HTML log reports")
+
+        for test_name, log_path in self._test_reports_paths:
+            terminalreporter.ensure_newline()
+            terminalreporter.write("🌎 Test ")
+            terminalreporter.write(f"{test_name}", bold=True)
+            terminalreporter.write(" HTML log at ")
+            terminalreporter.write(f"{log_path.resolve().as_uri()}", bold=True, cyan=True)
+            terminalreporter.line("")
+
+        if self._test_reports_paths:
+            terminalreporter.write_sep("-")
+
+        terminalreporter.flush()
