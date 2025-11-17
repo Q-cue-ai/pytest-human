@@ -34,7 +34,7 @@ Works with standard python logging, no need to rewrite existing tests to get goi
 
 ## Demo 
 
-https://github.com/user-attachments/assets/831b53ea-cf7f-468d-9303-335e444525e9
+https://github.com/user-attachments/assets/a95c0c4f-8959-4290-b311-0b46b2a39f71
 
 [Example Report](https://raw.githubusercontent.com/Q-cue-ai/pytest-human/refs/heads/main/assets/test_pizza.html) and test [source file](tests/examples/test_pizza.py).
 
