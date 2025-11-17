@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pytest-human"
-description = "A beautiful nested HTML test report"
-version = "0.5.0"
+description = "A beautiful nested pytest HTML test report"
+version = "0.5.1"
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [{ name = "Dan Ilan", email = "dan.ilan@q.ai" }]
@@ -44,6 +44,8 @@ dependencies = ["pytest>=8.0.0", "rich==14.*"]
 
 [project.urls]
 Repository = "https://github.com/Q-cue-ai/pytest-human"
+Issues = "https://github.com/Q-cue-ai/pytest-human/issues"
+Changelog = "https://github.com/Q-cue-ai/pytest-human/releases"
 
 [project.entry-points.pytest11]
 human = "pytest_human._hooks"
