@@ -219,7 +219,7 @@ def test_spans(human):
 ## Method Tracing
 
 
-A lot of debug logging is centered around logging when a function was called, returned a value or threw an error. Human supplies the `@traced` decorator to allow for automatic method tracing in log. 
+A lot of debug logging is centered around logging a function when called, returned a value or threw an error. Human supplies the `@traced` decorator to allow for automatic method tracing in log. 
 
 Each method call shows the function call parameters, opens a new span that includes all of the logging that happened in its scope, as well as its return value. This allows for easy segmentation of nested loggings and reduces the amount of noise encountered when debugging.
 
