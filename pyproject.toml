@@ -52,7 +52,7 @@ human = "pytest_human._hooks"
 dev = [
     "mkdocs>=1.6.1",
     "mkdocs-material>=9.6.22",
-    "mkdocstrings[python]>=0.18",
+    # "mkdocstrings[python]>=0.18",
     "pytest-playwright==0.7.*",
     "playwright==1.56.*",
     "pytest-asyncio==1.3.0",
