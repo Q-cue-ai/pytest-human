@@ -1,0 +1,104 @@
+name: Release to PyPI
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install build dependencies
+        run: pip install build
+
+      - name: Build package
+        run: python -m build
+
+      - name: Upload distribution artifacts
+        uses: actions/upload-artifact@v5
+        with:
+          name: dist
+          path: dist/
+          retention-days: 5
+
+  test-wheel:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Download distribution artifacts
+        uses: actions/download-artifact@v5
+        with:
+          name: dist
+          path: dist/
+
+      - name: Install tox
+        run: pip install tox
+
+      - name: Test with built wheel
+        run: |
+          tox -e py --installpkg dist/*.whl -- --tracing=retain-on-failure --screenshot=on \
+           --video=retain-on-failure \
+           --output ${{ github.workspace }}/playwright-output \
+           --enable-html-log \
+           --html-output-dir ${{ github.workspace }}/human-output \
+           --log-level DEBUG
+
+      - name: Upload Playwright Output
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: wheel-test-playwright-output-${{ matrix.python-version }}
+          path: ${{ github.workspace }}/playwright-output/
+          retention-days: 5
+
+      - name: Upload Human Report Output
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: wheel-test-human-output-${{ matrix.python-version }}
+          path: ${{ github.workspace }}/human-output/
+          retention-days: 5
+
+  publish:
+    needs: test-wheel
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+    if: github.repository_owner == 'Q-cue-ai'
+    environment:
+      name: release
+      url: https://pypi.org/p/pytest-human
+    steps:
+      - name: Download distribution artifacts
+        uses: actions/download-artifact@v5
+        with:
+          name: dist
+          path: dist/
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          generate_release_notes: true
+          draft: true
+          prerelease: false
