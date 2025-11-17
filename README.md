@@ -13,17 +13,22 @@ Works with standard python logging, no need to rewrite existing tests to get goi
 
 
 ## Features
-* Beautiful test logs
-* Collapsible spans
-* Syntax highlighting
-* Automatic fixture logging
-* Automatic method call logging
-* Third-party method tracing
-* Colored log levels
-* Deep error highlighting
-* Regex search in collapsed spans
-* Artifacts collection
-* Support for existing native python logging
+* Logs
+  * Beautiful test logs
+  * Collapsible spans
+  * Syntax highlighting
+  * Colored log levels
+  * Support for existing native python logging
+  * Streaming log writing
+* Tracing
+  * Automatic fixture logging
+  * Automatic method call logging
+  * Third-party method tracing
+* Debugging
+  * Deep error highlighting
+  * Regex search in collapsed spans
+  * Artifacts collection
+
 
 ## Demo 
 
