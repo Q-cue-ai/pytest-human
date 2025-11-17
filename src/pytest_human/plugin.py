@@ -18,16 +18,15 @@ from rich.pretty import pretty_repr
 
 from pytest_human._flags import is_output_to_test_tmp
 from pytest_human.exceptions import HumanLogLevelWarning
-from pytest_human.html_report import HtmlFileHandler
+from pytest_human.html_handler import HtmlFileHandler, HtmlHandlerContext
 from pytest_human.human import Human
-from pytest_human.log import TestLogger, _SpanEndFilter, get_logger
+from pytest_human.log import TestLogger, get_logger
 
 
 class HtmlLogPlugin:
     """Pytest plugin to create HTML log files for each test."""
 
     HTML_LOG_PLUGIN_NAME = "html-log-plugin"
-    log_path_key = pytest.StashKey[Path]()
     html_log_handler_key = pytest.StashKey[HtmlFileHandler]()
     human_logger_key = pytest.StashKey[Human]()
     test_item_key = pytest.StashKey[pytest.Item]()
@@ -106,11 +105,34 @@ class HtmlLogPlugin:
         return logging.getLevelName(log_level_name.upper())
 
     @classmethod
-    def _write_html_log_path(cls, item: pytest.Item, log_path: Path, flush: bool = False) -> None:
+    def _print_test_report_location(
+        cls,
+        terminal: pytest.TerminalReporter,
+        config: pytest.Config,
+        test_name: str,
+        log_path: Path,
+        flush: bool = False,
+    ) -> None:
         """Log the HTML log path to the terminal."""
 
-        if item.config.getoption("quiet", item.config.getoption("html_quiet")):
+        if config.getoption("quiet", config.getoption("html_quiet")):
             return
+
+        terminal.ensure_newline()
+        terminal.write("🌎 Test ")
+        terminal.write(f"{test_name}", bold=True)
+        terminal.write(" HTML log at ")
+        terminal.write(f"{log_path.resolve().as_uri()}", bold=True, cyan=True)
+        terminal.line("")
+
+        if flush:
+            terminal.flush()
+
+    @classmethod
+    def _print_item_report_location(
+        cls, item: pytest.Item, log_path: Path, flush: bool = False
+    ) -> None:
+        """Log the HTML log path to the terminal."""
 
         terminal: pytest.TerminalReporter | None = item.config.pluginmanager.get_plugin(
             "terminalreporter"
@@ -118,15 +140,13 @@ class HtmlLogPlugin:
         if terminal is None:
             return
 
-        terminal.ensure_newline()
-        terminal.write("🌎 Test ")
-        terminal.write(f"{item.name}", bold=True)
-        terminal.write(" HTML log at ")
-        terminal.write(f"{log_path.resolve().as_uri()}", bold=True, cyan=True)
-        terminal.line("")
-
-        if flush:
-            terminal.flush()
+        cls._print_test_report_location(
+            terminal,
+            item.config,
+            item.name,
+            log_path,
+            flush,
+        )
 
     def validate_log_level(self, item: pytest.Item) -> None:
         """Warn if the root logger level is higher than the HTML log level."""
@@ -152,50 +172,35 @@ class HtmlLogPlugin:
 
         logging.warning(msg)
 
+    @classmethod
+    def _is_live_logging_enabled(cls, config: pytest.Config) -> bool:
+        """Check if live logging is enabled."""
+        return config.getini("log_cli")
+
     @pytest.hookimpl(tryfirst=True, hookwrapper=True)
     def pytest_runtest_protocol(
         self, item: pytest.Item, nextitem: Optional[pytest.Item]
     ) -> Iterator[None]:
         """Set up HTML log handler for the test and clean up afterwards."""
-        root_logger = logging.getLogger()
-        log_path = self._get_log_path(item)
-
-        item.stash[self.log_path_key] = log_path
         item.config.stash[self.test_item_key] = item
-        self._test_reports_paths.append((item.name, log_path))
-
+        log_path = self._get_log_path(item)
         level = self._get_log_level(item)
+        self.validate_log_level(item)
 
-        html_handler = HtmlFileHandler(
-            log_path.as_posix(),
+        with HtmlHandlerContext(
+            filename=log_path,
             title=item.name,
             description=self._get_test_doc_string(item),
-        )
-        item.stash[self.html_log_handler_key] = html_handler
-        html_handler.setLevel(level)
-        root_logger.addHandler(html_handler)
-
-        self.validate_log_level(item)
-        filtered_handlers = []
-        span_filter = _SpanEndFilter()
-
-        for handler in root_logger.handlers:
-            if handler is not html_handler:
-                # Remove span end messages noise from other handlers
-                handler.addFilter(span_filter)
-                filtered_handlers.append(handler)
-
-        yield
+            level=level,
+        ) as html_handler:
+            item.stash[self.html_log_handler_key] = html_handler
+            yield
 
         self.test_tmp_path = None
-        root_logger.removeHandler(html_handler)
-        html_handler.close()
+        self._test_reports_paths.append((item.name, html_handler.path))
 
-        for handler in filtered_handlers:
-            handler.removeFilter(span_filter)
-
-        log_path = item.stash[self.log_path_key]
-        self._write_html_log_path(item, log_path, flush=True)
+        if self._is_live_logging_enabled(item.config):
+            self._print_item_report_location(item, log_path, flush=True)
 
     def _get_log_path(self, item: pytest.Item) -> Path:
         if custom_dir := item.config.getoption("html_output_dir"):
@@ -267,14 +272,13 @@ class HtmlLogPlugin:
 
         handler = item.stash[self.html_log_handler_key]
         handler.relocate(new_log_path)
-        item.stash[self.log_path_key] = new_log_path
 
     # Depend on _relocate_test_log fixture to ensure it runs first
     @pytest.fixture
     def human_test_log_path(self, request: pytest.FixtureRequest, _relocate_test_log: None) -> Path:
         """Fixture to get the HTML log file path for the current test."""
         item = request.node
-        log_path = item.stash[self.log_path_key]
+        log_path = item.stash[self.html_log_handler_key].path
         return log_path
 
     @pytest.hookimpl(hookwrapper=True)
@@ -410,12 +414,12 @@ class HtmlLogPlugin:
             terminalreporter.write_sep("-", "pytest-human HTML log reports")
 
         for test_name, log_path in self._test_reports_paths:
-            terminalreporter.ensure_newline()
-            terminalreporter.write("🌎 Test ")
-            terminalreporter.write(f"{test_name}", bold=True)
-            terminalreporter.write(" HTML log at ")
-            terminalreporter.write(f"{log_path.resolve().as_uri()}", bold=True, cyan=True)
-            terminalreporter.line("")
+            self._print_test_report_location(
+                terminalreporter,
+                config,
+                test_name,
+                log_path,
+            )
 
         if self._test_reports_paths:
             terminalreporter.write_sep("-")

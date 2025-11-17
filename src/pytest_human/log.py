@@ -184,17 +184,6 @@ class TestLogger(logging.LoggerAdapter):
         logging.addLevelName(TRACE_LEVEL_NUM, "TRACE")
 
 
-class _SpanEndFilter(logging.Filter):
-    """A logging filter that blocks log records marking the end of a span."""
-
-    def filter(self, record: logging.LogRecord) -> bool:
-        """Filter out span end log records.
-
-        These can spam the log with non-HTML log handlers.
-        """
-        return not getattr(record, _SPAN_END_TAG, False)
-
-
 def _get_class_name(func: Callable) -> str:
     """Get a class name from a method or function."""
     if self_attr := getattr(func, "__self__", None):
