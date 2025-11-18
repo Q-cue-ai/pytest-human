@@ -98,6 +98,7 @@ ignore = [
   "RET504", # Unnecessary assignment before return
   "S101",   # Allow asserts,
   "UP007", # Allow optional
+  "UP045", # Allow optional
 ]
 
 [tool.ruff.lint.per-file-ignores]
