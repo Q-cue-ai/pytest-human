@@ -9,7 +9,7 @@ pytest_plugins = "pytester"
 
 
 @pytest.fixture(autouse=True)
-def log_3rdparty_methods() -> Iterator[None]:
+def _log_3rdparty_methods() -> Iterator[None]:
     """
     Setup logging for 3rd party methods used in tests.
 

@@ -27,7 +27,7 @@
         stroke: #555555;
       }
 
-      .band-1  { fill: #08306b; } 
+      .band-1  { fill: #08306b; }
       .band-2  { fill: #094085; }
       .band-3  { fill: #0b509e; }
       .band-4  { fill: #0b60b8; }

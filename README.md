@@ -32,7 +32,7 @@ Works with standard python logging, no need to rewrite existing tests to get goi
   * Artifacts collection
 
 
-## Demo 
+## Demo
 
 https://github.com/user-attachments/assets/a95c0c4f-8959-4290-b311-0b46b2a39f71
 
@@ -96,7 +96,7 @@ pip install pytest-human
     You can <kbd>Ctrl</kbd>/<kbd>⌘</kbd>-Click the link in most terminals to open the file.
 
 4. Debug!
-    ![Screenshot](https://raw.githubusercontent.com/Q-cue-ai/pytest-human/refs/heads/main/assets/test_example.png) 
+    ![Screenshot](https://raw.githubusercontent.com/Q-cue-ai/pytest-human/refs/heads/main/assets/test_example.png)
 
 
 ## Command Line Options
@@ -120,7 +120,7 @@ pytest --html-output-dir /path/to/logs
 
 # By default logs are saved in the session temp directory with the test name
 # e.g. /tmp/pytest-of-user.name/pytest-446/session_logs/test_method_tracing.html
-pytest --enable-html-log 
+pytest --enable-html-log
 
 # Save in individual test temporary directories as test.html
 # e.g. /tmp/pytest-of-user.name/pytest-446/session_logs/test_examplecurrent/test.html
@@ -141,7 +141,7 @@ pytest --enable-html-log --log-level DEBUG
 pytest --enable-html-log --html-log-level INFO
 ```
 
-`--html-log-level` controls the html logger directly but might still be restricted by the python root level. 
+`--html-log-level` controls the html logger directly but might still be restricted by the python root level.
 The root logger level can be tweaked programatically or using the `--log-level` parameter. `--html-log-level` default to `DEBUG` while in pytest the root log level defaults to `WARNING`.
 
 For human features to work, ensure the root logger is set to `DEBUG` or `TRACE` using `--log-level`.
@@ -166,7 +166,7 @@ def test_logging_methods(human):
     human.log.warning("Warning level message")
     human.log.error("Error level message")
     human.log.critical("Critical level message")
-    
+
     # Syntax highlighting for code
     code = """
     import numpy as np
@@ -200,28 +200,28 @@ This allows partitioning the log into sections and diving only into the parts of
 ```python
 def test_spans(human):
     human.log.info("Starting complex operation")
-    
+
     with human.log.span.info("Phase 1: Initialization"):
         human.log.debug("Initializing resources...")
-        
+
         with human.log.span.debug("Loading configuration"):
             human.log.trace("Reading config file")
             config = load_config()
             human.log.debug(f"Config loaded: {config}")
-        
+
         human.log.info("Initialization complete")
-    
+
     with human.log.span.info("Phase 2: Processing"):
         human.log.debug("Processing data...")
         process_data()
-    
+
     human.log.info("Operation completed")
 ```
 
 ## Method Tracing
 
 
-A lot of debug logging is centered around logging a function when called, returned a value or threw an error. Human supplies the `@traced` decorator to allow for automatic method tracing in log. 
+A lot of debug logging is centered around logging a function when called, returned a value or threw an error. Human supplies the `@traced` decorator to allow for automatic method tracing in log.
 
 Each method call shows the function call parameters, opens a new span that includes all of the logging that happened in its scope, as well as its return value. This allows for easy segmentation of nested loggings and reduces the amount of noise encountered when debugging.
 
@@ -244,8 +244,8 @@ def save_login(login):
 def update_db(login):
     log = get_logger(__name__)
     delay_time = 2
-    log.info("delaying db update by 2 seconds")    
-    time.sleep(delay_time)   
+    log.info("delaying db update by 2 seconds")
+    time.sleep(delay_time)
     return delay_time
 
 def test_method_tracing(human):
@@ -323,7 +323,7 @@ import logging
 def test_standard_logging(human):
     # pytest-human logger
     human.log.info("Using human fixture")
-    
+
     # Standard Python logger - also captured in HTML
     logger = logging.getLogger(__name__)
     logger.info("Using standard logger")
@@ -391,4 +391,3 @@ Distributed under the Apache Software License 2.0. See `LICENSE` for more inform
 - **PyPI**: https://pypi.org/project/pytest-human
 - **Repository**: https://github.com/Q-cue-ai/pytest-human
 - **Issue Tracker**: https://github.com/Q-cue-ai/pytest-human/issues
-

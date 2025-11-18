@@ -60,7 +60,7 @@ def get_current_topping(pizza):
 
 
 @pytest.fixture(autouse=True)
-def trace_delivery_service():
+def _trace_delivery_service():
     """
     This autouse fixture monkey-patches the external delivery
     service to trace all its public methods.

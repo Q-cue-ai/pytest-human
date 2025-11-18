@@ -3,23 +3,20 @@ repos:
     rev: v4.6.0
     hooks:
       - id: trailing-whitespace
+        exclude: ^assets/
       - id: end-of-file-fixer
+        exclude: ^assets/
       - id: check-yaml
       - id: check-added-large-files
       - id: mixed-line-ending
-        args: ['--fix=lf']
+        exclude: ^assets/
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.6.9
     hooks:
       - id: ruff
-        args: [--fix]
       - id: ruff-format
-
-  - repo: https://github.com/tox-dev/pyproject-fmt
-    rev: v2.2.4
-    hooks:
-      - id: pyproject-fmt
+        args: [--check]
 
   - repo: https://github.com/compilerla/conventional-pre-commit
     rev: v3.4.0

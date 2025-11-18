@@ -49,7 +49,8 @@ entry-points.pytest11.human = "pytest_human._hooks"
 [tool.ruff]
 line-length = 100
 
-lint.select = [
+[tool.ruff.lint]
+select = [
   "ANN",
   "ASYNC",
   "C4",
@@ -82,7 +83,10 @@ lint.select = [
   "UP",
   "W",
 ]
-lint.ignore = [
+
+ignore = [
+  "ANN101", # do not annotate self
+  "ANN102", # do not annotate cls
   "ANN401", # allow use of Any type hints
   "D105",   # no need to document magic methods
   "D107",   # No need to document __init__
@@ -92,12 +96,14 @@ lint.ignore = [
   "FBT001", # allow boolean parameters
   "FBT002", # allow default boolean parameters
   "RET504", # Unnecessary assignment before return
-  "S101",   # Allow asserts
-  "UP045",  # allow use of Optional types
+  "S101",   # Allow asserts,
+  "UP007", # Allow optional
 ]
-lint.per-file-ignores."tests/**" = [ "D", "PLR2004" ]
-lint.per-file-ignores."tests/examples/**" = [ "ANN" ]
-lint.per-file-ignores."tests/test_example.py" = [ "ANN" ]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["D", "PLR2004"]
+"tests/examples/**" = ["ANN"]
+"tests/test_example.py" = ["ANN"]
 
 [tool.pytest.ini_options]
 asyncio_default_fixture_loop_scope = "function"
