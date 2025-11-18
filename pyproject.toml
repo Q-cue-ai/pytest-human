@@ -85,8 +85,6 @@ select = [
 ]
 
 ignore = [
-  "ANN101", # do not annotate self
-  "ANN102", # do not annotate cls
   "ANN401", # allow use of Any type hints
   "D105",   # no need to document magic methods
   "D107",   # No need to document __init__
