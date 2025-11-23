@@ -76,12 +76,8 @@ class HtmlRecordFormatter(logging.Formatter):
 
     def _get_file_in_repo(self, record: logging.LogRecord) -> tuple[str, int]:
         """Get the log record path relative to the git repo root, if possible."""
-        path = record.pathname
-        lineno = record.lineno
         path, lineno = self._get_file_lines(record)
-
         relative_path = self._repo.relative_to_repo(Path(path))
-
         return str(relative_path), lineno
 
     def _get_file_lines(self, record: logging.LogRecord) -> tuple[str, int]:

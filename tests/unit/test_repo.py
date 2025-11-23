@@ -18,26 +18,9 @@ def test_project_root_git(pytester: pytest.Pytester) -> None:
     assert repo.project_root == pytester.path
 
 
-def test_project_root_indicator(pytester: pytest.Pytester) -> None:
-    # Ensure no git repo is detected first?
-    # If we are running inside a git repo, Repo() will find it.
-    # We should probably mock _initialize_git_repo to return None for this test
-    # to simulate being outside a git repo but having an indicator.
-
-    (pytester.path / "pyproject.toml").touch()
-
-    # Mocking _initialize_git_repo would be good here.
-    # But let's write the structure first and refine with mocks if needed.
-    pass
-
-
-def test_project_root_fallback(pytester: pytest.Pytester) -> None:
-    pass
-
-
 def test_get_repo_url_github(pytester: pytest.Pytester) -> None:
     r = git.Repo.init(pytester.path)
-    r.create_remote("origin", "git@github.com:user/repo.git")
+    r.create_remote("origin", "https://github.com/user/repo.git")
     repo = Repo()
     assert repo.repo_url == "https://github.com/user/repo"
 

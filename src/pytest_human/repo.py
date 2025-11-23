@@ -1,13 +1,13 @@
-"""Utilities for manging project and repository information."""
+"""Utilities for managing project and repository information."""
 
 import re
 import site
+from contextlib import suppress
 from pathlib import Path, PurePosixPath
 from typing import Optional
 from urllib.parse import quote as url_escape
 
 import git
-from exceptiongroup import suppress
 
 from pytest_human.log import get_logger
 
@@ -102,7 +102,7 @@ class Repo:
         pattern = re.compile(
             r"""
             ^(?:                     # do not capture prefix
-                https?://(?:www\.)github\.com/   # Match https://github.com/ addresses
+                https?://(?:www\.)?github\.com/   # Match https://github.com/ addresses
                 |                       # OR
                 git@github\.com:        # Match SSH format git@github.com:
             )
