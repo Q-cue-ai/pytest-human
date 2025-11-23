@@ -63,7 +63,7 @@ class Repo:
 
         This is determined by finding the top-level Git repository path.
         If not inside a Git repository, searches for indicating files,
-        fallsback to current dir.
+        falls back to current dir.
         """
         git_repo_path = self._get_git_repo_path()
         if git_repo_path is not None:

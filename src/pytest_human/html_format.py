@@ -104,7 +104,7 @@ class HtmlRecordFormatter(logging.Formatter):
             )
 
         return (
-            f'<a href="{url}"'
+            f'<a href="{html.escape(url)}"'
             f' class="source-link source-text" target="_blank" rel="noopener noreferrer"'
             f' title="{html.escape(full_location)}">'
             f"{html.escape(file_location)}</a>"
