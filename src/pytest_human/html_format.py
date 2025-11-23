@@ -192,9 +192,9 @@ class HtmlRecordFormatter(logging.Formatter):
         block = self._block_stack.pop()
         duration_ms = (time.monotonic() - block.start_time) * 1000
 
-        result = "</table></td></tr>"
+        result = "</table></td></tr>\n"
         result += (
-            f"<script>finalizeSpan('{block.id}', '{block.duration_id}', {duration_ms});</script>"
+            f"<script>finalizeSpan('{block.id}', '{block.duration_id}', {duration_ms});</script>\n"
         )
 
         parent = None
@@ -205,7 +205,7 @@ class HtmlRecordFormatter(logging.Formatter):
             parent.severity_max = max(parent.severity_max, block.severity_max)
 
         css_class = self._log_level_to_css_class(block.severity_max)
-        result += f"<script>setSpanSeverity('{block.id}', '{css_class}');</script>"
+        result += f"<script>setSpanSeverity('{block.id}', '{css_class}');</script>\n"
         return result
 
     def end_all_blocks(self) -> str:
