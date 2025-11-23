@@ -39,7 +39,11 @@ classifiers = [
   "Topic :: Software Development :: Testing",
 ]
 
-dependencies = [ "pytest>=8", "rich==14.*" ]
+dependencies = [
+ "gitpython==3.*",
+ "pytest>=8",
+ "rich==14.*",
+]
 
 urls.Changelog = "https://github.com/Q-cue-ai/pytest-human/releases"
 urls.Issues = "https://github.com/Q-cue-ai/pytest-human/issues"

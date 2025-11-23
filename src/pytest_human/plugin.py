@@ -20,7 +20,8 @@ from pytest_human._flags import is_output_to_test_tmp
 from pytest_human.exceptions import HumanLogLevelWarning
 from pytest_human.html_handler import HtmlFileHandler, HtmlHandlerContext
 from pytest_human.human import Human
-from pytest_human.log import TestLogger, get_logger
+from pytest_human.log import TestLogger, get_function_location, get_logger
+from pytest_human.repo import Repo
 
 
 class HtmlLogPlugin:
@@ -34,7 +35,8 @@ class HtmlLogPlugin:
     def __init__(self) -> None:
         self.test_tmp_path = None
         self._warned_about_log_level = False
-        self._test_reports_paths: list[tuple[str, Path]] = []
+        self._test_reports_paths: dict[str, Path] = {}
+        self._repo = Repo()
 
     @classmethod
     def register(cls, config: pytest.Config) -> HtmlLogPlugin:
@@ -192,12 +194,13 @@ class HtmlLogPlugin:
             title=item.name,
             description=self._get_test_doc_string(item),
             level=level,
+            repo=self._repo,
         ) as html_handler:
             item.stash[self.html_log_handler_key] = html_handler
             yield
 
         self.test_tmp_path = None
-        self._test_reports_paths.append((item.name, html_handler.path))
+        self._test_reports_paths[item.name] = html_handler.path
 
         if self._is_live_logging_enabled(item.config):
             self._print_item_report_location(item, log_path, flush=True)
@@ -240,18 +243,21 @@ class HtmlLogPlugin:
 
         logger = get_logger(fixturedef.argname)
         call_str = self._format_fixture_call(fixturedef, request)
-        with logger.span.debug(f"setup fixture {call_str}", highlight=True):
+        extra = {"_location": get_function_location(fixturedef.func)}
+        with logger.span.debug(f"setup fixture {call_str}", highlight=True, extra=extra):
             result = yield
             try:
                 fix_result = result.get_result()
                 logger.debug(
                     f"setup fixture {fixturedef.argname}() -> {pretty_repr(fix_result)}",
                     highlight=True,
+                    extra=extra,
                 )
             except Exception as e:
                 logger.error(
                     f"setup fixture {fixturedef.argname}() !-> {pretty_repr(e)}",
                     highlight=True,
+                    extra=extra,
                 )
 
     @pytest.fixture(autouse=True)
@@ -312,7 +318,8 @@ class HtmlLogPlugin:
             return
 
         logger = get_logger(fixturedef.argname)
-        logger.debug(f"Tore down fixture {fixturedef.argname}()", highlight=True)
+        extra = {"_location": get_function_location(fixturedef.func)}
+        logger.debug(f"Tore down fixture {fixturedef.argname}()", highlight=True, extra=extra)
 
     @staticmethod
     def _strip_ansi_codes(text: str) -> str:
@@ -413,7 +420,7 @@ class HtmlLogPlugin:
         if self._test_reports_paths:
             terminalreporter.write_sep("-", "pytest-human HTML log reports")
 
-        for test_name, log_path in self._test_reports_paths:
+        for test_name, log_path in self._test_reports_paths.items():
             self._print_test_report_location(
                 terminalreporter,
                 config,
