@@ -32,7 +32,7 @@ def test_source_span_no_git(pytester: pytest.Pytester, page: Page) -> None:
     pytester.makepyfile("""
         def test_example(human):
             with human.span.debug("This is a DEBUG log message."):
-                pass
+                human.log.warning("Inside the span")
     """)
 
     result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=debug")

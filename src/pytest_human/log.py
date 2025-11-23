@@ -5,6 +5,7 @@ from __future__ import annotations
 import functools
 import inspect
 import logging
+import sys
 import threading
 from collections.abc import Callable, Iterator, MutableMapping
 from contextlib import AbstractContextManager, contextmanager
@@ -48,8 +49,7 @@ class SpanLogger:
         A span is a logging message that can be expanded/collapsed in the HTML log viewer.
         """
         extra = extra or {}
-        # account for this method and contextmanager frames
-        _add_stacklevel(kwargs, added=2)
+        _add_stacklevel_py310_compat(kwargs, added=1)
         if highlight:
             extra |= _HIGHLIGHT_EXTRA
         try:
@@ -60,6 +60,7 @@ class SpanLogger:
                 **kwargs,
                 extra=extra | {_SPAN_START_TAG: True},
             )
+
             yield
         finally:
             self._logger.log(log_level, "", extra={_SPAN_END_TAG: True})
@@ -140,8 +141,7 @@ class TestLogger(logging.LoggerAdapter):
                 extra = kwargs.get("extra", {}) | _HIGHLIGHT_EXTRA
                 kwargs["extra"] = extra
 
-            # account for this method and Adapter.log frames
-            _add_stacklevel(kwargs, 2)
+            _add_stacklevel_py310_compat(kwargs, 1)
 
             self.log(level, message, *args, **kwargs)
 
@@ -211,6 +211,20 @@ def _add_stacklevel(kwargs: dict[str, Any], added: int = 1) -> dict[str, Any]:
     current_level = kwargs.pop("stacklevel", 1)
     kwargs["stacklevel"] = current_level + added
     return kwargs
+
+
+def _add_stacklevel_py310_compat(kwargs: dict[str, Any], added: int = 1) -> dict[str, Any]:
+    """Increment the logging frames stacklevel with Python 3.10 compatibility.
+
+    Apparently in Python 3.11 the entire stacklevel handling was changed,
+    https://github.com/python/cpython/pull/28287
+    In order to make this compatible with later versions, we need to adjust the stacklevel
+    differently.
+    """
+    if sys.version_info[:2] <= (3, 10):
+        return _add_stacklevel(kwargs, added + 1)
+
+    return _add_stacklevel(kwargs, added)
 
 
 def _get_class_name(func: Callable) -> str:
