@@ -20,7 +20,7 @@ class Repo:
         self._git_repo = self._initialize_git_repo()
         self.project_root = self._get_project_root()
         self.repo_url = self._get_repo_url()
-        self.commit_hash = self._get_current_commit()
+        self.ref_name = self._get_current_commit()
 
     def _initialize_git_repo(self) -> Optional[git.Repo]:
         """Initialize and return the git.Repo object if inside a git repository."""
@@ -188,7 +188,7 @@ class Repo:
 
     def create_github_url(self, path: Path, line_num: Optional[int] = None) -> Optional[str]:
         """Create a GitHub URL for the given relative path in the repository."""
-        if self.repo_url is None or self.commit_hash is None:
+        if self.repo_url is None or self.ref_name is None:
             return None
 
         if not self.is_repo_path(path):
@@ -196,7 +196,7 @@ class Repo:
 
         relative_path = path.relative_to(self.project_root)
 
-        path_component = PurePosixPath("blob") / self.commit_hash / PurePosixPath(relative_path)
+        path_component = PurePosixPath("blob") / self.ref_name / PurePosixPath(relative_path)
         path_in_url = url_escape(path_component.as_posix())
 
         url = f"{self.repo_url}/{path_in_url}"
