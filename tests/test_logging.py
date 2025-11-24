@@ -122,6 +122,33 @@ def test_logging_log_levels_critical(pytester: pytest.Pytester, page: Page) -> N
 def test_logging_span_simple(pytester: pytest.Pytester, page: Page) -> None:
     pytester.makepyfile("""
         def test_example(human):
+            with human.span.info("Awesome Span"):
+                human.log.info("This is an INFO log message inside a span.")
+    """)
+
+    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=info")
+    html_path = utils.find_test_log_location(result)
+    assert result.ret == 0
+
+    page.goto(html_path.as_uri())
+    span = page.get_by_role("row", name="Awesome Span")
+    expect(span).to_be_visible()
+
+    span_content = page.get_by_role("cell", name="This is an INFO log message inside a span.")
+    expect(span_content).to_be_hidden()
+
+    expand_button = span.get_by_role("button")
+    expect(expand_button).to_have_text("[+]")
+    expand_button.click()
+    expect(expand_button).to_have_text("[–]")  # noqa: RUF001
+
+    open_block = span.locator("xpath=following-sibling::tr[1]").first
+    expect(open_block).to_contain_text("This is an INFO log message inside a span.")
+
+
+def test_logging_span_simple_in_log_api(pytester: pytest.Pytester, page: Page) -> None:
+    pytester.makepyfile("""
+        def test_example(human):
             with human.log.span.info("Awesome Span"):
                 human.log.info("This is an INFO log message inside a span.")
     """)
@@ -149,8 +176,8 @@ def test_logging_span_simple(pytester: pytest.Pytester, page: Page) -> None:
 def test_logging_span_error_propagates(pytester: pytest.Pytester, page: Page) -> None:
     pytester.makepyfile("""
         def test_example(human):
-            with human.log.span.info("Awesome Span"):
-                with human.log.span.info("Nested Span"):
+            with human.span.info("Awesome Span"):
+                with human.span.info("Nested Span"):
                     human.log.error("This is an ERROR log message inside a span.")
     """)
 
@@ -180,8 +207,8 @@ def test_logging_span_error_propagates(pytester: pytest.Pytester, page: Page) ->
 def test_logging_span_critical_propagates(pytester: pytest.Pytester, page: Page) -> None:
     pytester.makepyfile("""
         def test_example(human):
-            with human.log.span.warning("Awesome Span"):
-                with human.log.span.critical("Nested Span"):
+            with human.span.warning("Awesome Span"):
+                with human.span.critical("Nested Span"):
                     human.log.error("This is an ERROR log message inside a span.")
     """)
 
@@ -368,12 +395,39 @@ def test_logging_traced(pytester: pytest.Pytester, page: Page) -> None:
     expect(a_call.locator("td.msg-cell").last).to_contain_text("a(x=1) -> 3")
 
 
+def test_logging_traced_no_params(pytester: pytest.Pytester, page: Page) -> None:
+    pytester.makepyfile("""
+        from pytest_human.log import traced
+
+        @traced
+        def a(x):
+            return b(x+1)
+
+        @traced
+        def b(x):
+            return x + 1
+
+        def test_example(human):
+            a(1)
+    """)
+
+    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=debug")
+    html_path = utils.find_test_log_location(result)
+    assert result.ret == 0
+
+    page.goto(html_path.as_uri())
+    a_call = utils.open_span(page, "a(x=1)")
+    b_call = utils.open_span(a_call, "b(x=2)")
+    expect(b_call.locator("td.msg-cell").last).to_contain_text("b(x=2) -> 3")
+    expect(a_call.locator("td.msg-cell").last).to_contain_text("a(x=1) -> 3")
+
+
 def test_logging_traced_async(pytester: pytest.Pytester, page: Page) -> None:
     pytester.makepyfile("""
         from pytest_human.log import traced
         import pytest
 
-        @traced()
+        @traced
         async def a(x):
             return x + 1
 

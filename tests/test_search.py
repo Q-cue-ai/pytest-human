@@ -188,9 +188,9 @@ def test_search_within_spans_expands(pytester: pytest.Pytester, page: Page) -> N
 
     pytester.makepyfile("""
         def test_example(human):
-            with human.log.span.info("Styled Text Span"):
+            with human.span.info("Styled Text Span"):
                 human.log.info("quintessential")
-                with human.log.span.info("Nested Span"):
+                with human.span.info("Nested Span"):
                     human.log.info("expeditious")
     """)
 
