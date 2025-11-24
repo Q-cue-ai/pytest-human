@@ -36,7 +36,7 @@ Works with standard python logging, no need to rewrite existing tests to get goi
 
 https://github.com/user-attachments/assets/5c9932b1-396c-4705-ba7d-95fbff7f07be
 
-[Example Report](https://raw.githubusercontent.com/Q-cue-ai/pytest-human/refs/heads/main/assets/test_pizza.html) and test [source file](tests/examples/test_pizza.py).
+[Example Report](https://q-dev-public-bucket.s3.eu-central-1.amazonaws.com/pytest-human/static-html/test_pizza.html) and test [source file](tests/examples/test_pizza.py).
 
 ## Installation
 
