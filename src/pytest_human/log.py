@@ -5,9 +5,11 @@ from __future__ import annotations
 import functools
 import inspect
 import logging
+import sys
 import threading
 from collections.abc import Callable, Iterator, MutableMapping
 from contextlib import AbstractContextManager, contextmanager
+from pathlib import Path
 from typing import Any, Optional
 
 from rich.pretty import pretty_repr
@@ -47,6 +49,7 @@ class SpanLogger:
         A span is a logging message that can be expanded/collapsed in the HTML log viewer.
         """
         extra = extra or {}
+        _add_stacklevel_py310_compat(kwargs, added=1)
         if highlight:
             extra |= _HIGHLIGHT_EXTRA
         try:
@@ -57,6 +60,7 @@ class SpanLogger:
                 **kwargs,
                 extra=extra | {_SPAN_START_TAG: True},
             )
+
             yield
         finally:
             self._logger.log(log_level, "", extra={_SPAN_END_TAG: True})
@@ -67,6 +71,7 @@ class SpanLogger:
         This is a logging message that can be expanded/collapsed in the HTML log viewer.
         Using TRACE level requires enabling TRACE logging via TestLogger.setup_trace_logging()
         """
+        _add_stacklevel(kwargs)
         return self.emit(TRACE_LEVEL_NUM, message, *args, **kwargs)
 
     def debug(self, message: str, *args: Any, **kwargs: Any) -> AbstractContextManager[None]:
@@ -74,6 +79,7 @@ class SpanLogger:
 
         This is a logging message that can be expanded/collapsed in the HTML log viewer.
         """
+        _add_stacklevel(kwargs)
         return self.emit(logging.DEBUG, message, *args, **kwargs)
 
     def info(self, message: str, *args: Any, **kwargs: Any) -> AbstractContextManager[None]:
@@ -81,6 +87,7 @@ class SpanLogger:
 
         This is a logging message that can be expanded/collapsed in the HTML log viewer.
         """
+        _add_stacklevel(kwargs)
         return self.emit(logging.INFO, message, *args, **kwargs)
 
     def warning(self, message: str, *args: Any, **kwargs: Any) -> AbstractContextManager[None]:
@@ -88,6 +95,7 @@ class SpanLogger:
 
         This is a logging message that can be expanded/collapsed in the HTML log viewer.
         """
+        _add_stacklevel(kwargs)
         return self.emit(logging.WARNING, message, *args, **kwargs)
 
     def error(self, message: str, *args: Any, **kwargs: Any) -> AbstractContextManager[None]:
@@ -95,6 +103,7 @@ class SpanLogger:
 
         This is a logging message that can be expanded/collapsed in the HTML log viewer.
         """
+        _add_stacklevel(kwargs)
         return self.emit(logging.ERROR, message, *args, **kwargs)
 
     def critical(self, message: str, *args: Any, **kwargs: Any) -> AbstractContextManager[None]:
@@ -102,6 +111,7 @@ class SpanLogger:
 
         This is a logging message that can be expanded/collapsed in the HTML log viewer.
         """
+        _add_stacklevel(kwargs)
         return self.emit(logging.CRITICAL, message, *args, **kwargs)
 
 
@@ -131,7 +141,9 @@ class TestLogger(logging.LoggerAdapter):
                 extra = kwargs.get("extra", {}) | _HIGHLIGHT_EXTRA
                 kwargs["extra"] = extra
 
-            self._log(level, message, args, **kwargs)
+            _add_stacklevel_py310_compat(kwargs, 1)
+
+            self.log(level, message, *args, **kwargs)
 
     def process(
         self,
@@ -147,30 +159,37 @@ class TestLogger(logging.LoggerAdapter):
 
     def emit(self, log_level: int, message: str, *args: Any, **kwargs: Any) -> None:
         """Emit a log message at the specified log level."""
+        _add_stacklevel(kwargs)
         self._log_with_highlight(log_level, message, args, **kwargs)
 
     def trace(self, message: str, *args: Any, highlight: bool = False, **kwargs: Any) -> None:
         """Log a TRACE message."""
+        _add_stacklevel(kwargs)
         self._log_with_highlight(TRACE_LEVEL_NUM, message, args, highlight, **kwargs)
 
     def debug(self, message: str, *args: Any, highlight: bool = False, **kwargs: Any) -> None:
         """Log a DEBUG message."""
+        _add_stacklevel(kwargs)
         self._log_with_highlight(logging.DEBUG, message, args, highlight, **kwargs)
 
     def info(self, message: str, *args: Any, highlight: bool = False, **kwargs: Any) -> None:
         """Log an INFO message."""
+        _add_stacklevel(kwargs)
         self._log_with_highlight(logging.INFO, message, args, highlight, **kwargs)
 
     def warning(self, message: str, *args: Any, highlight: bool = False, **kwargs: Any) -> None:
         """Log a WARNING message."""
+        _add_stacklevel(kwargs)
         self._log_with_highlight(logging.WARNING, message, args, highlight, **kwargs)
 
     def error(self, message: str, *args: Any, highlight: bool = False, **kwargs: Any) -> None:
         """Log an ERROR message."""
+        _add_stacklevel(kwargs)
         self._log_with_highlight(logging.ERROR, message, args, highlight, **kwargs)
 
     def critical(self, message: str, *args: Any, highlight: bool = False, **kwargs: Any) -> None:
         """Log a CRITICAL message."""
+        _add_stacklevel(kwargs)
         self._log_with_highlight(logging.CRITICAL, message, args, highlight, **kwargs)
 
     @classmethod
@@ -182,6 +201,30 @@ class TestLogger(logging.LoggerAdapter):
         """
         logging.TRACE = TRACE_LEVEL_NUM  # pyright: ignore[reportAttributeAccessIssue]: monkey patching
         logging.addLevelName(TRACE_LEVEL_NUM, "TRACE")
+
+
+def _add_stacklevel(kwargs: dict[str, Any], added: int = 1) -> dict[str, Any]:
+    """Increment the logging frames stacklevel. Defaults to 1 if missing.
+
+    This is used to remove helper function frames from the log record source info.
+    """
+    current_level = kwargs.pop("stacklevel", 1)
+    kwargs["stacklevel"] = current_level + added
+    return kwargs
+
+
+def _add_stacklevel_py310_compat(kwargs: dict[str, Any], added: int = 1) -> dict[str, Any]:
+    """Increment the logging frames stacklevel with Python 3.10 compatibility.
+
+    Apparently in Python 3.11 the entire stacklevel handling was changed,
+    https://github.com/python/cpython/pull/28287
+    In order to make this compatible with later versions, we need to adjust the stacklevel
+    differently.
+    """
+    if sys.version_info[:2] <= (3, 10):
+        return _add_stacklevel(kwargs, added + 1)
+
+    return _add_stacklevel(kwargs, added)
 
 
 def _get_class_name(func: Callable) -> str:
@@ -273,6 +316,7 @@ def traced(
     def decorator(func: Callable) -> Callable:
         logger = get_logger(func.__module__)
         is_async = inspect.iscoroutinefunction(func)
+        extra = {"_traced": True}
 
         if is_async:
 
@@ -292,15 +336,25 @@ def traced(
                         suppress_params=suppress_params,
                         suppress_self=suppress_self,
                     )
-                    with logger.span.emit(log_level, f"async {func_str}", highlight=True):
+                    # account for context manager and wrapper frames
+                    log_kwargs = _add_stacklevel({}, 2)
+                    log_kwargs.setdefault("extra", {}).update(extra)
+                    with logger.span.emit(
+                        log_level, f"async {func_str}", highlight=True, **log_kwargs
+                    ):
                         try:
+                            log_kwargs = _add_stacklevel({}, 1)
                             with _out_of_trace():
                                 result = await func(*args, **kwargs)
                             result_str = "<suppressed>" if suppress_return else pretty_repr(result)
-                            logger.debug(f"async {func_str} -> {result_str}", highlight=True)
+                            logger.debug(
+                                f"async {func_str} -> {result_str}", highlight=True, **log_kwargs
+                            )
                             return result
                         except Exception as e:
-                            logger.error(f"async {func_str} !-> {e!r}", highlight=True)
+                            logger.error(
+                                f"async {func_str} !-> {e!r}", highlight=True, **log_kwargs
+                            )
                             raise e
 
             return async_wrapper
@@ -317,15 +371,19 @@ def traced(
                 func_str = _format_call_string(
                     func, args, kwargs, suppress_params=suppress_params, suppress_self=suppress_self
                 )
-                with logger.span.emit(log_level, func_str, highlight=True):
+                # account for context manager and wrapper frames
+                log_kwargs = _add_stacklevel({}, 2)
+                log_kwargs.setdefault("extra", {}).update(extra)
+                with logger.span.emit(log_level, func_str, highlight=True, **log_kwargs):
+                    log_kwargs = _add_stacklevel({}, 1)
                     try:
                         with _out_of_trace():
                             result = func(*args, **kwargs)
                         result_str = "<suppressed>" if suppress_return else pretty_repr(result)
-                        logger.debug(f"{func_str} -> {result_str}", highlight=True)
+                        logger.debug(f"{func_str} -> {result_str}", highlight=True, **log_kwargs)
                         return result
                     except Exception as e:
-                        logger.error(f"{func_str} !-> {e!r}", highlight=True)
+                        logger.error(f"{func_str} !-> {e!r}", highlight=True, **log_kwargs)
                         raise e
 
         return sync_wrapper
@@ -384,6 +442,38 @@ def _get_public_methods(container: Any) -> list[Callable]:
         if inspect.isroutine(member):
             methods.append(member)
     return methods
+
+
+def get_function_location(func: Callable) -> dict[str, Any]:
+    """Get the source location of a function or method.
+
+    :param func: The function or method to get the location for.
+    :return: An extra dictionary for logging
+    """
+    func = inspect.unwrap(func)
+    try:
+        _, starting_line_no = inspect.getsourcelines(func)
+        if source_file := inspect.getsourcefile(func):
+            pathname = Path(source_file).resolve().as_posix()
+            filename = Path(source_file).name
+        else:
+            pathname = filename = "<unknown>"
+
+        return {
+            "filename": filename,
+            "pathname": pathname,
+            "lineno": starting_line_no,
+            "funcName": func.__name__,
+            "module": func.__module__,
+        }
+    except (TypeError, OSError):
+        return {
+            "filename": "<unknown>",
+            "pathname": "<unknown>",
+            "lineno": 0,
+            "funcName": func.__name__,
+            "module": func.__module__,
+        }
 
 
 @contextmanager

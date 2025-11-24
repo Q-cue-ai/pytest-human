@@ -99,3 +99,4 @@ class Human:
         self._test = test
         self.log = get_logger(test.name)
         self.artifacts = HumanAttachments()
+        self.span = self.log.span

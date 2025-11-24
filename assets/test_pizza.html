@@ -209,8 +209,26 @@
             .source-cell {
                 color: #586069;
                 white-space: nowrap;
-                overflow: hidden;
+            }
+
+            .source-text {
+                max-width: 100%;
+                display: block;
                 text-overflow: ellipsis;
+                overflow: hidden;
+            }
+
+            .source-link {
+                color: inherit;
+                text-decoration: none;
+                transition: color 0.1s ease-in-out;
+            }
+
+            .source-link:hover,
+            .source-link:focus {
+                text-decoration: underline;
+                color: #555;
+                cursor: pointer;
             }
 
             .msg-cell {
@@ -673,7 +691,7 @@ showcasing all major pytest-human features.</p>
                         <col style="width: 3rem;">
                         <col style="width: 10rem;">
                         <col style="width: 7rem;">
-                        <col style="width: 14rem;">
+                        <col style="width: 10rem;">
                         <col style="width: 100%;">
                         <col style="width: 6rem;">
                     </colgroup>
@@ -682,9 +700,9 @@ showcasing all major pytest-human features.</p>
             <td class="toggle-cell" onclick="toggle('block_1')">
                 <button id="toggle-block_1">[+]</button>
             </td>
-            <td class="time-cell">11:11:56.958</td>
+            <td class="time-cell">17:18:34.804</td>
             <td class="level-cell">INFO</td>
-            <td class="source-cell" title="test_full_pizza_order_workflow">test_full_pizza_order_workflow</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/src/pytest_human/plugin.py#L295" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="src/pytest_human/plugin.py:295">plugin.py:295</a></td>
             <td class="msg-cell">Test setup</td>
             <td class="duration-cell" id="duration_1">...</td>
         </tr>
@@ -695,7 +713,7 @@ showcasing all major pytest-human features.</p>
                         <col style="width: 3rem;">
                         <col style="width: 10rem;">
                         <col style="width: 7rem;">
-                        <col style="width: 14rem;">
+                        <col style="width: 10rem;">
                         <col style="width: 100%;">
                         <col style="width: 6rem;">
                     </colgroup>
@@ -704,10 +722,10 @@ showcasing all major pytest-human features.</p>
             <td class="toggle-cell" onclick="toggle('block_2')">
                 <button id="toggle-block_2">[+]</button>
             </td>
-            <td class="time-cell">11:11:56.958</td>
+            <td class="time-cell">17:18:34.804</td>
             <td class="level-cell">DEBUG</td>
-            <td class="source-cell" title="event_loop_policy">event_loop_policy</td>
-            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">event_loop_policy</span><span class="p">()</span>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/src/pytest_human/fixtures.py#L14" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="src/pytest_human/fixtures.py:14">fixtures.py:14</a></td>
+            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">human</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
 </td>
             <td class="duration-cell" id="duration_2">...</td>
         </tr>
@@ -718,29 +736,29 @@ showcasing all major pytest-human features.</p>
                         <col style="width: 3rem;">
                         <col style="width: 10rem;">
                         <col style="width: 7rem;">
-                        <col style="width: 14rem;">
+                        <col style="width: 10rem;">
                         <col style="width: 100%;">
                         <col style="width: 6rem;">
                     </colgroup>
         
         <tr class="log-level-debug">
             <td></td>
-            <td class="time-cell">11:11:56.959</td>
+            <td class="time-cell">17:18:34.805</td>
             <td class="level-cell">DEBUG</td>
-            <td class="source-cell">event_loop_policy</td>
-            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">event_loop_policy</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="o">&lt;</span><span class="n">asyncio</span><span class="o">.</span><span class="n">unix_events</span><span class="o">.</span><span class="n">_UnixDefaultEventLoopPolicy</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x106a897b0</span><span class="o">&gt;</span>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/src/pytest_human/fixtures.py#L14" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="src/pytest_human/fixtures.py:14">fixtures.py:14</a></td>
+            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">human</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="o">&lt;</span><span class="n">pytest_human</span><span class="o">.</span><span class="n">human</span><span class="o">.</span><span class="n">Human</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x107522830</span><span class="o">&gt;</span>
 </td>
             <td class="duration-cell"></td>
         </tr>
-        </table></td></tr><script>finalizeSpan('block_2', 'duration_2', 0.6529999664053321);</script><script>setSpanSeverity('block_2', 'log-level-debug');</script>
+        </table></td></tr><script>finalizeSpan('block_2', 'duration_2', 0.4939159844070673);</script><script>setSpanSeverity('block_2', 'log-level-debug');</script>
         <tr id="header_block_3" class="log-level-debug">
             <td class="toggle-cell" onclick="toggle('block_3')">
                 <button id="toggle-block_3">[+]</button>
             </td>
-            <td class="time-cell">11:11:56.959</td>
+            <td class="time-cell">17:18:34.805</td>
             <td class="level-cell">DEBUG</td>
-            <td class="source-cell" title="base_url">base_url</td>
-            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">base_url</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/src/pytest_human/plugin.py#L263" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="src/pytest_human/plugin.py:263">plugin.py:263</a></td>
+            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">_extract_human_object</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">human</span><span class="o">=&lt;</span><span class="n">pytest_human</span><span class="o">.</span><span class="n">human</span><span class="o">.</span><span class="n">Human</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x107522830</span><span class="o">&gt;</span><span class="p">)</span>
 </td>
             <td class="duration-cell" id="duration_3">...</td>
         </tr>
@@ -751,29 +769,35 @@ showcasing all major pytest-human features.</p>
                         <col style="width: 3rem;">
                         <col style="width: 10rem;">
                         <col style="width: 7rem;">
-                        <col style="width: 14rem;">
+                        <col style="width: 10rem;">
                         <col style="width: 100%;">
                         <col style="width: 6rem;">
                     </colgroup>
         
         <tr class="log-level-debug">
             <td></td>
-            <td class="time-cell">11:11:56.959</td>
+            <td class="time-cell">17:18:34.805</td>
             <td class="level-cell">DEBUG</td>
-            <td class="source-cell">base_url</td>
-            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">base_url</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="s1">&#39;&#39;</span>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/src/pytest_human/plugin.py#L263" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="src/pytest_human/plugin.py:263">plugin.py:263</a></td>
+            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">_extract_human_object</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </td>
             <td class="duration-cell"></td>
         </tr>
-        </table></td></tr><script>finalizeSpan('block_3', 'duration_3', 0.3154169535264373);</script><script>setSpanSeverity('block_3', 'log-level-debug');</script>
+        </table></td></tr><script>finalizeSpan('block_3', 'duration_3', 0.428750179708004);</script><script>setSpanSeverity('block_3', 'log-level-debug');</script>
         <tr id="header_block_4" class="log-level-debug">
             <td class="toggle-cell" onclick="toggle('block_4')">
                 <button id="toggle-block_4">[+]</button>
             </td>
-            <td class="time-cell">11:11:56.959</td>
+            <td class="time-cell">17:18:34.806</td>
             <td class="level-cell">DEBUG</td>
-            <td class="source-cell" title="_verify_url">_verify_url</td>
-            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">_verify_url</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <td class="source-cell"><span class="source-text" title=".venv/lib/python3.10/site-packages/_pytest/tmpdir.py:254">tmpdir.py:254</span></td>
+            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">tmp_path</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">tmp_path_factory</span><span class="o">=</span><span class="n">TempPathFactory</span><span class="p">(</span>
+    <span class="n">_given_basetemp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">_trace</span><span class="o">=&lt;</span><span class="n">pluggy</span><span class="o">.</span><span class="n">_tracing</span><span class="o">.</span><span class="n">TagTracerSub</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x1072dc2e0</span><span class="o">&gt;</span><span class="p">,</span>
+    <span class="n">_basetemp</span><span class="o">=</span><span class="n">PosixPath</span><span class="p">(</span><span class="s1">&#39;/private/var/folders/vh/2xf8thqd3572vjfgnnzvx1_m0000gn/T/pytest-of-user.name/pytest-671&#39;</span><span class="p">),</span>
+    <span class="n">_retention_count</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">_retention_policy</span><span class="o">=</span><span class="s1">&#39;all&#39;</span>
+<span class="p">))</span>
 </td>
             <td class="duration-cell" id="duration_4">...</td>
         </tr>
@@ -784,29 +808,29 @@ showcasing all major pytest-human features.</p>
                         <col style="width: 3rem;">
                         <col style="width: 10rem;">
                         <col style="width: 7rem;">
-                        <col style="width: 14rem;">
+                        <col style="width: 10rem;">
                         <col style="width: 100%;">
                         <col style="width: 6rem;">
                     </colgroup>
         
         <tr class="log-level-debug">
             <td></td>
-            <td class="time-cell">11:11:56.960</td>
+            <td class="time-cell">17:18:34.807</td>
             <td class="level-cell">DEBUG</td>
-            <td class="source-cell">_verify_url</td>
-            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">_verify_url</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+            <td class="source-cell"><span class="source-text" title=".venv/lib/python3.10/site-packages/_pytest/tmpdir.py:254">tmpdir.py:254</span></td>
+            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">tmp_path</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">PosixPath</span><span class="p">(</span><span class="s1">&#39;/private/var/folders/vh/2xf8thqd3572vjfgnnzvx1_m0000gn/T/pytest-of-user.name/pytest-671/test_full_pizza_order_workflow0&#39;</span><span class="p">)</span>
 </td>
             <td class="duration-cell"></td>
         </tr>
-        </table></td></tr><script>finalizeSpan('block_4', 'duration_4', 0.32533297780901194);</script><script>setSpanSeverity('block_4', 'log-level-debug');</script>
+        </table></td></tr><script>finalizeSpan('block_4', 'duration_4', 1.2167079839855433);</script><script>setSpanSeverity('block_4', 'log-level-debug');</script>
         <tr id="header_block_5" class="log-level-debug">
             <td class="toggle-cell" onclick="toggle('block_5')">
                 <button id="toggle-block_5">[+]</button>
             </td>
-            <td class="time-cell">11:11:56.960</td>
+            <td class="time-cell">17:18:34.808</td>
             <td class="level-cell">DEBUG</td>
-            <td class="source-cell" title="pytestconfig">pytestconfig</td>
-            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">pytestconfig</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/src/pytest_human/plugin.py#L269" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="src/pytest_human/plugin.py:269">plugin.py:269</a></td>
+            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">_relocate_test_log</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">tmp_path</span><span class="o">=</span><span class="n">PosixPath</span><span class="p">(</span><span class="s1">&#39;/private/var/folders/vh/2xf8thqd3572vjfgnnzvx1_m0000gn/T/pytest-of-user.name/pytest-671/test_full_pizza_order_workflow0&#39;</span><span class="p">))</span>
 </td>
             <td class="duration-cell" id="duration_5">...</td>
         </tr>
@@ -817,29 +841,29 @@ showcasing all major pytest-human features.</p>
                         <col style="width: 3rem;">
                         <col style="width: 10rem;">
                         <col style="width: 7rem;">
-                        <col style="width: 14rem;">
+                        <col style="width: 10rem;">
                         <col style="width: 100%;">
                         <col style="width: 6rem;">
                     </colgroup>
         
         <tr class="log-level-debug">
             <td></td>
-            <td class="time-cell">11:11:56.960</td>
+            <td class="time-cell">17:18:34.808</td>
             <td class="level-cell">DEBUG</td>
-            <td class="source-cell">pytestconfig</td>
-            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">pytestconfig</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="o">&lt;</span><span class="n">_pytest</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">Config</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x10699f9d0</span><span class="o">&gt;</span>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/src/pytest_human/plugin.py#L269" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="src/pytest_human/plugin.py:269">plugin.py:269</a></td>
+            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">_relocate_test_log</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </td>
             <td class="duration-cell"></td>
         </tr>
-        </table></td></tr><script>finalizeSpan('block_5', 'duration_5', 0.4641660489141941);</script><script>setSpanSeverity('block_5', 'log-level-debug');</script>
+        </table></td></tr><script>finalizeSpan('block_5', 'duration_5', 0.40937517769634724);</script><script>setSpanSeverity('block_5', 'log-level-debug');</script>
         <tr id="header_block_6" class="log-level-debug">
             <td class="toggle-cell" onclick="toggle('block_6')">
                 <button id="toggle-block_6">[+]</button>
             </td>
-            <td class="time-cell">11:11:56.960</td>
+            <td class="time-cell">17:18:34.808</td>
             <td class="level-cell">DEBUG</td>
-            <td class="source-cell" title="delete_output_dir">delete_output_dir</td>
-            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">delete_output_dir</span><span class="p">(</span><span class="n">pytestconfig</span><span class="o">=&lt;</span><span class="n">_pytest</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">Config</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x10699f9d0</span><span class="o">&gt;</span><span class="p">)</span>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/conftest.py#L11" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/conftest.py:11">conftest.py:11</a></td>
+            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">_log_3rdparty_methods</span><span class="p">()</span>
 </td>
             <td class="duration-cell" id="duration_6">...</td>
         </tr>
@@ -850,29 +874,38 @@ showcasing all major pytest-human features.</p>
                         <col style="width: 3rem;">
                         <col style="width: 10rem;">
                         <col style="width: 7rem;">
-                        <col style="width: 14rem;">
+                        <col style="width: 10rem;">
                         <col style="width: 100%;">
                         <col style="width: 6rem;">
                     </colgroup>
         
+        <tr class="log-level-warning">
+            <td></td>
+            <td class="time-cell">17:18:34.809</td>
+            <td class="level-cell">WARNING</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/src/pytest_human/log.py#L409" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="src/pytest_human/log.py:409">log.py:409</a></td>
+            <td class="msg-cell">Target Page.screenshot is already patched for logging.</td>
+            <td class="duration-cell"></td>
+        </tr>
+        
         <tr class="log-level-debug">
             <td></td>
-            <td class="time-cell">11:11:56.961</td>
+            <td class="time-cell">17:18:34.810</td>
             <td class="level-cell">DEBUG</td>
-            <td class="source-cell">delete_output_dir</td>
-            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">delete_output_dir</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/conftest.py#L11" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/conftest.py:11">conftest.py:11</a></td>
+            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">_log_3rdparty_methods</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </td>
             <td class="duration-cell"></td>
         </tr>
-        </table></td></tr><script>finalizeSpan('block_6', 'duration_6', 0.38254191167652607);</script><script>setSpanSeverity('block_6', 'log-level-debug');</script>
+        </table></td></tr><script>finalizeSpan('block_6', 'duration_6', 2.051499905064702);</script><script>setSpanSeverity('block_6', 'log-level-debug');</script>
         <tr id="header_block_7" class="log-level-debug">
             <td class="toggle-cell" onclick="toggle('block_7')">
                 <button id="toggle-block_7">[+]</button>
             </td>
-            <td class="time-cell">11:11:56.961</td>
+            <td class="time-cell">17:18:34.811</td>
             <td class="level-cell">DEBUG</td>
-            <td class="source-cell" title="tmp_path_factory">tmp_path_factory</td>
-            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">tmp_path_factory</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L62" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:62">test_pizza.py:62</a></td>
+            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">_trace_delivery_service</span><span class="p">()</span>
 </td>
             <td class="duration-cell" id="duration_7">...</td>
         </tr>
@@ -883,36 +916,48 @@ showcasing all major pytest-human features.</p>
                         <col style="width: 3rem;">
                         <col style="width: 10rem;">
                         <col style="width: 7rem;">
-                        <col style="width: 14rem;">
+                        <col style="width: 10rem;">
                         <col style="width: 100%;">
                         <col style="width: 6rem;">
                     </colgroup>
         
         <tr class="log-level-debug">
             <td></td>
-            <td class="time-cell">11:11:56.961</td>
+            <td class="time-cell">17:18:34.811</td>
             <td class="level-cell">DEBUG</td>
-            <td class="source-cell">tmp_path_factory</td>
-            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">tmp_path_factory</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">TempPathFactory</span><span class="p">(</span>
-    <span class="n">_given_basetemp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">_trace</span><span class="o">=&lt;</span><span class="n">pluggy</span><span class="o">.</span><span class="n">_tracing</span><span class="o">.</span><span class="n">TagTracerSub</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x107451510</span><span class="o">&gt;</span><span class="p">,</span>
-    <span class="n">_basetemp</span><span class="o">=</span><span class="n">PosixPath</span><span class="p">(</span><span class="s1">&#39;/private/var/folders/vh/2xf8thqd3572vjfgnnzvx1_m0000gn/T/pytest-of-user.name/pytest-470&#39;</span><span class="p">),</span>
-    <span class="n">_retention_count</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-    <span class="n">_retention_policy</span><span class="o">=</span><span class="s1">&#39;all&#39;</span>
-<span class="p">)</span>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L62" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:62">test_pizza.py:62</a></td>
+            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">_trace_delivery_service</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </td>
             <td class="duration-cell"></td>
         </tr>
-        </table></td></tr><script>finalizeSpan('block_7', 'duration_7', 0.6433749804273248);</script><script>setSpanSeverity('block_7', 'log-level-debug');</script>
-        <tr id="header_block_8" class="log-level-debug">
+        </table></td></tr><script>finalizeSpan('block_7', 'duration_7', 0.5916249938309193);</script><script>setSpanSeverity('block_7', 'log-level-debug');</script></table></td></tr><script>finalizeSpan('block_1', 'duration_1', 7.660292088985443);</script><script>setSpanSeverity('block_1', 'log-level-info');</script>
+        <tr class="log-level-info">
+            <td></td>
+            <td class="time-cell">17:18:34.812</td>
+            <td class="level-cell">INFO</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L78" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:78">test_pizza.py:78</a></td>
+            <td class="msg-cell">Starting new pizza order: &#x27;The Works&#x27;</td>
+            <td class="duration-cell"></td>
+        </tr>
+        
+        <tr class="log-level-debug">
+            <td></td>
+            <td class="time-cell">17:18:34.812</td>
+            <td class="level-cell">DEBUG</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L86" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:86">test_pizza.py:86</a></td>
+            <td class="msg-cell"><span class="n">Order</span> <span class="n">details</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;customer&#39;</span><span class="p">:</span> <span class="s1">&#39;Jane Doe&#39;</span><span class="p">,</span> <span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="s1">&#39;large&#39;</span><span class="p">,</span> <span class="s1">&#39;toppings&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;pepperoni&#39;</span><span class="p">,</span> <span class="s1">&#39;mushrooms&#39;</span><span class="p">,</span> <span class="s1">&#39;onions&#39;</span><span class="p">],</span> <span class="s1">&#39;address&#39;</span><span class="p">:</span> <span class="s1">&#39;123 Main St&#39;</span><span class="p">}</span>
+</td>
+            <td class="duration-cell"></td>
+        </tr>
+        
+        <tr id="header_block_8" class="log-level-info">
             <td class="toggle-cell" onclick="toggle('block_8')">
                 <button id="toggle-block_8">[+]</button>
             </td>
-            <td class="time-cell">11:11:56.962</td>
-            <td class="level-cell">DEBUG</td>
-            <td class="source-cell" title="human">human</td>
-            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">human</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
-</td>
+            <td class="time-cell">17:18:34.812</td>
+            <td class="level-cell">INFO</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L88" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:88">test_pizza.py:88</a></td>
+            <td class="msg-cell">Phase 1: 👨‍🍳 Preparing Pizza</td>
             <td class="duration-cell" id="duration_8">...</td>
         </tr>
         <tr id="block_8" class="nested-block" aria-expanded="false" style="display: none;">
@@ -922,29 +967,19 @@ showcasing all major pytest-human features.</p>
                         <col style="width: 3rem;">
                         <col style="width: 10rem;">
                         <col style="width: 7rem;">
-                        <col style="width: 14rem;">
+                        <col style="width: 10rem;">
                         <col style="width: 100%;">
                         <col style="width: 6rem;">
                     </colgroup>
         
-        <tr class="log-level-debug">
-            <td></td>
-            <td class="time-cell">11:11:56.962</td>
-            <td class="level-cell">DEBUG</td>
-            <td class="source-cell">human</td>
-            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">human</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="o">&lt;</span><span class="n">pytest_human</span><span class="o">.</span><span class="n">human</span><span class="o">.</span><span class="n">Human</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x1075509a0</span><span class="o">&gt;</span>
-</td>
-            <td class="duration-cell"></td>
-        </tr>
-        </table></td></tr><script>finalizeSpan('block_8', 'duration_8', 0.37037499714642763);</script><script>setSpanSeverity('block_8', 'log-level-debug');</script>
-        <tr id="header_block_9" class="log-level-debug">
+        <tr id="header_block_9" class="log-level-info">
             <td class="toggle-cell" onclick="toggle('block_9')">
                 <button id="toggle-block_9">[+]</button>
             </td>
-            <td class="time-cell">11:11:56.962</td>
-            <td class="level-cell">DEBUG</td>
-            <td class="source-cell" title="_extract_human_object">_extract_human_object</td>
-            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">_extract_human_object</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">human</span><span class="o">=&lt;</span><span class="n">pytest_human</span><span class="o">.</span><span class="n">human</span><span class="o">.</span><span class="n">Human</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x1075509a0</span><span class="o">&gt;</span><span class="p">)</span>
+            <td class="time-cell">17:18:34.812</td>
+            <td class="level-cell">INFO</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L89" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:89">test_pizza.py:89</a></td>
+            <td class="msg-cell"><span class="n">test_pizza</span><span class="o">.</span><span class="n">prepare_dough</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="s1">&#39;large&#39;</span><span class="p">)</span>
 </td>
             <td class="duration-cell" id="duration_9">...</td>
         </tr>
@@ -955,35 +990,47 @@ showcasing all major pytest-human features.</p>
                         <col style="width: 3rem;">
                         <col style="width: 10rem;">
                         <col style="width: 7rem;">
-                        <col style="width: 14rem;">
+                        <col style="width: 10rem;">
                         <col style="width: 100%;">
                         <col style="width: 6rem;">
                     </colgroup>
         
+        <tr class="log-level-info">
+            <td></td>
+            <td class="time-cell">17:18:34.812</td>
+            <td class="level-cell">INFO</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L17" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:17">test_pizza.py:17</a></td>
+            <td class="msg-cell">Kneading large dough ball.</td>
+            <td class="duration-cell"></td>
+        </tr>
+        
         <tr class="log-level-debug">
             <td></td>
-            <td class="time-cell">11:11:56.962</td>
+            <td class="time-cell">17:18:34.866</td>
             <td class="level-cell">DEBUG</td>
-            <td class="source-cell">_extract_human_object</td>
-            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">_extract_human_object</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L19" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:19">test_pizza.py:19</a></td>
+            <td class="msg-cell">Dough is ready.</td>
+            <td class="duration-cell"></td>
+        </tr>
+        
+        <tr class="log-level-debug">
+            <td></td>
+            <td class="time-cell">17:18:34.867</td>
+            <td class="level-cell">DEBUG</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L89" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:89">test_pizza.py:89</a></td>
+            <td class="msg-cell"><span class="n">test_pizza</span><span class="o">.</span><span class="n">prepare_dough</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="s1">&#39;large&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;large_dough&#39;</span>
 </td>
             <td class="duration-cell"></td>
         </tr>
-        </table></td></tr><script>finalizeSpan('block_9', 'duration_9', 0.4587500588968396);</script><script>setSpanSeverity('block_9', 'log-level-debug');</script>
+        </table></td></tr><script>finalizeSpan('block_9', 'duration_9', 54.57449983805418);</script><script>setSpanSeverity('block_9', 'log-level-info');</script>
         <tr id="header_block_10" class="log-level-debug">
             <td class="toggle-cell" onclick="toggle('block_10')">
                 <button id="toggle-block_10">[+]</button>
             </td>
-            <td class="time-cell">11:11:56.963</td>
+            <td class="time-cell">17:18:34.867</td>
             <td class="level-cell">DEBUG</td>
-            <td class="source-cell" title="tmp_path">tmp_path</td>
-            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">tmp_path</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">tmp_path_factory</span><span class="o">=</span><span class="n">TempPathFactory</span><span class="p">(</span>
-    <span class="n">_given_basetemp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">_trace</span><span class="o">=&lt;</span><span class="n">pluggy</span><span class="o">.</span><span class="n">_tracing</span><span class="o">.</span><span class="n">TagTracerSub</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x107451510</span><span class="o">&gt;</span><span class="p">,</span>
-    <span class="n">_basetemp</span><span class="o">=</span><span class="n">PosixPath</span><span class="p">(</span><span class="s1">&#39;/private/var/folders/vh/2xf8thqd3572vjfgnnzvx1_m0000gn/T/pytest-of-user.name/pytest-470&#39;</span><span class="p">),</span>
-    <span class="n">_retention_count</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-    <span class="n">_retention_policy</span><span class="o">=</span><span class="s1">&#39;all&#39;</span>
-<span class="p">))</span>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L90" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:90">test_pizza.py:90</a></td>
+            <td class="msg-cell"><span class="n">test_pizza</span><span class="o">.</span><span class="n">add_sauce_and_cheese</span><span class="p">(</span><span class="n">dough</span><span class="o">=</span><span class="s1">&#39;large_dough&#39;</span><span class="p">,</span> <span class="n">sauce</span><span class="o">=</span><span class="s1">&#39;tomato&#39;</span><span class="p">,</span> <span class="n">cheese</span><span class="o">=</span><span class="s1">&#39;mozzarella&#39;</span><span class="p">)</span>
 </td>
             <td class="duration-cell" id="duration_10">...</td>
         </tr>
@@ -994,30 +1041,38 @@ showcasing all major pytest-human features.</p>
                         <col style="width: 3rem;">
                         <col style="width: 10rem;">
                         <col style="width: 7rem;">
-                        <col style="width: 14rem;">
+                        <col style="width: 10rem;">
                         <col style="width: 100%;">
                         <col style="width: 6rem;">
                     </colgroup>
         
+        <tr class="log-level-info">
+            <td></td>
+            <td class="time-cell">17:18:34.867</td>
+            <td class="level-cell">INFO</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L26" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:26">test_pizza.py:26</a></td>
+            <td class="msg-cell">Adding tomato sauce and mozzarella cheese.</td>
+            <td class="duration-cell"></td>
+        </tr>
+        
         <tr class="log-level-debug">
             <td></td>
-            <td class="time-cell">11:11:56.964</td>
+            <td class="time-cell">17:18:34.892</td>
             <td class="level-cell">DEBUG</td>
-            <td class="source-cell">tmp_path</td>
-            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">tmp_path</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">PosixPath</span><span class="p">(</span><span class="s1">&#39;/private/var/folders/vh/2xf8thqd3572vjfgnnzvx1_m0000gn/T/pytest-of-user.name/pytest-470/test_full_pizza_order_workflow0&#39;</span><span class="p">)</span>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L90" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:90">test_pizza.py:90</a></td>
+            <td class="msg-cell"><span class="n">test_pizza</span><span class="o">.</span><span class="n">add_sauce_and_cheese</span><span class="p">(</span><span class="n">dough</span><span class="o">=</span><span class="s1">&#39;large_dough&#39;</span><span class="p">,</span> <span class="n">sauce</span><span class="o">=</span><span class="s1">&#39;tomato&#39;</span><span class="p">,</span> <span class="n">cheese</span><span class="o">=</span><span class="s1">&#39;mozzarella&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;large_dough_with_tomato_and_mozzarella&#39;</span>
 </td>
             <td class="duration-cell"></td>
         </tr>
-        </table></td></tr><script>finalizeSpan('block_10', 'duration_10', 1.37645797803998);</script><script>setSpanSeverity('block_10', 'log-level-debug');</script>
+        </table></td></tr><script>finalizeSpan('block_10', 'duration_10', 25.661833118647337);</script><script>setSpanSeverity('block_10', 'log-level-debug');</script>
         <tr id="header_block_11" class="log-level-debug">
             <td class="toggle-cell" onclick="toggle('block_11')">
                 <button id="toggle-block_11">[+]</button>
             </td>
-            <td class="time-cell">11:11:56.964</td>
+            <td class="time-cell">17:18:34.893</td>
             <td class="level-cell">DEBUG</td>
-            <td class="source-cell" title="_relocate_test_log">_relocate_test_log</td>
-            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">_relocate_test_log</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">tmp_path</span><span class="o">=</span><span class="n">PosixPath</span><span class="p">(</span><span class="s1">&#39;/private/var/folders/vh/2xf8thqd3572vjfgnnzvx1_m0000gn/T/pytest-of-user.name/pytest-470/test_full_pizza_order_workflow0&#39;</span><span class="p">))</span>
-</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L96" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:96">test_pizza.py:96</a></td>
+            <td class="msg-cell">Adding toppings</td>
             <td class="duration-cell" id="duration_11">...</td>
         </tr>
         <tr id="block_11" class="nested-block" aria-expanded="false" style="display: none;">
@@ -1027,29 +1082,19 @@ showcasing all major pytest-human features.</p>
                         <col style="width: 3rem;">
                         <col style="width: 10rem;">
                         <col style="width: 7rem;">
-                        <col style="width: 14rem;">
+                        <col style="width: 10rem;">
                         <col style="width: 100%;">
                         <col style="width: 6rem;">
                     </colgroup>
         
-        <tr class="log-level-debug">
-            <td></td>
-            <td class="time-cell">11:11:56.964</td>
-            <td class="level-cell">DEBUG</td>
-            <td class="source-cell">_relocate_test_log</td>
-            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">_relocate_test_log</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span>
-</td>
-            <td class="duration-cell"></td>
-        </tr>
-        </table></td></tr><script>finalizeSpan('block_11', 'duration_11', 0.34804095048457384);</script><script>setSpanSeverity('block_11', 'log-level-debug');</script>
-        <tr id="header_block_12" class="log-level-debug">
+        <tr id="header_block_12" class="log-level-info">
             <td class="toggle-cell" onclick="toggle('block_12')">
                 <button id="toggle-block_12">[+]</button>
             </td>
-            <td class="time-cell">11:11:56.965</td>
-            <td class="level-cell">DEBUG</td>
-            <td class="source-cell" title="log_3rdparty_methods">log_3rdparty_methods</td>
-            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">log_3rdparty_methods</span><span class="p">()</span>
+            <td class="time-cell">17:18:34.893</td>
+            <td class="level-cell">INFO</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L97" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:97">test_pizza.py:97</a></td>
+            <td class="msg-cell"><span class="n">test_pizza</span><span class="o">.</span><span class="n">add_toppings</span><span class="p">(</span><span class="n">pizza_base</span><span class="o">=</span><span class="s1">&#39;large_dough_with_tomato_and_mozzarella&#39;</span><span class="p">,</span> <span class="n">toppings</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;pepperoni&#39;</span><span class="p">,</span> <span class="s1">&#39;mushrooms&#39;</span><span class="p">,</span> <span class="s1">&#39;onions&#39;</span><span class="p">])</span>
 </td>
             <td class="duration-cell" id="duration_12">...</td>
         </tr>
@@ -1060,39 +1105,74 @@ showcasing all major pytest-human features.</p>
                         <col style="width: 3rem;">
                         <col style="width: 10rem;">
                         <col style="width: 7rem;">
-                        <col style="width: 14rem;">
+                        <col style="width: 10rem;">
                         <col style="width: 100%;">
                         <col style="width: 6rem;">
                     </colgroup>
         
-        <tr class="log-level-warning">
+        <tr class="log-level-info">
             <td></td>
-            <td class="time-cell">11:11:56.966</td>
-            <td class="level-cell">WARNING</td>
-            <td class="source-cell">root</td>
-            <td class="msg-cell">Target Page.screenshot is already patched for logging.</td>
+            <td class="time-cell">17:18:34.893</td>
+            <td class="level-cell">INFO</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L34" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:34">test_pizza.py:34</a></td>
+            <td class="msg-cell">Adding 3 toppings...</td>
+            <td class="duration-cell"></td>
+        </tr>
+        
+        <tr class="log-level-trace">
+            <td></td>
+            <td class="time-cell">17:18:34.893</td>
+            <td class="level-cell">TRACE</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L36" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:36">test_pizza.py:36</a></td>
+            <td class="msg-cell">Adding pepperoni</td>
+            <td class="duration-cell"></td>
+        </tr>
+        
+        <tr class="log-level-trace">
+            <td></td>
+            <td class="time-cell">17:18:34.893</td>
+            <td class="level-cell">TRACE</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L36" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:36">test_pizza.py:36</a></td>
+            <td class="msg-cell">Adding mushrooms</td>
+            <td class="duration-cell"></td>
+        </tr>
+        
+        <tr class="log-level-trace">
+            <td></td>
+            <td class="time-cell">17:18:34.893</td>
+            <td class="level-cell">TRACE</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L36" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:36">test_pizza.py:36</a></td>
+            <td class="msg-cell">Adding onions</td>
             <td class="duration-cell"></td>
         </tr>
         
         <tr class="log-level-debug">
             <td></td>
-            <td class="time-cell">11:11:56.966</td>
+            <td class="time-cell">17:18:34.893</td>
             <td class="level-cell">DEBUG</td>
-            <td class="source-cell">log_3rdparty_methods</td>
-            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">log_3rdparty_methods</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L97" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:97">test_pizza.py:97</a></td>
+            <td class="msg-cell"><span class="n">test_pizza</span><span class="o">.</span><span class="n">add_toppings</span><span class="p">(</span><span class="n">pizza_base</span><span class="o">=</span><span class="s1">&#39;large_dough_with_tomato_and_mozzarella&#39;</span><span class="p">,</span> <span class="n">toppings</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;pepperoni&#39;</span><span class="p">,</span> <span class="s1">&#39;mushrooms&#39;</span><span class="p">,</span> <span class="s1">&#39;onions&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="o">&lt;</span><span class="n">suppressed</span><span class="o">&gt;</span>
 </td>
             <td class="duration-cell"></td>
         </tr>
-        </table></td></tr><script>finalizeSpan('block_12', 'duration_12', 2.0182919688522816);</script><script>setSpanSeverity('block_12', 'log-level-debug');</script>
-        <tr id="header_block_13" class="log-level-debug">
+        </table></td></tr><script>finalizeSpan('block_12', 'duration_12', 0.7669590413570404);</script><script>setSpanSeverity('block_12', 'log-level-info');</script></table></td></tr><script>finalizeSpan('block_11', 'duration_11', 0.9167499374598265);</script><script>setSpanSeverity('block_11', 'log-level-debug');</script>
+        <tr class="log-level-info">
+            <td></td>
+            <td class="time-cell">17:18:34.894</td>
+            <td class="level-cell">INFO</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L99" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:99">test_pizza.py:99</a></td>
+            <td class="msg-cell">Preparation complete. Ready for oven.</td>
+            <td class="duration-cell"></td>
+        </tr>
+        </table></td></tr><script>finalizeSpan('block_8', 'duration_8', 81.53175003826618);</script><script>setSpanSeverity('block_8', 'log-level-info');</script>
+        <tr id="header_block_13" class="log-level-info">
             <td class="toggle-cell" onclick="toggle('block_13')">
                 <button id="toggle-block_13">[+]</button>
             </td>
-            <td class="time-cell">11:11:56.967</td>
-            <td class="level-cell">DEBUG</td>
-            <td class="source-cell" title="trace_delivery_service">trace_delivery_service</td>
-            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">trace_delivery_service</span><span class="p">()</span>
-</td>
+            <td class="time-cell">17:18:34.894</td>
+            <td class="level-cell">INFO</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L101" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:101">test_pizza.py:101</a></td>
+            <td class="msg-cell">Phase 2: 🔥 Baking Pizza</td>
             <td class="duration-cell" id="duration_13">...</td>
         </tr>
         <tr id="block_13" class="nested-block" aria-expanded="false" style="display: none;">
@@ -1102,48 +1182,20 @@ showcasing all major pytest-human features.</p>
                         <col style="width: 3rem;">
                         <col style="width: 10rem;">
                         <col style="width: 7rem;">
-                        <col style="width: 14rem;">
+                        <col style="width: 10rem;">
                         <col style="width: 100%;">
                         <col style="width: 6rem;">
                     </colgroup>
-        
-        <tr class="log-level-debug">
-            <td></td>
-            <td class="time-cell">11:11:56.967</td>
-            <td class="level-cell">DEBUG</td>
-            <td class="source-cell">trace_delivery_service</td>
-            <td class="msg-cell"><span class="n">setup</span> <span class="n">fixture</span> <span class="n">trace_delivery_service</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span>
-</td>
-            <td class="duration-cell"></td>
-        </tr>
-        </table></td></tr><script>finalizeSpan('block_13', 'duration_13', 0.38945802953094244);</script><script>setSpanSeverity('block_13', 'log-level-debug');</script></table></td></tr><script>finalizeSpan('block_1', 'duration_1', 9.654082939960063);</script><script>setSpanSeverity('block_1', 'log-level-info');</script>
-        <tr class="log-level-info">
-            <td></td>
-            <td class="time-cell">11:11:56.968</td>
-            <td class="level-cell">INFO</td>
-            <td class="source-cell">test_full_pizza_order_workflow</td>
-            <td class="msg-cell">Starting new pizza order: &#x27;The Works&#x27;</td>
-            <td class="duration-cell"></td>
-        </tr>
-        
-        <tr class="log-level-debug">
-            <td></td>
-            <td class="time-cell">11:11:56.968</td>
-            <td class="level-cell">DEBUG</td>
-            <td class="source-cell">test_full_pizza_order_workflow</td>
-            <td class="msg-cell"><span class="n">Order</span> <span class="n">details</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;customer&#39;</span><span class="p">:</span> <span class="s1">&#39;Jane Doe&#39;</span><span class="p">,</span> <span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="s1">&#39;large&#39;</span><span class="p">,</span> <span class="s1">&#39;toppings&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;pepperoni&#39;</span><span class="p">,</span> <span class="s1">&#39;mushrooms&#39;</span><span class="p">,</span> <span class="s1">&#39;onions&#39;</span><span class="p">],</span> <span class="s1">&#39;address&#39;</span><span class="p">:</span> <span class="s1">&#39;123 Main St&#39;</span><span class="p">}</span>
-</td>
-            <td class="duration-cell"></td>
-        </tr>
         
         <tr id="header_block_14" class="log-level-info">
             <td class="toggle-cell" onclick="toggle('block_14')">
                 <button id="toggle-block_14">[+]</button>
             </td>
-            <td class="time-cell">11:11:56.968</td>
+            <td class="time-cell">17:18:34.894</td>
             <td class="level-cell">INFO</td>
-            <td class="source-cell" title="test_full_pizza_order_workflow">test_full_pizza_order_workflow</td>
-            <td class="msg-cell">Phase 1: 👨‍🍳 Preparing Pizza</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L102" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:102">test_pizza.py:102</a></td>
+            <td class="msg-cell"><span class="n">test_pizza</span><span class="o">.</span><span class="n">bake_pizza</span><span class="p">(</span><span class="n">pizza_details</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;base&#39;</span><span class="p">:</span> <span class="s1">&#39;large_dough_with_tomato_and_mozzarella&#39;</span><span class="p">,</span> <span class="s1">&#39;toppings&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;pepperoni&#39;</span><span class="p">,</span> <span class="s1">&#39;mushrooms&#39;</span><span class="p">,</span> <span class="s1">&#39;onions&#39;</span><span class="p">],</span> <span class="s1">&#39;preparation_time&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">})</span>
+</td>
             <td class="duration-cell" id="duration_14">...</td>
         </tr>
         <tr id="block_14" class="nested-block" aria-expanded="false" style="display: none;">
@@ -1153,20 +1205,47 @@ showcasing all major pytest-human features.</p>
                         <col style="width: 3rem;">
                         <col style="width: 10rem;">
                         <col style="width: 7rem;">
-                        <col style="width: 14rem;">
+                        <col style="width: 10rem;">
                         <col style="width: 100%;">
                         <col style="width: 6rem;">
                     </colgroup>
         
+        <tr class="log-level-info">
+            <td></td>
+            <td class="time-cell">17:18:34.894</td>
+            <td class="level-cell">INFO</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L48" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:48">test_pizza.py:48</a></td>
+            <td class="msg-cell">Oven preheated. Baking pizza with [&#x27;pepperoni&#x27;, &#x27;mushrooms&#x27;, &#x27;onions&#x27;]</td>
+            <td class="duration-cell"></td>
+        </tr>
+        
+        <tr class="log-level-warning">
+            <td></td>
+            <td class="time-cell">17:18:34.999</td>
+            <td class="level-cell">WARNING</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L50" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:50">test_pizza.py:50</a></td>
+            <td class="msg-cell">Onions topping running low, substituting with olives.</td>
+            <td class="duration-cell"></td>
+        </tr>
+        
+        <tr class="log-level-debug">
+            <td></td>
+            <td class="time-cell">17:18:35.000</td>
+            <td class="level-cell">DEBUG</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L102" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:102">test_pizza.py:102</a></td>
+            <td class="msg-cell"><span class="n">test_pizza</span><span class="o">.</span><span class="n">bake_pizza</span><span class="p">(</span><span class="n">pizza_details</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;base&#39;</span><span class="p">:</span> <span class="s1">&#39;large_dough_with_tomato_and_mozzarella&#39;</span><span class="p">,</span> <span class="s1">&#39;toppings&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;pepperoni&#39;</span><span class="p">,</span> <span class="s1">&#39;mushrooms&#39;</span><span class="p">,</span> <span class="s1">&#39;onions&#39;</span><span class="p">],</span> <span class="s1">&#39;preparation_time&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">})</span> <span class="o">-&gt;</span> <span class="s1">&#39;baked_pizza_with_pepperoni_mushrooms_olives&#39;</span>
+</td>
+            <td class="duration-cell"></td>
+        </tr>
+        </table></td></tr><script>finalizeSpan('block_14', 'duration_14', 106.05079191736877);</script><script>setSpanSeverity('block_14', 'log-level-info');</script></table></td></tr><script>finalizeSpan('block_13', 'duration_13', 106.24241712503135);</script><script>setSpanSeverity('block_13', 'log-level-info');</script>
         <tr id="header_block_15" class="log-level-info">
             <td class="toggle-cell" onclick="toggle('block_15')">
                 <button id="toggle-block_15">[+]</button>
             </td>
-            <td class="time-cell">11:11:56.968</td>
+            <td class="time-cell">17:18:35.000</td>
             <td class="level-cell">INFO</td>
-            <td class="source-cell" title="tests.examples.test_pizza">tests.examples.test_pizza</td>
-            <td class="msg-cell"><span class="n">test_pizza</span><span class="o">.</span><span class="n">prepare_dough</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="s1">&#39;large&#39;</span><span class="p">)</span>
-</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L107" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:107">test_pizza.py:107</a></td>
+            <td class="msg-cell">Phase 3: 🚚 Delivery</td>
             <td class="duration-cell" id="duration_15">...</td>
         </tr>
         <tr id="block_15" class="nested-block" aria-expanded="false" style="display: none;">
@@ -1176,47 +1255,37 @@ showcasing all major pytest-human features.</p>
                         <col style="width: 3rem;">
                         <col style="width: 10rem;">
                         <col style="width: 7rem;">
-                        <col style="width: 14rem;">
+                        <col style="width: 10rem;">
                         <col style="width: 100%;">
                         <col style="width: 6rem;">
                     </colgroup>
         
+        <tr class="log-level-debug">
+            <td></td>
+            <td class="time-cell">17:18:35.000</td>
+            <td class="level-cell">DEBUG</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L108" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:108">test_pizza.py:108</a></td>
+            <td class="msg-cell">Contacting delivery partner for 123 Main St</td>
+            <td class="duration-cell"></td>
+        </tr>
+        
         <tr class="log-level-info">
             <td></td>
-            <td class="time-cell">11:11:56.969</td>
+            <td class="time-cell">17:18:35.000</td>
             <td class="level-cell">INFO</td>
-            <td class="source-cell">tests.examples.test_pizza</td>
-            <td class="msg-cell">Kneading large dough ball.</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/external_delivery.py#L11" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/external_delivery.py:11">external_delivery.py:11</a></td>
+            <td class="msg-cell">Service initialized.</td>
             <td class="duration-cell"></td>
         </tr>
         
-        <tr class="log-level-debug">
-            <td></td>
-            <td class="time-cell">11:11:57.024</td>
-            <td class="level-cell">DEBUG</td>
-            <td class="source-cell">tests.examples.test_pizza</td>
-            <td class="msg-cell">Dough is ready.</td>
-            <td class="duration-cell"></td>
-        </tr>
-        
-        <tr class="log-level-debug">
-            <td></td>
-            <td class="time-cell">11:11:57.024</td>
-            <td class="level-cell">DEBUG</td>
-            <td class="source-cell">tests.examples.test_pizza</td>
-            <td class="msg-cell"><span class="n">test_pizza</span><span class="o">.</span><span class="n">prepare_dough</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="s1">&#39;large&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;large_dough&#39;</span>
-</td>
-            <td class="duration-cell"></td>
-        </tr>
-        </table></td></tr><script>finalizeSpan('block_15', 'duration_15', 55.62070803716779);</script><script>setSpanSeverity('block_15', 'log-level-info');</script>
-        <tr id="header_block_16" class="log-level-debug">
+        <tr id="header_block_16" class="log-level-info">
             <td class="toggle-cell" onclick="toggle('block_16')">
                 <button id="toggle-block_16">[+]</button>
             </td>
-            <td class="time-cell">11:11:57.024</td>
-            <td class="level-cell">DEBUG</td>
-            <td class="source-cell" title="tests.examples.test_pizza">tests.examples.test_pizza</td>
-            <td class="msg-cell"><span class="n">test_pizza</span><span class="o">.</span><span class="n">add_sauce_and_cheese</span><span class="p">(</span><span class="n">dough</span><span class="o">=</span><span class="s1">&#39;large_dough&#39;</span><span class="p">,</span> <span class="n">sauce</span><span class="o">=</span><span class="s1">&#39;tomato&#39;</span><span class="p">,</span> <span class="n">cheese</span><span class="o">=</span><span class="s1">&#39;mozzarella&#39;</span><span class="p">)</span>
+            <td class="time-cell">17:18:35.000</td>
+            <td class="level-cell">INFO</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L112" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:112">test_pizza.py:112</a></td>
+            <td class="msg-cell"><span class="n">ExternalDeliveryService</span><span class="o">.</span><span class="n">dispatch_driver</span><span class="p">(</span><span class="n">priority</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </td>
             <td class="duration-cell" id="duration_16">...</td>
         </tr>
@@ -1227,38 +1296,39 @@ showcasing all major pytest-human features.</p>
                         <col style="width: 3rem;">
                         <col style="width: 10rem;">
                         <col style="width: 7rem;">
-                        <col style="width: 14rem;">
+                        <col style="width: 10rem;">
                         <col style="width: 100%;">
                         <col style="width: 6rem;">
                     </colgroup>
         
-        <tr class="log-level-info">
+        <tr class="log-level-debug">
             <td></td>
-            <td class="time-cell">11:11:57.024</td>
-            <td class="level-cell">INFO</td>
-            <td class="source-cell">tests.examples.test_pizza</td>
-            <td class="msg-cell">Adding tomato sauce and mozzarella cheese.</td>
+            <td class="time-cell">17:18:35.001</td>
+            <td class="level-cell">DEBUG</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/external_delivery.py#L15" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/external_delivery.py:15">external_delivery.py:15</a></td>
+            <td class="msg-cell">Dispatching...</td>
             <td class="duration-cell"></td>
         </tr>
         
         <tr class="log-level-debug">
             <td></td>
-            <td class="time-cell">11:11:57.049</td>
+            <td class="time-cell">17:18:35.056</td>
             <td class="level-cell">DEBUG</td>
-            <td class="source-cell">tests.examples.test_pizza</td>
-            <td class="msg-cell"><span class="n">test_pizza</span><span class="o">.</span><span class="n">add_sauce_and_cheese</span><span class="p">(</span><span class="n">dough</span><span class="o">=</span><span class="s1">&#39;large_dough&#39;</span><span class="p">,</span> <span class="n">sauce</span><span class="o">=</span><span class="s1">&#39;tomato&#39;</span><span class="p">,</span> <span class="n">cheese</span><span class="o">=</span><span class="s1">&#39;mozzarella&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;large_dough_with_tomato_and_mozzarella&#39;</span>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L112" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:112">test_pizza.py:112</a></td>
+            <td class="msg-cell"><span class="n">ExternalDeliveryService</span><span class="o">.</span><span class="n">dispatch_driver</span><span class="p">(</span><span class="n">priority</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="s1">&#39;driver_id&#39;</span><span class="p">:</span> <span class="s1">&#39;dave-007&#39;</span><span class="p">,</span> <span class="s1">&#39;eta_minutes&#39;</span><span class="p">:</span> <span class="mi">15</span><span class="p">}</span>
 </td>
             <td class="duration-cell"></td>
         </tr>
-        </table></td></tr><script>finalizeSpan('block_16', 'duration_16', 25.591166107915342);</script><script>setSpanSeverity('block_16', 'log-level-debug');</script>
-        <tr id="header_block_17" class="log-level-debug">
+        </table></td></tr><script>finalizeSpan('block_16', 'duration_16', 55.774291045963764);</script><script>setSpanSeverity('block_16', 'log-level-info');</script>
+        <tr id="header_block_17" class="log-level-info">
             <td class="toggle-cell" onclick="toggle('block_17')">
                 <button id="toggle-block_17">[+]</button>
             </td>
-            <td class="time-cell">11:11:57.050</td>
-            <td class="level-cell">DEBUG</td>
-            <td class="source-cell" title="test_full_pizza_order_workflow">test_full_pizza_order_workflow</td>
-            <td class="msg-cell">Adding toppings</td>
+            <td class="time-cell">17:18:35.056</td>
+            <td class="level-cell">INFO</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L113" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:113">test_pizza.py:113</a></td>
+            <td class="msg-cell"><span class="n">ExternalDeliveryService</span><span class="o">.</span><span class="n">get_delivery_status</span><span class="p">()</span>
+</td>
             <td class="duration-cell" id="duration_17">...</td>
         </tr>
         <tr id="block_17" class="nested-block" aria-expanded="false" style="display: none;">
@@ -1268,19 +1338,48 @@ showcasing all major pytest-human features.</p>
                         <col style="width: 3rem;">
                         <col style="width: 10rem;">
                         <col style="width: 7rem;">
-                        <col style="width: 14rem;">
+                        <col style="width: 10rem;">
                         <col style="width: 100%;">
                         <col style="width: 6rem;">
                     </colgroup>
+        
+        <tr class="log-level-debug">
+            <td></td>
+            <td class="time-cell">17:18:35.057</td>
+            <td class="level-cell">DEBUG</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L113" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:113">test_pizza.py:113</a></td>
+            <td class="msg-cell"><span class="n">ExternalDeliveryService</span><span class="o">.</span><span class="n">get_delivery_status</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="s1">&#39;out_for_delivery&#39;</span>
+</td>
+            <td class="duration-cell"></td>
+        </tr>
+        </table></td></tr><script>finalizeSpan('block_17', 'duration_17', 0.36162487231194973);</script><script>setSpanSeverity('block_17', 'log-level-info');</script>
+        <tr class="log-level-info">
+            <td></td>
+            <td class="time-cell">17:18:35.057</td>
+            <td class="level-cell">INFO</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L115" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:115">test_pizza.py:115</a></td>
+            <td class="msg-cell"><span class="n">Dispatch</span> <span class="n">info</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;driver_id&#39;</span><span class="p">:</span> <span class="s1">&#39;dave-007&#39;</span><span class="p">,</span> <span class="s1">&#39;eta_minutes&#39;</span><span class="p">:</span> <span class="mi">15</span><span class="p">}</span>
+</td>
+            <td class="duration-cell"></td>
+        </tr>
+        
+        <tr class="log-level-info">
+            <td></td>
+            <td class="time-cell">17:18:35.057</td>
+            <td class="level-cell">INFO</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L116" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:116">test_pizza.py:116</a></td>
+            <td class="msg-cell">Verifying final order on pickup...</td>
+            <td class="duration-cell"></td>
+        </tr>
         
         <tr id="header_block_18" class="log-level-info">
             <td class="toggle-cell" onclick="toggle('block_18')">
                 <button id="toggle-block_18">[+]</button>
             </td>
-            <td class="time-cell">11:11:57.050</td>
+            <td class="time-cell">17:18:35.057</td>
             <td class="level-cell">INFO</td>
-            <td class="source-cell" title="tests.examples.test_pizza">tests.examples.test_pizza</td>
-            <td class="msg-cell"><span class="n">test_pizza</span><span class="o">.</span><span class="n">add_toppings</span><span class="p">(</span><span class="n">pizza_base</span><span class="o">=</span><span class="s1">&#39;large_dough_with_tomato_and_mozzarella&#39;</span><span class="p">,</span> <span class="n">toppings</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;pepperoni&#39;</span><span class="p">,</span> <span class="s1">&#39;mushrooms&#39;</span><span class="p">,</span> <span class="s1">&#39;onions&#39;</span><span class="p">])</span>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L117" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:117">test_pizza.py:117</a></td>
+            <td class="msg-cell"><span class="n">test_pizza</span><span class="o">.</span><span class="n">get_current_topping</span><span class="p">(</span><span class="n">pizza</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;base&#39;</span><span class="p">:</span> <span class="s1">&#39;large_dough_with_tomato_and_mozzarella&#39;</span><span class="p">,</span> <span class="s1">&#39;toppings&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;pepperoni&#39;</span><span class="p">,</span> <span class="s1">&#39;mushrooms&#39;</span><span class="p">,</span> <span class="s1">&#39;olives&#39;</span><span class="p">],</span> <span class="s1">&#39;preparation_time&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">})</span>
 </td>
             <td class="duration-cell" id="duration_18">...</td>
         </tr>
@@ -1291,332 +1390,47 @@ showcasing all major pytest-human features.</p>
                         <col style="width: 3rem;">
                         <col style="width: 10rem;">
                         <col style="width: 7rem;">
-                        <col style="width: 14rem;">
-                        <col style="width: 100%;">
-                        <col style="width: 6rem;">
-                    </colgroup>
-        
-        <tr class="log-level-info">
-            <td></td>
-            <td class="time-cell">11:11:57.050</td>
-            <td class="level-cell">INFO</td>
-            <td class="source-cell">tests.examples.test_pizza</td>
-            <td class="msg-cell">Adding 3 toppings...</td>
-            <td class="duration-cell"></td>
-        </tr>
-        
-        <tr class="log-level-trace">
-            <td></td>
-            <td class="time-cell">11:11:57.050</td>
-            <td class="level-cell">TRACE</td>
-            <td class="source-cell">tests.examples.test_pizza</td>
-            <td class="msg-cell">Adding pepperoni</td>
-            <td class="duration-cell"></td>
-        </tr>
-        
-        <tr class="log-level-trace">
-            <td></td>
-            <td class="time-cell">11:11:57.050</td>
-            <td class="level-cell">TRACE</td>
-            <td class="source-cell">tests.examples.test_pizza</td>
-            <td class="msg-cell">Adding mushrooms</td>
-            <td class="duration-cell"></td>
-        </tr>
-        
-        <tr class="log-level-trace">
-            <td></td>
-            <td class="time-cell">11:11:57.050</td>
-            <td class="level-cell">TRACE</td>
-            <td class="source-cell">tests.examples.test_pizza</td>
-            <td class="msg-cell">Adding onions</td>
-            <td class="duration-cell"></td>
-        </tr>
-        
-        <tr class="log-level-debug">
-            <td></td>
-            <td class="time-cell">11:11:57.050</td>
-            <td class="level-cell">DEBUG</td>
-            <td class="source-cell">tests.examples.test_pizza</td>
-            <td class="msg-cell"><span class="n">test_pizza</span><span class="o">.</span><span class="n">add_toppings</span><span class="p">(</span><span class="n">pizza_base</span><span class="o">=</span><span class="s1">&#39;large_dough_with_tomato_and_mozzarella&#39;</span><span class="p">,</span> <span class="n">toppings</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;pepperoni&#39;</span><span class="p">,</span> <span class="s1">&#39;mushrooms&#39;</span><span class="p">,</span> <span class="s1">&#39;onions&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="o">&lt;</span><span class="n">suppressed</span><span class="o">&gt;</span>
-</td>
-            <td class="duration-cell"></td>
-        </tr>
-        </table></td></tr><script>finalizeSpan('block_18', 'duration_18', 0.5736671155318618);</script><script>setSpanSeverity('block_18', 'log-level-info');</script></table></td></tr><script>finalizeSpan('block_17', 'duration_17', 0.6932920077815652);</script><script>setSpanSeverity('block_17', 'log-level-debug');</script>
-        <tr class="log-level-info">
-            <td></td>
-            <td class="time-cell">11:11:57.051</td>
-            <td class="level-cell">INFO</td>
-            <td class="source-cell">test_full_pizza_order_workflow</td>
-            <td class="msg-cell">Preparation complete. Ready for oven.</td>
-            <td class="duration-cell"></td>
-        </tr>
-        </table></td></tr><script>finalizeSpan('block_14', 'duration_14', 82.235167035833);</script><script>setSpanSeverity('block_14', 'log-level-info');</script>
-        <tr id="header_block_19" class="log-level-info">
-            <td class="toggle-cell" onclick="toggle('block_19')">
-                <button id="toggle-block_19">[+]</button>
-            </td>
-            <td class="time-cell">11:11:57.051</td>
-            <td class="level-cell">INFO</td>
-            <td class="source-cell" title="test_full_pizza_order_workflow">test_full_pizza_order_workflow</td>
-            <td class="msg-cell">Phase 2: 🔥 Baking Pizza</td>
-            <td class="duration-cell" id="duration_19">...</td>
-        </tr>
-        <tr id="block_19" class="nested-block" aria-expanded="false" style="display: none;">
-            <td colspan="6" class ="nested-block-td">
-                <table class="log-table" role="treegrid">
-                    <colgroup>
-                        <col style="width: 3rem;">
                         <col style="width: 10rem;">
-                        <col style="width: 7rem;">
-                        <col style="width: 14rem;">
-                        <col style="width: 100%;">
-                        <col style="width: 6rem;">
-                    </colgroup>
-        
-        <tr id="header_block_20" class="log-level-info">
-            <td class="toggle-cell" onclick="toggle('block_20')">
-                <button id="toggle-block_20">[+]</button>
-            </td>
-            <td class="time-cell">11:11:57.051</td>
-            <td class="level-cell">INFO</td>
-            <td class="source-cell" title="tests.examples.test_pizza">tests.examples.test_pizza</td>
-            <td class="msg-cell"><span class="n">test_pizza</span><span class="o">.</span><span class="n">bake_pizza</span><span class="p">(</span><span class="n">pizza_details</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;base&#39;</span><span class="p">:</span> <span class="s1">&#39;large_dough_with_tomato_and_mozzarella&#39;</span><span class="p">,</span> <span class="s1">&#39;toppings&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;pepperoni&#39;</span><span class="p">,</span> <span class="s1">&#39;mushrooms&#39;</span><span class="p">,</span> <span class="s1">&#39;onions&#39;</span><span class="p">],</span> <span class="s1">&#39;preparation_time&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">})</span>
-</td>
-            <td class="duration-cell" id="duration_20">...</td>
-        </tr>
-        <tr id="block_20" class="nested-block" aria-expanded="false" style="display: none;">
-            <td colspan="6" class ="nested-block-td">
-                <table class="log-table" role="treegrid">
-                    <colgroup>
-                        <col style="width: 3rem;">
-                        <col style="width: 10rem;">
-                        <col style="width: 7rem;">
-                        <col style="width: 14rem;">
                         <col style="width: 100%;">
                         <col style="width: 6rem;">
                     </colgroup>
         
         <tr class="log-level-info">
             <td></td>
-            <td class="time-cell">11:11:57.051</td>
+            <td class="time-cell">17:18:35.057</td>
             <td class="level-cell">INFO</td>
-            <td class="source-cell">kitchen.oven</td>
-            <td class="msg-cell">Oven preheated. Baking pizza with [&#x27;pepperoni&#x27;, &#x27;mushrooms&#x27;, &#x27;onions&#x27;]</td>
-            <td class="duration-cell"></td>
-        </tr>
-        
-        <tr class="log-level-warning">
-            <td></td>
-            <td class="time-cell">11:11:57.156</td>
-            <td class="level-cell">WARNING</td>
-            <td class="source-cell">kitchen.oven</td>
-            <td class="msg-cell">Onions topping running low, substituting with olives.</td>
-            <td class="duration-cell"></td>
-        </tr>
-        
-        <tr class="log-level-debug">
-            <td></td>
-            <td class="time-cell">11:11:57.156</td>
-            <td class="level-cell">DEBUG</td>
-            <td class="source-cell">tests.examples.test_pizza</td>
-            <td class="msg-cell"><span class="n">test_pizza</span><span class="o">.</span><span class="n">bake_pizza</span><span class="p">(</span><span class="n">pizza_details</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;base&#39;</span><span class="p">:</span> <span class="s1">&#39;large_dough_with_tomato_and_mozzarella&#39;</span><span class="p">,</span> <span class="s1">&#39;toppings&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;pepperoni&#39;</span><span class="p">,</span> <span class="s1">&#39;mushrooms&#39;</span><span class="p">,</span> <span class="s1">&#39;onions&#39;</span><span class="p">],</span> <span class="s1">&#39;preparation_time&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">})</span> <span class="o">-&gt;</span> <span class="s1">&#39;baked_pizza_with_pepperoni_mushrooms_olives&#39;</span>
-</td>
-            <td class="duration-cell"></td>
-        </tr>
-        </table></td></tr><script>finalizeSpan('block_20', 'duration_20', 105.81325006205589);</script><script>setSpanSeverity('block_20', 'log-level-info');</script></table></td></tr><script>finalizeSpan('block_19', 'duration_19', 105.98491702694446);</script><script>setSpanSeverity('block_19', 'log-level-info');</script>
-        <tr id="header_block_21" class="log-level-info">
-            <td class="toggle-cell" onclick="toggle('block_21')">
-                <button id="toggle-block_21">[+]</button>
-            </td>
-            <td class="time-cell">11:11:57.157</td>
-            <td class="level-cell">INFO</td>
-            <td class="source-cell" title="test_full_pizza_order_workflow">test_full_pizza_order_workflow</td>
-            <td class="msg-cell">Phase 3: 🚚 Delivery</td>
-            <td class="duration-cell" id="duration_21">...</td>
-        </tr>
-        <tr id="block_21" class="nested-block" aria-expanded="false" style="display: none;">
-            <td colspan="6" class ="nested-block-td">
-                <table class="log-table" role="treegrid">
-                    <colgroup>
-                        <col style="width: 3rem;">
-                        <col style="width: 10rem;">
-                        <col style="width: 7rem;">
-                        <col style="width: 14rem;">
-                        <col style="width: 100%;">
-                        <col style="width: 6rem;">
-                    </colgroup>
-        
-        <tr class="log-level-debug">
-            <td></td>
-            <td class="time-cell">11:11:57.157</td>
-            <td class="level-cell">DEBUG</td>
-            <td class="source-cell">test_full_pizza_order_workflow</td>
-            <td class="msg-cell">Contacting delivery partner for 123 Main St</td>
-            <td class="duration-cell"></td>
-        </tr>
-        
-        <tr class="log-level-info">
-            <td></td>
-            <td class="time-cell">11:11:57.157</td>
-            <td class="level-cell">INFO</td>
-            <td class="source-cell">ExternalDeliveryService</td>
-            <td class="msg-cell">Service initialized.</td>
-            <td class="duration-cell"></td>
-        </tr>
-        
-        <tr id="header_block_22" class="log-level-info">
-            <td class="toggle-cell" onclick="toggle('block_22')">
-                <button id="toggle-block_22">[+]</button>
-            </td>
-            <td class="time-cell">11:11:57.157</td>
-            <td class="level-cell">INFO</td>
-            <td class="source-cell" title="tests.examples.external_delivery">tests.examples.external_delivery</td>
-            <td class="msg-cell"><span class="n">ExternalDeliveryService</span><span class="o">.</span><span class="n">dispatch_driver</span><span class="p">(</span><span class="n">priority</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</td>
-            <td class="duration-cell" id="duration_22">...</td>
-        </tr>
-        <tr id="block_22" class="nested-block" aria-expanded="false" style="display: none;">
-            <td colspan="6" class ="nested-block-td">
-                <table class="log-table" role="treegrid">
-                    <colgroup>
-                        <col style="width: 3rem;">
-                        <col style="width: 10rem;">
-                        <col style="width: 7rem;">
-                        <col style="width: 14rem;">
-                        <col style="width: 100%;">
-                        <col style="width: 6rem;">
-                    </colgroup>
-        
-        <tr class="log-level-debug">
-            <td></td>
-            <td class="time-cell">11:11:57.157</td>
-            <td class="level-cell">DEBUG</td>
-            <td class="source-cell">ExternalDeliveryService</td>
-            <td class="msg-cell">Dispatching...</td>
-            <td class="duration-cell"></td>
-        </tr>
-        
-        <tr class="log-level-debug">
-            <td></td>
-            <td class="time-cell">11:11:57.210</td>
-            <td class="level-cell">DEBUG</td>
-            <td class="source-cell">tests.examples.external_delivery</td>
-            <td class="msg-cell"><span class="n">ExternalDeliveryService</span><span class="o">.</span><span class="n">dispatch_driver</span><span class="p">(</span><span class="n">priority</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="s1">&#39;driver_id&#39;</span><span class="p">:</span> <span class="s1">&#39;dave-007&#39;</span><span class="p">,</span> <span class="s1">&#39;eta_minutes&#39;</span><span class="p">:</span> <span class="mi">15</span><span class="p">}</span>
-</td>
-            <td class="duration-cell"></td>
-        </tr>
-        </table></td></tr><script>finalizeSpan('block_22', 'duration_22', 53.60854207538068);</script><script>setSpanSeverity('block_22', 'log-level-info');</script>
-        <tr id="header_block_23" class="log-level-info">
-            <td class="toggle-cell" onclick="toggle('block_23')">
-                <button id="toggle-block_23">[+]</button>
-            </td>
-            <td class="time-cell">11:11:57.210</td>
-            <td class="level-cell">INFO</td>
-            <td class="source-cell" title="tests.examples.external_delivery">tests.examples.external_delivery</td>
-            <td class="msg-cell"><span class="n">ExternalDeliveryService</span><span class="o">.</span><span class="n">get_delivery_status</span><span class="p">()</span>
-</td>
-            <td class="duration-cell" id="duration_23">...</td>
-        </tr>
-        <tr id="block_23" class="nested-block" aria-expanded="false" style="display: none;">
-            <td colspan="6" class ="nested-block-td">
-                <table class="log-table" role="treegrid">
-                    <colgroup>
-                        <col style="width: 3rem;">
-                        <col style="width: 10rem;">
-                        <col style="width: 7rem;">
-                        <col style="width: 14rem;">
-                        <col style="width: 100%;">
-                        <col style="width: 6rem;">
-                    </colgroup>
-        
-        <tr class="log-level-debug">
-            <td></td>
-            <td class="time-cell">11:11:57.211</td>
-            <td class="level-cell">DEBUG</td>
-            <td class="source-cell">tests.examples.external_delivery</td>
-            <td class="msg-cell"><span class="n">ExternalDeliveryService</span><span class="o">.</span><span class="n">get_delivery_status</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="s1">&#39;out_for_delivery&#39;</span>
-</td>
-            <td class="duration-cell"></td>
-        </tr>
-        </table></td></tr><script>finalizeSpan('block_23', 'duration_23', 0.21545798517763615);</script><script>setSpanSeverity('block_23', 'log-level-info');</script>
-        <tr class="log-level-info">
-            <td></td>
-            <td class="time-cell">11:11:57.211</td>
-            <td class="level-cell">INFO</td>
-            <td class="source-cell">test_full_pizza_order_workflow</td>
-            <td class="msg-cell"><span class="n">Dispatch</span> <span class="n">info</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;driver_id&#39;</span><span class="p">:</span> <span class="s1">&#39;dave-007&#39;</span><span class="p">,</span> <span class="s1">&#39;eta_minutes&#39;</span><span class="p">:</span> <span class="mi">15</span><span class="p">}</span>
-</td>
-            <td class="duration-cell"></td>
-        </tr>
-        
-        <tr class="log-level-info">
-            <td></td>
-            <td class="time-cell">11:11:57.211</td>
-            <td class="level-cell">INFO</td>
-            <td class="source-cell">test_full_pizza_order_workflow</td>
-            <td class="msg-cell">Verifying final order on pickup...</td>
-            <td class="duration-cell"></td>
-        </tr>
-        
-        <tr id="header_block_24" class="log-level-info">
-            <td class="toggle-cell" onclick="toggle('block_24')">
-                <button id="toggle-block_24">[+]</button>
-            </td>
-            <td class="time-cell">11:11:57.211</td>
-            <td class="level-cell">INFO</td>
-            <td class="source-cell" title="tests.examples.test_pizza">tests.examples.test_pizza</td>
-            <td class="msg-cell"><span class="n">test_pizza</span><span class="o">.</span><span class="n">get_current_topping</span><span class="p">(</span><span class="n">pizza</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;base&#39;</span><span class="p">:</span> <span class="s1">&#39;large_dough_with_tomato_and_mozzarella&#39;</span><span class="p">,</span> <span class="s1">&#39;toppings&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;pepperoni&#39;</span><span class="p">,</span> <span class="s1">&#39;mushrooms&#39;</span><span class="p">,</span> <span class="s1">&#39;olives&#39;</span><span class="p">],</span> <span class="s1">&#39;preparation_time&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">})</span>
-</td>
-            <td class="duration-cell" id="duration_24">...</td>
-        </tr>
-        <tr id="block_24" class="nested-block" aria-expanded="false" style="display: none;">
-            <td colspan="6" class ="nested-block-td">
-                <table class="log-table" role="treegrid">
-                    <colgroup>
-                        <col style="width: 3rem;">
-                        <col style="width: 10rem;">
-                        <col style="width: 7rem;">
-                        <col style="width: 14rem;">
-                        <col style="width: 100%;">
-                        <col style="width: 6rem;">
-                    </colgroup>
-        
-        <tr class="log-level-info">
-            <td></td>
-            <td class="time-cell">11:11:57.211</td>
-            <td class="level-cell">INFO</td>
-            <td class="source-cell">tests.examples.test_pizza</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L58" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:58">test_pizza.py:58</a></td>
             <td class="msg-cell">Getting current topping on the pizza</td>
             <td class="duration-cell"></td>
         </tr>
         
         <tr class="log-level-debug">
             <td></td>
-            <td class="time-cell">11:11:57.211</td>
+            <td class="time-cell">17:18:35.058</td>
             <td class="level-cell">DEBUG</td>
-            <td class="source-cell">tests.examples.test_pizza</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L117" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:117">test_pizza.py:117</a></td>
             <td class="msg-cell"><span class="n">test_pizza</span><span class="o">.</span><span class="n">get_current_topping</span><span class="p">(</span><span class="n">pizza</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;base&#39;</span><span class="p">:</span> <span class="s1">&#39;large_dough_with_tomato_and_mozzarella&#39;</span><span class="p">,</span> <span class="s1">&#39;toppings&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;pepperoni&#39;</span><span class="p">,</span> <span class="s1">&#39;mushrooms&#39;</span><span class="p">,</span> <span class="s1">&#39;olives&#39;</span><span class="p">],</span> <span class="s1">&#39;preparation_time&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">})</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="s1">&#39;pepperoni&#39;</span><span class="p">,</span> <span class="s1">&#39;mushrooms&#39;</span><span class="p">,</span> <span class="s1">&#39;olives&#39;</span><span class="p">]</span>
 </td>
             <td class="duration-cell"></td>
         </tr>
-        </table></td></tr><script>finalizeSpan('block_24', 'duration_24', 0.6417909171432257);</script><script>setSpanSeverity('block_24', 'log-level-info');</script>
+        </table></td></tr><script>finalizeSpan('block_18', 'duration_18', 0.7721250876784325);</script><script>setSpanSeverity('block_18', 'log-level-info');</script>
         <tr class="log-level-error">
             <td></td>
-            <td class="time-cell">11:11:57.212</td>
+            <td class="time-cell">17:18:35.058</td>
             <td class="level-cell">ERROR</td>
-            <td class="source-cell">test_full_pizza_order_workflow</td>
-            <td class="msg-cell"><span class="k">assert</span> <span class="p">{</span><span class="s1">&#39;olives&#39;</span><span class="p">,</span> <span class="s1">&#39;pepperoni&#39;</span><span class="p">,</span> <span class="s1">&#39;mushrooms&#39;</span><span class="p">}</span> <span class="o">==</span> <span class="p">{</span><span class="s1">&#39;onions&#39;</span><span class="p">,</span> <span class="s1">&#39;pepperoni&#39;</span><span class="p">,</span> <span class="s1">&#39;mushrooms&#39;</span><span class="p">}</span>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/src/pytest_human/plugin.py#L406" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="src/pytest_human/plugin.py:406">plugin.py:406</a></td>
+            <td class="msg-cell"><span class="k">assert</span> <span class="p">{</span><span class="s1">&#39;pepperoni&#39;</span><span class="p">,</span> <span class="s1">&#39;olives&#39;</span><span class="p">,</span> <span class="s1">&#39;mushrooms&#39;</span><span class="p">}</span> <span class="o">==</span> <span class="p">{</span><span class="s1">&#39;onions&#39;</span><span class="p">,</span> <span class="s1">&#39;pepperoni&#39;</span><span class="p">,</span> <span class="s1">&#39;mushrooms&#39;</span><span class="p">}</span>
 </td>
             <td class="duration-cell"></td>
         </tr>
-        </table></td></tr><script>finalizeSpan('block_21', 'duration_21', 55.562291061505675);</script><script>setSpanSeverity('block_21', 'log-level-error');</script>
-        <tr id="header_block_25" class="log-level-error">
-            <td class="toggle-cell" onclick="toggle('block_25')">
-                <button id="toggle-block_25">[+]</button>
+        </table></td></tr><script>finalizeSpan('block_15', 'duration_15', 58.385999873280525);</script><script>setSpanSeverity('block_15', 'log-level-error');</script>
+        <tr id="header_block_19" class="log-level-error">
+            <td class="toggle-cell" onclick="toggle('block_19')">
+                <button id="toggle-block_19">[+]</button>
             </td>
-            <td class="time-cell">11:11:57.231</td>
+            <td class="time-cell">17:18:35.078</td>
             <td class="level-cell">ERROR</td>
-            <td class="source-cell" title="test_full_pizza_order_workflow">test_full_pizza_order_workflow</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/src/pytest_human/plugin.py#L348" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="src/pytest_human/plugin.py:348">plugin.py:348</a></td>
             <td class="msg-cell"><span class="ne">Exception</span><span class="p">:</span> <span class="ne">AssertionError</span> <span class="n">Toppings</span> <span class="n">mismatch</span> <span class="n">at</span> <span class="n">pickup</span><span class="err">!</span>
 <span class="k">assert</span> <span class="p">{</span><span class="s1">&#39;mushrooms&#39;</span><span class="p">,</span><span class="o">...</span><span class="p">,</span> <span class="s1">&#39;pepperoni&#39;</span><span class="p">}</span> <span class="o">==</span> <span class="p">{</span><span class="s1">&#39;mushrooms&#39;</span><span class="p">,</span><span class="o">...</span><span class="p">,</span> <span class="s1">&#39;pepperoni&#39;</span><span class="p">}</span>
   
@@ -1626,26 +1440,26 @@ showcasing all major pytest-human features.</p>
   <span class="s1">&#39;onions&#39;</span>
   <span class="n">Use</span> <span class="o">-</span><span class="n">v</span> <span class="n">to</span> <span class="n">get</span> <span class="n">more</span> <span class="n">diff</span>
 </td>
-            <td class="duration-cell" id="duration_25">...</td>
+            <td class="duration-cell" id="duration_19">...</td>
         </tr>
-        <tr id="block_25" class="nested-block" aria-expanded="false" style="display: none;">
+        <tr id="block_19" class="nested-block" aria-expanded="false" style="display: none;">
             <td colspan="6" class ="nested-block-td">
                 <table class="log-table" role="treegrid">
                     <colgroup>
                         <col style="width: 3rem;">
                         <col style="width: 10rem;">
                         <col style="width: 7rem;">
-                        <col style="width: 14rem;">
+                        <col style="width: 10rem;">
                         <col style="width: 100%;">
                         <col style="width: 6rem;">
                     </colgroup>
         
         <tr class="log-level-error">
             <td></td>
-            <td class="time-cell">11:11:57.232</td>
+            <td class="time-cell">17:18:35.079</td>
             <td class="level-cell">ERROR</td>
-            <td class="source-cell">test_full_pizza_order_workflow</td>
-            <td class="msg-cell"><span class="n">traceback</span><span class="p">:</span> <span class="n">human</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">pytest_human</span><span class="o">.</span><span class="n">human</span><span class="o">.</span><span class="n">Human</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x1075509a0</span><span class="o">&gt;</span>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/src/pytest_human/plugin.py#L349" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="src/pytest_human/plugin.py:349">plugin.py:349</a></td>
+            <td class="msg-cell"><span class="n">traceback</span><span class="p">:</span> <span class="n">human</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">pytest_human</span><span class="o">.</span><span class="n">human</span><span class="o">.</span><span class="n">Human</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x107522830</span><span class="o">&gt;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">test_full_pizza_order_workflow</span><span class="p">(</span><span class="n">human</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1707,54 +1521,54 @@ showcasing all major pytest-human features.</p>
 </td>
             <td class="duration-cell"></td>
         </tr>
-        </table></td></tr><script>finalizeSpan('block_25', 'duration_25', 3.593208035454154);</script><script>setSpanSeverity('block_25', 'log-level-error');</script>
-        <tr id="header_block_26" class="log-level-info">
-            <td class="toggle-cell" onclick="toggle('block_26')">
-                <button id="toggle-block_26">[+]</button>
+        </table></td></tr><script>finalizeSpan('block_19', 'duration_19', 3.3985842019319534);</script><script>setSpanSeverity('block_19', 'log-level-error');</script>
+        <tr id="header_block_20" class="log-level-info">
+            <td class="toggle-cell" onclick="toggle('block_20')">
+                <button id="toggle-block_20">[+]</button>
             </td>
-            <td class="time-cell">11:11:57.235</td>
+            <td class="time-cell">17:18:35.082</td>
             <td class="level-cell">INFO</td>
-            <td class="source-cell" title="test_full_pizza_order_workflow">test_full_pizza_order_workflow</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/src/pytest_human/plugin.py#L303" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="src/pytest_human/plugin.py:303">plugin.py:303</a></td>
             <td class="msg-cell">Test teardown</td>
-            <td class="duration-cell" id="duration_26">...</td>
+            <td class="duration-cell" id="duration_20">...</td>
         </tr>
-        <tr id="block_26" class="nested-block" aria-expanded="false" style="display: none;">
+        <tr id="block_20" class="nested-block" aria-expanded="false" style="display: none;">
             <td colspan="6" class ="nested-block-td">
                 <table class="log-table" role="treegrid">
                     <colgroup>
                         <col style="width: 3rem;">
                         <col style="width: 10rem;">
                         <col style="width: 7rem;">
-                        <col style="width: 14rem;">
+                        <col style="width: 10rem;">
                         <col style="width: 100%;">
                         <col style="width: 6rem;">
                     </colgroup>
         
         <tr class="log-level-debug">
             <td></td>
-            <td class="time-cell">11:11:57.235</td>
+            <td class="time-cell">17:18:35.082</td>
             <td class="level-cell">DEBUG</td>
-            <td class="source-cell">trace_delivery_service</td>
-            <td class="msg-cell"><span class="n">Tore</span> <span class="n">down</span> <span class="n">fixture</span> <span class="n">trace_delivery_service</span><span class="p">()</span>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/examples/test_pizza.py#L62" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/examples/test_pizza.py:62">test_pizza.py:62</a></td>
+            <td class="msg-cell"><span class="n">Tore</span> <span class="n">down</span> <span class="n">fixture</span> <span class="n">_trace_delivery_service</span><span class="p">()</span>
 </td>
             <td class="duration-cell"></td>
         </tr>
         
         <tr class="log-level-debug">
             <td></td>
-            <td class="time-cell">11:11:57.236</td>
+            <td class="time-cell">17:18:35.083</td>
             <td class="level-cell">DEBUG</td>
-            <td class="source-cell">log_3rdparty_methods</td>
-            <td class="msg-cell"><span class="n">Tore</span> <span class="n">down</span> <span class="n">fixture</span> <span class="n">log_3rdparty_methods</span><span class="p">()</span>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/tests/conftest.py#L11" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="tests/conftest.py:11">conftest.py:11</a></td>
+            <td class="msg-cell"><span class="n">Tore</span> <span class="n">down</span> <span class="n">fixture</span> <span class="n">_log_3rdparty_methods</span><span class="p">()</span>
 </td>
             <td class="duration-cell"></td>
         </tr>
         
         <tr class="log-level-debug">
             <td></td>
-            <td class="time-cell">11:11:57.236</td>
+            <td class="time-cell">17:18:35.083</td>
             <td class="level-cell">DEBUG</td>
-            <td class="source-cell">_relocate_test_log</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/src/pytest_human/plugin.py#L269" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="src/pytest_human/plugin.py:269">plugin.py:269</a></td>
             <td class="msg-cell"><span class="n">Tore</span> <span class="n">down</span> <span class="n">fixture</span> <span class="n">_relocate_test_log</span><span class="p">()</span>
 </td>
             <td class="duration-cell"></td>
@@ -1762,9 +1576,9 @@ showcasing all major pytest-human features.</p>
         
         <tr class="log-level-debug">
             <td></td>
-            <td class="time-cell">11:11:57.236</td>
+            <td class="time-cell">17:18:35.084</td>
             <td class="level-cell">DEBUG</td>
-            <td class="source-cell">tmp_path</td>
+            <td class="source-cell"><span class="source-text" title=".venv/lib/python3.10/site-packages/_pytest/tmpdir.py:254">tmpdir.py:254</span></td>
             <td class="msg-cell"><span class="n">Tore</span> <span class="n">down</span> <span class="n">fixture</span> <span class="n">tmp_path</span><span class="p">()</span>
 </td>
             <td class="duration-cell"></td>
@@ -1772,9 +1586,9 @@ showcasing all major pytest-human features.</p>
         
         <tr class="log-level-debug">
             <td></td>
-            <td class="time-cell">11:11:57.236</td>
+            <td class="time-cell">17:18:35.084</td>
             <td class="level-cell">DEBUG</td>
-            <td class="source-cell">_extract_human_object</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/src/pytest_human/plugin.py#L263" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="src/pytest_human/plugin.py:263">plugin.py:263</a></td>
             <td class="msg-cell"><span class="n">Tore</span> <span class="n">down</span> <span class="n">fixture</span> <span class="n">_extract_human_object</span><span class="p">()</span>
 </td>
             <td class="duration-cell"></td>
@@ -1782,155 +1596,95 @@ showcasing all major pytest-human features.</p>
         
         <tr class="log-level-debug">
             <td></td>
-            <td class="time-cell">11:11:57.236</td>
+            <td class="time-cell">17:18:35.084</td>
             <td class="level-cell">DEBUG</td>
-            <td class="source-cell">human</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/src/pytest_human/fixtures.py#L14" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="src/pytest_human/fixtures.py:14">fixtures.py:14</a></td>
             <td class="msg-cell"><span class="n">Tore</span> <span class="n">down</span> <span class="n">fixture</span> <span class="n">human</span><span class="p">()</span>
 </td>
             <td class="duration-cell"></td>
         </tr>
-        
-        <tr class="log-level-debug">
-            <td></td>
-            <td class="time-cell">11:11:57.236</td>
-            <td class="level-cell">DEBUG</td>
-            <td class="source-cell">tmp_path_factory</td>
-            <td class="msg-cell"><span class="n">Tore</span> <span class="n">down</span> <span class="n">fixture</span> <span class="n">tmp_path_factory</span><span class="p">()</span>
-</td>
-            <td class="duration-cell"></td>
-        </tr>
-        
-        <tr class="log-level-debug">
-            <td></td>
-            <td class="time-cell">11:11:57.237</td>
-            <td class="level-cell">DEBUG</td>
-            <td class="source-cell">delete_output_dir</td>
-            <td class="msg-cell"><span class="n">Tore</span> <span class="n">down</span> <span class="n">fixture</span> <span class="n">delete_output_dir</span><span class="p">()</span>
-</td>
-            <td class="duration-cell"></td>
-        </tr>
-        
-        <tr class="log-level-debug">
-            <td></td>
-            <td class="time-cell">11:11:57.237</td>
-            <td class="level-cell">DEBUG</td>
-            <td class="source-cell">pytestconfig</td>
-            <td class="msg-cell"><span class="n">Tore</span> <span class="n">down</span> <span class="n">fixture</span> <span class="n">pytestconfig</span><span class="p">()</span>
-</td>
-            <td class="duration-cell"></td>
-        </tr>
-        
-        <tr class="log-level-debug">
-            <td></td>
-            <td class="time-cell">11:11:57.237</td>
-            <td class="level-cell">DEBUG</td>
-            <td class="source-cell">_verify_url</td>
-            <td class="msg-cell"><span class="n">Tore</span> <span class="n">down</span> <span class="n">fixture</span> <span class="n">_verify_url</span><span class="p">()</span>
-</td>
-            <td class="duration-cell"></td>
-        </tr>
-        
-        <tr class="log-level-debug">
-            <td></td>
-            <td class="time-cell">11:11:57.237</td>
-            <td class="level-cell">DEBUG</td>
-            <td class="source-cell">base_url</td>
-            <td class="msg-cell"><span class="n">Tore</span> <span class="n">down</span> <span class="n">fixture</span> <span class="n">base_url</span><span class="p">()</span>
-</td>
-            <td class="duration-cell"></td>
-        </tr>
-        
-        <tr class="log-level-debug">
-            <td></td>
-            <td class="time-cell">11:11:57.237</td>
-            <td class="level-cell">DEBUG</td>
-            <td class="source-cell">event_loop_policy</td>
-            <td class="msg-cell"><span class="n">Tore</span> <span class="n">down</span> <span class="n">fixture</span> <span class="n">event_loop_policy</span><span class="p">()</span>
-</td>
-            <td class="duration-cell"></td>
-        </tr>
-        </table></td></tr><script>finalizeSpan('block_26', 'duration_26', 2.1230001002550125);</script><script>setSpanSeverity('block_26', 'log-level-info');</script>
-        <tr id="header_block_27" class="log-level-info">
-            <td class="toggle-cell" onclick="toggle('block_27')">
-                <button id="toggle-block_27">[+]</button>
+        </table></td></tr><script>finalizeSpan('block_20', 'duration_20', 2.8984169475734234);</script><script>setSpanSeverity('block_20', 'log-level-info');</script>
+        <tr id="header_block_21" class="log-level-info">
+            <td class="toggle-cell" onclick="toggle('block_21')">
+                <button id="toggle-block_21">[+]</button>
             </td>
-            <td class="time-cell">11:11:57.237</td>
+            <td class="time-cell">17:18:35.085</td>
             <td class="level-cell">INFO</td>
-            <td class="source-cell" title="test_full_pizza_order_workflow">test_full_pizza_order_workflow</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/src/pytest_human/plugin.py#L388" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="src/pytest_human/plugin.py:388">plugin.py:388</a></td>
             <td class="msg-cell">Test artifacts</td>
-            <td class="duration-cell" id="duration_27">...</td>
+            <td class="duration-cell" id="duration_21">...</td>
         </tr>
-        <tr id="block_27" class="nested-block" aria-expanded="false" style="display: none;">
+        <tr id="block_21" class="nested-block" aria-expanded="false" style="display: none;">
             <td colspan="6" class ="nested-block-td">
                 <table class="log-table" role="treegrid">
                     <colgroup>
                         <col style="width: 3rem;">
                         <col style="width: 10rem;">
                         <col style="width: 7rem;">
-                        <col style="width: 14rem;">
+                        <col style="width: 10rem;">
                         <col style="width: 100%;">
                         <col style="width: 6rem;">
                     </colgroup>
         
-        <tr id="header_block_28" class="log-level-info">
-            <td class="toggle-cell" onclick="toggle('block_28')">
-                <button id="toggle-block_28">[+]</button>
+        <tr id="header_block_22" class="log-level-info">
+            <td class="toggle-cell" onclick="toggle('block_22')">
+                <button id="toggle-block_22">[+]</button>
             </td>
-            <td class="time-cell">11:11:57.237</td>
+            <td class="time-cell">17:18:35.085</td>
             <td class="level-cell">INFO</td>
-            <td class="source-cell" title="test_full_pizza_order_workflow">test_full_pizza_order_workflow</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/src/pytest_human/plugin.py#L394" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="src/pytest_human/plugin.py:394">plugin.py:394</a></td>
             <td class="msg-cell">Captured stdout call</td>
-            <td class="duration-cell" id="duration_28">...</td>
+            <td class="duration-cell" id="duration_22">...</td>
         </tr>
-        <tr id="block_28" class="nested-block" aria-expanded="false" style="display: none;">
+        <tr id="block_22" class="nested-block" aria-expanded="false" style="display: none;">
             <td colspan="6" class ="nested-block-td">
                 <table class="log-table" role="treegrid">
                     <colgroup>
                         <col style="width: 3rem;">
                         <col style="width: 10rem;">
                         <col style="width: 7rem;">
-                        <col style="width: 14rem;">
+                        <col style="width: 10rem;">
                         <col style="width: 100%;">
                         <col style="width: 6rem;">
                     </colgroup>
         
         <tr class="log-level-info">
             <td></td>
-            <td class="time-cell">11:11:57.237</td>
+            <td class="time-cell">17:18:35.085</td>
             <td class="level-cell">INFO</td>
-            <td class="source-cell">test_full_pizza_order_workflow</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/src/pytest_human/plugin.py#L395" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="src/pytest_human/plugin.py:395">plugin.py:395</a></td>
             <td class="msg-cell"><span class="n">KITCHEN_ALARM</span><span class="p">:</span> <span class="n">Pizza</span> <span class="n">baked_pizza_with_pepperoni_mushrooms_olives</span> <span class="ow">is</span> <span class="n">ready</span><span class="err">!</span>
 </td>
             <td class="duration-cell"></td>
         </tr>
-        </table></td></tr><script>finalizeSpan('block_28', 'duration_28', 0.13816601131111383);</script><script>setSpanSeverity('block_28', 'log-level-info');</script>
-        <tr id="header_block_29" class="log-level-info">
-            <td class="toggle-cell" onclick="toggle('block_29')">
-                <button id="toggle-block_29">[+]</button>
+        </table></td></tr><script>finalizeSpan('block_22', 'duration_22', 0.2315840683877468);</script><script>setSpanSeverity('block_22', 'log-level-info');</script>
+        <tr id="header_block_23" class="log-level-info">
+            <td class="toggle-cell" onclick="toggle('block_23')">
+                <button id="toggle-block_23">[+]</button>
             </td>
-            <td class="time-cell">11:11:57.238</td>
+            <td class="time-cell">17:18:35.085</td>
             <td class="level-cell">INFO</td>
-            <td class="source-cell" title="test_full_pizza_order_workflow">test_full_pizza_order_workflow</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/src/pytest_human/plugin.py#L374" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="src/pytest_human/plugin.py:374">plugin.py:374</a></td>
             <td class="msg-cell">kitchen_ticket.log</td>
-            <td class="duration-cell" id="duration_29">...</td>
+            <td class="duration-cell" id="duration_23">...</td>
         </tr>
-        <tr id="block_29" class="nested-block" aria-expanded="false" style="display: none;">
+        <tr id="block_23" class="nested-block" aria-expanded="false" style="display: none;">
             <td colspan="6" class ="nested-block-td">
                 <table class="log-table" role="treegrid">
                     <colgroup>
                         <col style="width: 3rem;">
                         <col style="width: 10rem;">
                         <col style="width: 7rem;">
-                        <col style="width: 14rem;">
+                        <col style="width: 10rem;">
                         <col style="width: 100%;">
                         <col style="width: 6rem;">
                     </colgroup>
         
         <tr class="log-level-info">
             <td></td>
-            <td class="time-cell">11:11:57.238</td>
+            <td class="time-cell">17:18:35.085</td>
             <td class="level-cell">INFO</td>
-            <td class="source-cell">test_full_pizza_order_workflow</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/src/pytest_human/plugin.py#L376" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="src/pytest_human/plugin.py:376">plugin.py:376</a></td>
             <td class="msg-cell"><span class="c1"># Kitchen Printer Log</span>
 </td>
             <td class="duration-cell"></td>
@@ -1938,12 +1692,12 @@ showcasing all major pytest-human features.</p>
         
         <tr class="log-level-info">
             <td></td>
-            <td class="time-cell">11:11:57.238</td>
+            <td class="time-cell">17:18:35.085</td>
             <td class="level-cell">INFO</td>
-            <td class="source-cell">test_full_pizza_order_workflow</td>
+            <td class="source-cell"><a href="https://github.com/Q-cue-ai/pytest-human/blob/d13431eb6d35306a11b4968f22603165ddb4fa21/src/pytest_human/plugin.py#L378" class="source-link source-text" target="_blank" rel="noopener noreferrer" title="src/pytest_human/plugin.py:378">plugin.py:378</a></td>
             <td class="msg-cell"><span class="n">ORDER</span> <span class="mi">123</span>
 <span class="n">LARGE</span> <span class="o">-</span> <span class="p">[</span><span class="s1">&#39;pepperoni&#39;</span><span class="p">,</span> <span class="s1">&#39;mushrooms&#39;</span><span class="p">,</span> <span class="s1">&#39;onions&#39;</span><span class="p">]</span>
 </td>
             <td class="duration-cell"></td>
         </tr>
-        </table></td></tr><script>finalizeSpan('block_29', 'duration_29', 0.18966698553413153);</script><script>setSpanSeverity('block_29', 'log-level-info');</script></table></td></tr><script>finalizeSpan('block_27', 'duration_27', 0.40437502320855856);</script><script>setSpanSeverity('block_27', 'log-level-info');</script></table></div></body></html>
+        </table></td></tr><script>finalizeSpan('block_23', 'duration_23', 0.34804106689989567);</script><script>setSpanSeverity('block_23', 'log-level-info');</script></table></td></tr><script>finalizeSpan('block_21', 'duration_21', 0.7269580382853746);</script><script>setSpanSeverity('block_21', 'log-level-info');</script></table></div></body></html>

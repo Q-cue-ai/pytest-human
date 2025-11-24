@@ -1,11 +1,22 @@
 from pathlib import Path
 
+import pytest
 from _pytest.config import ExitCode
 from _pytest.pytester import Pytester
 
 from tests import utils
 
 
+@pytest.fixture(autouse=True)
+def fix_async_warning(pytester: Pytester) -> None:
+    """Fix asyncio debug warning in tests."""
+    pytester.makeini("""
+        [pytest]
+        asyncio_default_fixture_loop_scope = function
+    """)
+
+
+@pytest.mark.filterwarnings("ignore:The root logger")
 def test_log_location_custom_does_not_exist_expect_dir_created(
     pytester: Pytester, tmp_path: Path
 ) -> None:
@@ -29,6 +40,7 @@ def test_log_location_custom_does_not_exist_expect_dir_created(
     assert log_path.is_file()
 
 
+@pytest.mark.filterwarnings("ignore:The root logger")
 def test_log_location_custom_expect_file_created(pytester: Pytester, tmp_path: Path) -> None:
     """Make sure that pytest creates the log file in the right location."""
     pytester.makepyfile("""
@@ -52,6 +64,7 @@ def test_log_location_custom_expect_file_created(pytester: Pytester, tmp_path: P
     assert log_path.is_file()
 
 
+@pytest.mark.filterwarnings("ignore:The root logger")
 def test_log_location_test_expect_file_created(pytester: Pytester) -> None:
     """Make sure that pytest creates the log file in the right location."""
     pytester.makepyfile("""
@@ -68,6 +81,7 @@ def test_log_location_test_expect_file_created(pytester: Pytester) -> None:
     assert log_path.is_file()
 
 
+@pytest.mark.filterwarnings("ignore:The root logger")
 def test_log_location_session_expect_file_created(pytester: Pytester) -> None:
     """Make sure that pytest creates the log file in the right location."""
     pytester.makepyfile("""

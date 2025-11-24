@@ -20,7 +20,7 @@ def test_logging_log_levels_trace(pytester: pytest.Pytester, page: Page) -> None
     log_lines = page.locator("tr.log-level-trace")
     expect(log_lines).to_have_count(1)
     expect(log_lines.locator("td.level-cell")).to_have_text("TRACE")
-    expect(log_lines.locator("td.source-cell")).to_have_text("test_example")
+    expect(log_lines.locator("td.source-cell")).to_contain_text("test_logging_log_levels_trace")
     expect(log_lines.locator("td.msg-cell")).to_have_text("This is a TRACE log message.")
 
 
@@ -38,7 +38,7 @@ def test_logging_log_levels_debug(pytester: pytest.Pytester, page: Page) -> None
     log_lines = page.locator("tr.log-level-debug").filter(visible=True)
     expect(log_lines).to_have_count(1)
     expect(log_lines.locator("td.level-cell")).to_have_text("DEBUG")
-    expect(log_lines.locator("td.source-cell")).to_have_text("test_example")
+    expect(log_lines.locator("td.source-cell")).to_contain_text("test_logging_log_levels_debug")
     expect(log_lines.locator("td.msg-cell")).to_have_text("This is a DEBUG log message.")
 
 
@@ -61,7 +61,7 @@ def test_logging_log_levels_info(pytester: pytest.Pytester, page: Page) -> None:
     ).to_have_count(4)
     log_lines = log_lines.nth(1)
     expect(log_lines.locator("td.level-cell")).to_have_text("INFO")
-    expect(log_lines.locator("td.source-cell")).to_have_text("test_example")
+    expect(log_lines.locator("td.source-cell")).to_contain_text("test_logging_log_levels_info")
     expect(log_lines.locator("td.msg-cell")).to_have_text("This is an INFO log message.")
 
 
@@ -79,7 +79,7 @@ def test_logging_log_levels_warning(pytester: pytest.Pytester, page: Page) -> No
     log_lines = page.locator("tr.log-level-warning").filter(visible=True)
     expect(log_lines).to_have_count(1)
     expect(log_lines.locator("td.level-cell")).to_have_text("WARNING")
-    expect(log_lines.locator("td.source-cell")).to_have_text("test_example")
+    expect(log_lines.locator("td.source-cell")).to_contain_text("test_logging_log_levels_warning")
     expect(log_lines.locator("td.msg-cell")).to_have_text("This is a WARNING log message.")
 
 
@@ -97,7 +97,7 @@ def test_logging_log_levels_error(pytester: pytest.Pytester, page: Page) -> None
     log_lines = page.locator("tr.log-level-error").filter(visible=True)
     expect(log_lines).to_have_count(1)
     expect(log_lines.locator("td.level-cell")).to_have_text("ERROR")
-    expect(log_lines.locator("td.source-cell")).to_have_text("test_example")
+    expect(log_lines.locator("td.source-cell")).to_contain_text("test_logging_log_levels_error")
     expect(log_lines.locator("td.msg-cell")).to_have_text("This is an ERROR log message.")
 
 
@@ -115,7 +115,7 @@ def test_logging_log_levels_critical(pytester: pytest.Pytester, page: Page) -> N
     log_lines = page.locator("tr.log-level-critical").filter(visible=True)
     expect(log_lines).to_have_count(1)
     expect(log_lines.locator("td.level-cell")).to_have_text("CRITICAL")
-    expect(log_lines.locator("td.source-cell")).to_have_text("test_example")
+    expect(log_lines.locator("td.source-cell")).to_contain_text("test_logging_log_levels_critical")
     expect(log_lines.locator("td.msg-cell")).to_have_text("This is a CRITICAL log message.")
 
 
@@ -587,23 +587,3 @@ def test_logging_trace_public_api_class(pytester: pytest.Pytester, page: Page) -
     expect(sandwich_call.locator("td.msg-cell").last).to_contain_text(
         "TestClass.sandwich(y=5) -> 10"
     )
-
-
-@pytest.mark.skip(reason="pytest_assertion_pass hook is disabled")
-def test_asserts_passing_expect_log(pytester: pytest.Pytester, page: Page) -> None:
-    pytester.makepyfile("""
-        def test_asserts(human):
-            x = False
-            assert False is False
-    """)
-
-    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=debug")
-    html_path = utils.find_test_log_location(result)
-    assert result.ret == 0
-
-    page.goto(html_path.as_uri())
-    log_lines = page.locator("tr.log-level-debug").filter(visible=True)
-    expect(log_lines).to_have_count(1)
-    expect(log_lines.locator("td.level-cell")).to_have_text("DEBUG")
-    expect(log_lines.locator("td.source-cell")).to_have_text("test_asserts")
-    expect(log_lines.locator("td.msg-cell")).to_have_text("assert False is False")

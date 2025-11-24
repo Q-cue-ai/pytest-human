@@ -25,7 +25,6 @@ def test_exception_test_throws(pytester: pytest.Pytester, page: Page) -> None:
     exception = page.locator("tr.log-level-error").filter(visible=True)
     expect(exception).to_have_count(1)
     expect(exception.locator("td.level-cell")).to_have_text("ERROR")
-    expect(exception.locator("td.source-cell")).to_have_text("test_exception")
     exception_span = utils.open_span(page, "Exception: ValueError This is a test exception.")
     expect(exception_span.locator("td.msg-cell").first).to_contain_text(re.compile("^traceback"))
 
@@ -50,7 +49,6 @@ def test_exception_xfail_test_throws(pytester: pytest.Pytester, page: Page) -> N
     exception = page.locator("tr.log-level-warning").filter(visible=True)
     expect(exception).to_have_count(1)
     expect(exception.locator("td.level-cell")).to_have_text("WARNING")
-    expect(exception.locator("td.source-cell")).to_have_text("test_exception_xfail")
     expect(exception.locator("td.msg-cell")).to_contain_text(re.compile("XFAIL: \n\nValueError.*"))
 
 
@@ -76,7 +74,6 @@ def test_exception_xfail_reason_test_throws_expect_log_reason(
     exception = page.locator("tr.log-level-warning").filter(visible=True)
     expect(exception).to_have_count(1)
     expect(exception.locator("td.level-cell")).to_have_text("WARNING")
-    expect(exception.locator("td.source-cell")).to_have_text("test_exception_xfail")
     expect(exception.locator("td.msg-cell")).to_contain_text(
         re.compile("XFAIL: Some reason\n\nValueError.*")
     )

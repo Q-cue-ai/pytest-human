@@ -8,6 +8,7 @@ import threading
 import time
 from dataclasses import dataclass
 from datetime import datetime
+from pathlib import Path
 from typing import Optional
 
 import pygments
@@ -16,6 +17,7 @@ from pygments import lexers
 from pygments.formatter import Formatter as PygmentsFormatter
 from pygments.lexer import Lexer as PygmentsLexer
 
+from pytest_human import repo
 from pytest_human._code_style import _ReportCodeStyle
 from pytest_human.log import _SPAN_END_TAG, _SPAN_START_TAG, _SYNTAX_HIGHLIGHT_TAG
 
@@ -38,13 +40,16 @@ class HtmlRecordFormatter(logging.Formatter):
     MINIMUM_PROPAGATION_LEVEL = logging.ERROR
     DATE_FMT = "%H:%M:%S.%f"
 
-    def __init__(self, code_formatter: PygmentsFormatter, code_lexer: PygmentsLexer) -> None:
+    def __init__(
+        self, code_formatter: PygmentsFormatter, code_lexer: PygmentsLexer, repo: repo.Repo
+    ) -> None:
         super().__init__()
         self._lock = threading.Lock()
         self._block_stack: list[_BlockData] = []
         self._block_id_counter: int = 0
         self._code_formatter = code_formatter
         self._code_lexer = code_lexer
+        self._repo = repo
 
     def format(self, record: logging.LogRecord) -> str:
         """Format a log record as an HTML fragment."""
@@ -67,11 +72,47 @@ class HtmlRecordFormatter(logging.Formatter):
         timestamp = datetime.fromtimestamp(record.created)
         formatted = timestamp.strftime(self.DATE_FMT)
         with_ms = formatted[:-3]
-        return with_ms
+        return html.escape(with_ms)
+
+    def _get_file_in_repo(self, record: logging.LogRecord) -> tuple[str, int]:
+        """Get the log record path relative to the git repo root, if possible."""
+        path, lineno = self._get_file_lines(record)
+        relative_path = self._repo.relative_to_repo(Path(path))
+        return str(relative_path), lineno
+
+    def _get_file_lines(self, record: logging.LogRecord) -> tuple[str, int]:
+        """Get the start and end lines of the log record if available."""
+        location = getattr(record, "_location", {})
+        line_no = location.get("lineno", record.lineno)
+        path_name = location.get("pathname", record.pathname)
+
+        return path_name, line_no
+
+    def _get_source_link(self, record: logging.LogRecord) -> str:
+        """Get the source of the log record as a link."""
+        log_path, line_no = self._get_file_in_repo(record)
+        full_location = f"{log_path}:{line_no}"
+        file_location = f"{Path(log_path).name}:{line_no}"
+        full_path, _ = self._get_file_lines(record)
+
+        url = self._repo.create_github_url(Path(full_path), line_no)
+
+        if url is None:
+            return (
+                f'<span class="source-text" title="{html.escape(full_location)}">'
+                f"{html.escape(file_location)}</span>"
+            )
+
+        return (
+            f'<a href="{html.escape(url)}"'
+            f' class="source-link source-text" target="_blank" rel="noopener noreferrer"'
+            f' title="{html.escape(full_location)}">'
+            f"{html.escape(file_location)}</a>"
+        )
 
     def _format_log_record(self, record: logging.LogRecord) -> str:
         timestamp = self._format_time(record)
-        escaped_source = html.escape(record.name)
+        escaped_source_link = self._get_source_link(record)
         escaped_message = self._get_message_html(record)
 
         result = f"""
@@ -79,7 +120,7 @@ class HtmlRecordFormatter(logging.Formatter):
             <td></td>
             <td class="time-cell">{html.escape(timestamp)}</td>
             <td class="level-cell">{html.escape(record.levelname)}</td>
-            <td class="source-cell">{escaped_source}</td>
+            <td class="source-cell">{escaped_source_link}</td>
             <td class="msg-cell">{escaped_message}</td>
             <td class="duration-cell"></td>
         </tr>
@@ -111,7 +152,7 @@ class HtmlRecordFormatter(logging.Formatter):
         )
 
         timestamp = self._format_time(record)
-        escaped_source = html.escape(record.name)
+        escaped_source_link = self._get_source_link(record)
         escaped_msg = self._get_message_html(record)
 
         return f"""
@@ -121,7 +162,7 @@ class HtmlRecordFormatter(logging.Formatter):
             </td>
             <td class="time-cell">{timestamp}</td>
             <td class="level-cell">{record.levelname}</td>
-            <td class="source-cell" title="{escaped_source}">{escaped_source}</td>
+            <td class="source-cell">{escaped_source_link}</td>
             <td class="msg-cell">{escaped_msg}</td>
             <td class="duration-cell" id="{duration_id}">...</td>
         </tr>
@@ -132,7 +173,7 @@ class HtmlRecordFormatter(logging.Formatter):
                         <col style="width: 3rem;">
                         <col style="width: 10rem;">
                         <col style="width: 7rem;">
-                        <col style="width: 14rem;">
+                        <col style="width: 10rem;">
                         <col style="width: 100%;">
                         <col style="width: 6rem;">
                     </colgroup>
@@ -147,9 +188,9 @@ class HtmlRecordFormatter(logging.Formatter):
         block = self._block_stack.pop()
         duration_ms = (time.monotonic() - block.start_time) * 1000
 
-        result = "</table></td></tr>"
+        result = "</table></td></tr>\n"
         result += (
-            f"<script>finalizeSpan('{block.id}', '{block.duration_id}', {duration_ms});</script>"
+            f"<script>finalizeSpan('{block.id}', '{block.duration_id}', {duration_ms});</script>\n"
         )
 
         parent = None
@@ -160,7 +201,7 @@ class HtmlRecordFormatter(logging.Formatter):
             parent.severity_max = max(parent.severity_max, block.severity_max)
 
         css_class = self._log_level_to_css_class(block.severity_max)
-        result += f"<script>setSpanSeverity('{block.id}', '{css_class}');</script>"
+        result += f"<script>setSpanSeverity('{block.id}', '{css_class}');</script>\n"
         return result
 
     def end_all_blocks(self) -> str:
@@ -179,7 +220,9 @@ class HtmlFileFormatter(logging.Formatter):
     methods that should be called at the start and end of the file.
     """
 
-    def __init__(self, title: str = "Test Log", description: str | None = "") -> None:
+    def __init__(
+        self, repo: repo.Repo, title: str = "Test Log", description: str | None = ""
+    ) -> None:
         super().__init__()
         self._code_formatter = pygments.formatters.HtmlFormatter(
             style=_ReportCodeStyle, nowrap=True
@@ -187,8 +230,9 @@ class HtmlFileFormatter(logging.Formatter):
         self._code_lexer = lexers.get_lexer_by_name("python")
         self._title = title
         self._description = description
+        self._repo = repo
         self._record_formatter = HtmlRecordFormatter(
-            code_formatter=self._code_formatter, code_lexer=self._code_lexer
+            code_formatter=self._code_formatter, code_lexer=self._code_lexer, repo=self._repo
         )
 
     def format(self, record: logging.LogRecord) -> str:
@@ -253,7 +297,7 @@ class HtmlFileFormatter(logging.Formatter):
                         <col style="width: 3rem;">
                         <col style="width: 10rem;">
                         <col style="width: 7rem;">
-                        <col style="width: 14rem;">
+                        <col style="width: 10rem;">
                         <col style="width: 100%;">
                         <col style="width: 6rem;">
                     </colgroup>
@@ -478,8 +522,26 @@ class HtmlFileFormatter(logging.Formatter):
             .source-cell {
                 color: #586069;
                 white-space: nowrap;
-                overflow: hidden;
+            }
+
+            .source-text {
+                max-width: 100%;
+                display: block;
                 text-overflow: ellipsis;
+                overflow: hidden;
+            }
+
+            .source-link {
+                color: inherit;
+                text-decoration: none;
+                transition: color 0.1s ease-in-out;
+            }
+
+            .source-link:hover,
+            .source-link:focus {
+                text-decoration: underline;
+                color: #555;
+                cursor: pointer;
             }
 
             .msg-cell {

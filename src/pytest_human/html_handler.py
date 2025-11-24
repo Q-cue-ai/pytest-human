@@ -12,6 +12,7 @@ from typing import Optional, TextIO
 
 from pytest_human.html_format import HtmlFileFormatter
 from pytest_human.log import _SPAN_END_TAG
+from pytest_human.repo import Repo
 
 
 class _SpanEndFilter(logging.Filter):
@@ -34,12 +35,16 @@ class HtmlFileHandler(logging.Handler):
     """
 
     def __init__(
-        self, filename: str, title: str = "Test Log", description: str | None = ""
+        self,
+        filename: str,
+        repo: Repo,
+        title: str = "Test Log",
+        description: str | None = "",
     ) -> None:
         super().__init__()
         self.path = Path(filename)
         self._file: TextIO = self.path.open("w", encoding="utf-8")
-        self._formatter = HtmlFileFormatter(title=title, description=description)
+        self._formatter = HtmlFileFormatter(title=title, description=description, repo=repo)
         super().setFormatter(self._formatter)
         self._file.write(self._formatter.format_header())
 
@@ -81,9 +86,13 @@ class HtmlFileHandler(logging.Handler):
     def close(self) -> None:
         """Finalize and close the HTML file."""
         with self._locked():
-            if self._file and not self._file.closed:
+            if not self._file or self._file.closed:
+                super().close()
+                return
+
+            if hasattr(self, "_formatter"):
                 self._file.write(self._formatter.format_footer())
-                self._file.close()
+            self._file.close()
             super().close()
 
     def relocate(self, new_path: str | Path) -> None:
@@ -107,13 +116,15 @@ class HtmlHandlerContext:
     def __init__(
         self,
         filename: Path,
+        *,
+        repo: Repo,
         title: str = "Test Log",
         description: str | None = "",
         level: int = logging.DEBUG,
     ) -> None:
         self._filtered_handlers = []
         self.html_handler = HtmlFileHandler(
-            filename.as_posix(), title=title, description=description
+            filename.as_posix(), title=title, description=description, repo=repo
         )
         self.html_handler.setLevel(level)
 

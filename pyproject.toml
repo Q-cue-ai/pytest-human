@@ -5,7 +5,7 @@ requires = [ "setuptools>=61" ]
 
 [project]
 name = "pytest-human"
-version = "0.5.1"
+version = "0.6.0"
 description = "A beautiful nested pytest HTML test report"
 readme = "README.md"
 keywords = [
@@ -39,7 +39,11 @@ classifiers = [
   "Topic :: Software Development :: Testing",
 ]
 
-dependencies = [ "pytest>=8", "rich==14.*" ]
+dependencies = [
+ "gitpython==3.*",
+ "pytest>=8",
+ "rich==14.*",
+]
 
 urls.Changelog = "https://github.com/Q-cue-ai/pytest-human/releases"
 urls.Issues = "https://github.com/Q-cue-ai/pytest-human/issues"
@@ -106,6 +110,13 @@ ignore = [
 
 [tool.pytest.ini_options]
 asyncio_default_fixture_loop_scope = "function"
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+tag_format = "v$version"
+version_scheme = "pep440"
+version_provider = "uv"
+update_changelog_on_bump = false
 
 [dependency-groups]
 dev = [
