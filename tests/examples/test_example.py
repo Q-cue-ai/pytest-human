@@ -78,7 +78,7 @@ def test_spans(human):
     human.log.info("Operation completed")
 
 
-# Add the traced() decorator for automatic logging of method call/return
+# Add the @traced decorator for automatic logging of method call/return
 @traced
 def save_login(login):
     log = get_logger(__name__)
