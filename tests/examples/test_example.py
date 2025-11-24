@@ -7,7 +7,7 @@ import time
 from pytest_human.log import get_logger, traced
 
 
-@traced()
+@traced
 def insert_db(data):
     query = "INSERT INTO flowers (petals) VALUES ('{{1,2,3,4,5}}');"
     logging.info(f"executing {query=}")
@@ -18,12 +18,12 @@ def test_example(human):
     """This test demonstrates pytest-human logging."""
     human.log.info("Established test agent connection")
 
-    with human.log.span.info("Generating sample data"):
+    with human.span.info("Generating sample data"):
         data = [1, 2, 3, 4, 5]
         human.log.info(f"Loaded sample data {data=} {len(data)=}", highlight=True)
         insert_db(data)
 
-        with human.log.span.debug("Validating sample"):
+        with human.span.debug("Validating sample"):
             result = sum(data)
             human.log.debug(f"Sum {result=}", highlight=True)
 
@@ -61,17 +61,17 @@ def process_data():
 def test_spans(human):
     human.log.info("Starting complex operation")
 
-    with human.log.span.info("Phase 1: Initialization"):
+    with human.span.info("Phase 1: Initialization"):
         human.log.debug("Initializing resources...")
 
-        with human.log.span.debug("Loading configuration"):
+        with human.span.debug("Loading configuration"):
             human.log.trace("Reading config file")
             config = load_config()
             human.log.debug(f"Config loaded: {config}")
 
         human.log.info("Initialization complete")
 
-    with human.log.span.info("Phase 2: Processing"):
+    with human.span.info("Phase 2: Processing"):
         human.log.debug("Processing data...")
         process_data()
 
@@ -79,7 +79,7 @@ def test_spans(human):
 
 
 # Add the traced() decorator for automatic logging of method call/return
-@traced()
+@traced
 def save_login(login):
     log = get_logger(__name__)
     log.info("a log inside save_login")
