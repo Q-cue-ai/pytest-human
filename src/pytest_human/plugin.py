@@ -371,7 +371,7 @@ class HtmlLogPlugin:
 
     def _log_artifacts(self, human: Human) -> None:
         for attachment in human.artifacts.logs():
-            with human.log.span.info(attachment.file_name):
+            with human.span.info(attachment.file_name):
                 if attachment.description:
                     human.log.info(f"# {attachment.description}", highlight=True)
                 content = cast(str, attachment.content)

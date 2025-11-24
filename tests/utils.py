@@ -7,7 +7,7 @@ from playwright.sync_api import Locator, Page, expect
 from pytest_human.log import traced
 
 
-@traced()
+@traced
 def find_test_log_location(result: RunResult) -> Path:
     """Find the test log location from the pytest output."""
     for line in result.outlines:
@@ -23,7 +23,7 @@ def find_test_log_location(result: RunResult) -> Path:
     raise ValueError("Could not find test log location in pytest output.")
 
 
-@traced()
+@traced
 def open_span(page: Page | Locator, span_text: str | re.Pattern) -> Locator:
     nested_span = page.locator('tr[id^="header"]').filter(has_text=span_text)
 
@@ -35,7 +35,7 @@ def open_span(page: Page | Locator, span_text: str | re.Pattern) -> Locator:
     return inner_log_block
 
 
-@traced()
+@traced
 def assert_unopenable_span(page: Page | Locator, span_text: str | re.Pattern) -> None:
     nested_span = page.locator('tr[id^="header"]').filter(has_text=span_text)
 
