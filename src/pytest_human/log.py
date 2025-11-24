@@ -10,7 +10,7 @@ import threading
 from collections.abc import Callable, Iterator, MutableMapping
 from contextlib import AbstractContextManager, contextmanager
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Optional, overload
 
 from rich.pretty import pretty_repr
 
@@ -297,7 +297,32 @@ def _out_of_trace() -> Iterator[None]:
         _log_local.in_trace = previous
 
 
+# use as @traced()
+@overload
 def traced(
+    func: Callable,
+    *,
+    log_level: int = logging.INFO,
+    suppress_return: bool = False,
+    suppress_params: bool = False,
+    suppress_self: bool = True,
+) -> Callable: ...
+
+
+# use as @traced
+@overload
+def traced(
+    func: None = None,
+    *,
+    log_level: int = logging.INFO,
+    suppress_return: bool = False,
+    suppress_params: bool = False,
+    suppress_self: bool = True,
+) -> Callable[[Callable], Callable]: ...
+
+
+def traced(
+    func: Optional[Callable] = None,
     *,
     log_level: int = logging.INFO,
     suppress_return: bool = False,
@@ -387,6 +412,9 @@ def traced(
                         raise e
 
         return sync_wrapper
+
+    if func is not None:
+        return decorator(func)
 
     return decorator
 
