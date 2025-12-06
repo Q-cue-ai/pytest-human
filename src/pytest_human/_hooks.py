@@ -1,7 +1,7 @@
 import pytest
 
 import pytest_human._flags as flags
-from pytest_human.fixtures import human  # noqa: F401
+from pytest_human.fixtures import _human_log_only_to_html, human, test_log  # noqa: F401
 from pytest_human.log import TRACE_LEVEL_NUM, TestLogger
 from pytest_human.plugin import HtmlLogPlugin
 

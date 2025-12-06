@@ -19,7 +19,12 @@ from pygments.lexer import Lexer as PygmentsLexer
 
 from pytest_human import repo
 from pytest_human._code_style import _ReportCodeStyle
-from pytest_human.log import _SPAN_END_TAG, _SPAN_START_TAG, _SYNTAX_HIGHLIGHT_TAG
+from pytest_human.log import (
+    _LOCATION_TAG,
+    _SPAN_END_TAG,
+    _SPAN_START_TAG,
+    _SYNTAX_HIGHLIGHT_TAG,
+)
 
 
 @dataclass
@@ -82,7 +87,7 @@ class HtmlRecordFormatter(logging.Formatter):
 
     def _get_file_lines(self, record: logging.LogRecord) -> tuple[str, int]:
         """Get the start and end lines of the log record if available."""
-        location = getattr(record, "_location", {})
+        location = getattr(record, _LOCATION_TAG, {})
         line_no = location.get("lineno", record.lineno)
         path_name = location.get("pathname", record.pathname)
 

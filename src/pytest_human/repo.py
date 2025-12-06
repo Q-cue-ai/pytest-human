@@ -9,14 +9,14 @@ from urllib.parse import quote as url_escape
 
 import git
 
-from pytest_human.log import get_logger
+from pytest_human.log import _get_internal_logger
 
 
 class Repo:
     """Manages git repo information and project root detection."""
 
     def __init__(self) -> None:
-        self.log = get_logger(__name__)
+        self.log = _get_internal_logger(self.__class__.__name__)
         self._git_repo = self._initialize_git_repo()
         self.project_root = self._get_project_root()
         self.repo_url = self._get_repo_url()

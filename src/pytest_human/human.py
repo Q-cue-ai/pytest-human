@@ -95,8 +95,8 @@ class HumanAttachments:
 class Human:
     """Human fixture object."""
 
-    def __init__(self, test: pytest.Item) -> None:
+    def __init__(self, test: pytest.Item, html_only: bool = True) -> None:
         self._test = test
-        self.log = get_logger(test.name)
+        self.log = get_logger(test.name, html_only=html_only)
         self.artifacts = HumanAttachments()
         self.span = self.log.span

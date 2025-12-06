@@ -20,8 +20,15 @@ from pytest_human._flags import is_output_to_test_tmp
 from pytest_human.exceptions import HumanLogLevelWarning
 from pytest_human.html_handler import HtmlFileHandler, HtmlHandlerContext
 from pytest_human.human import Human
-from pytest_human.log import TestLogger, get_function_location, get_logger
+from pytest_human.log import (
+    _LOCATION_TAG,
+    _TRACED_TAG,
+    HtmlLogging,
+    TestLogger,
+    _get_internal_logger,
+)
 from pytest_human.repo import Repo
+from pytest_human.tracing import get_function_location
 
 
 class HtmlLogPlugin:
@@ -53,8 +60,10 @@ class HtmlLogPlugin:
             config.pluginmanager.unregister(html_logger_plugin)
 
     @staticmethod
-    def _get_test_logger(item: pytest.Item) -> TestLogger:
-        return get_logger(item.name)
+    def _get_test_logger(item: Node) -> TestLogger:
+        """Get the test-specific logger."""
+        namespace = f"plugin.test.{item.name}"
+        return _get_internal_logger(namespace)
 
     @staticmethod
     def _get_session_scoped_logs_dir(item: pytest.Item) -> Path:
@@ -188,14 +197,18 @@ class HtmlLogPlugin:
         log_path = self._get_log_path(item)
         level = self._get_log_level(item)
         self.validate_log_level(item)
+        log_to_all = item.config.getoption("html_log_to_all", default=False)
 
-        with HtmlHandlerContext(
-            filename=log_path,
-            title=item.name,
-            description=self._get_test_doc_string(item),
-            level=level,
-            repo=self._repo,
-        ) as html_handler:
+        with (
+            HtmlHandlerContext(
+                filename=log_path,
+                title=item.name,
+                description=self._get_test_doc_string(item),
+                level=level,
+                repo=self._repo,
+            ) as html_handler,
+            HtmlLogging.setup(html_handler, log_to_all=log_to_all),
+        ):
             item.stash[self.html_log_handler_key] = html_handler
             yield
 
@@ -241,7 +254,7 @@ class HtmlLogPlugin:
     ) -> Iterator[None]:
         """Wrap all fixture functions with the logging decorator."""
 
-        logger = get_logger(fixturedef.argname)
+        logger = _get_internal_logger("tracing.fixture.setup")
         call_str = self._format_fixture_call(fixturedef, request)
         extra = {"_location": get_function_location(fixturedef.func)}
         with logger.span.debug(f"setup fixture {call_str}", highlight=True, extra=extra):
@@ -317,8 +330,8 @@ class HtmlLogPlugin:
             # fixture was already cleaned up, skipping log
             return
 
-        logger = get_logger(fixturedef.argname)
-        extra = {"_location": get_function_location(fixturedef.func)}
+        logger = _get_internal_logger("tracing.fixture.teardown")
+        extra = {_LOCATION_TAG: get_function_location(fixturedef.func), _TRACED_TAG: True}
         logger.debug(f"Tore down fixture {fixturedef.argname}()", highlight=True, extra=extra)
 
     @staticmethod
@@ -335,7 +348,7 @@ class HtmlLogPlugin:
         report: pytest.TestReport,
     ) -> None:
         """Log test exceptions in an error span."""
-        logger = get_logger(node.name)
+        logger = self._get_test_logger(node)
         excinfo = call.excinfo
         if excinfo is None:
             logger.error("Failed extracting exception info")
@@ -359,7 +372,7 @@ class HtmlLogPlugin:
 
         report.item = item
 
-        logger = get_logger(item.name)
+        logger = self._get_test_logger(item)
 
         # xfail exceptions do not show up in pytest_exception_interact
         if hasattr(report, "wasxfail") and call.excinfo is not None:
@@ -409,7 +422,7 @@ class HtmlLogPlugin:
 
     def pytest_internalerror(self, excrepr: ExceptionRepr) -> None:
         """Log internal pytest errors to the HTML log."""
-        logger = get_logger("pytest")
+        logger = _get_internal_logger("plugin.internalerror")
         logger.critical(f"Internal pytest error: {excrepr!s}", highlight=True)
 
     @pytest.hookimpl(trylast=True)

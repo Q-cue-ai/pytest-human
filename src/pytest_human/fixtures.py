@@ -3,24 +3,26 @@
 import pytest
 
 from pytest_human.human import Human
-from pytest_human.log import TestLogger, get_logger
-
-
-def _get_test_log(request: pytest.FixtureRequest) -> TestLogger:
-    test_name = request.node.name
-    return get_logger(test_name)
+from pytest_human.log import TestLogger
 
 
 @pytest.fixture
-def human(request: pytest.FixtureRequest) -> Human:
+def _human_log_only_to_html(request: pytest.FixtureRequest) -> bool:
+    """Return whether Human object logging is only sent to HTML logger."""
+    html_log_to_all = request.config.getoption("--html-log-to-all")
+    return not html_log_to_all
+
+
+@pytest.fixture
+def human(request: pytest.FixtureRequest, _human_log_only_to_html: bool) -> Human:
     """Provide a human logger to the test."""
-    return Human(request.node)
+    return Human(request.node, _human_log_only_to_html)
 
 
 @pytest.fixture
-def test_log(request: pytest.FixtureRequest) -> TestLogger:
+def test_log(human: Human) -> TestLogger:
     """Provides a test logger.
 
-    This is equivalent to human.log or get_logger(request.node.name).
+    This is equivalent to human.log.
     """
-    return _get_test_log(request)
+    return human.log

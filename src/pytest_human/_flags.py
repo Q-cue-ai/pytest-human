@@ -23,6 +23,16 @@ def is_output_to_test_tmp(config: pytest.Config) -> bool:
     return config.getoption("html_use_test_tmp")
 
 
+def is_live_logging_enabled(config: pytest.Config) -> bool:
+    """Check if live logging is enabled."""
+    return config.getini("log_cli")
+
+
+def is_quiet_mode_enabled(config: pytest.Config) -> bool:
+    """Check if quiet mode is enabled for pytest-human."""
+    return config.getoption("quiet", config.getoption("html_quiet"))
+
+
 def validate_flags(config: pytest.Config) -> None:
     _validate_dir_flags(config)
 
@@ -69,4 +79,12 @@ def register_flags(parser: pytest.Parser) -> None:
         action="store_true",
         default=False,
         help="Remove console logging output from pytest-human when HTML logging is enabled.",
+    )
+
+    group.addoption(
+        "--html-log-to-all",
+        action="store_true",
+        default=False,
+        help="""Send all pytest-human logs to every logger, not just the HTML log file.
+        """,
     )

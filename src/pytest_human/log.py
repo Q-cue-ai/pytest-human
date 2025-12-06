@@ -12,10 +12,59 @@ TRACE_LEVEL_NUM = logging.NOTSET + 5
 
 _SPAN_START_TAG = "span_start"
 _SPAN_END_TAG = "span_end"
+_TRACED_TAG = "was_traced"
+_LOCATION_TAG = "_location"
 _SYNTAX_HIGHLIGHT_TAG = "syntax"
 _HIGHLIGHT_EXTRA = {_SYNTAX_HIGHLIGHT_TAG: True}
 
-_log_local = threading.local()
+_USER_HTML_NAMESPACE = logging.getLogger("human.user.html")
+_USER_NAMESPACE = logging.getLogger("human.user")
+_INTERNAL_NAMESPACE = logging.getLogger("human")
+
+
+class HtmlLogging:
+    """Manages Html logging.
+
+    Sets up a logging handler that only logs to the HTML log, to be used by default
+    for library and user logging through library.
+    """
+
+    @staticmethod
+    @contextmanager
+    def setup_single(handler: logging.Handler, namespace: str) -> Iterator[None]:
+        """Context manager to set and clear the HTML handler."""
+        html_log = logging.getLogger(namespace)
+        old_propagate = html_log.propagate
+        html_log.propagate = False
+        html_log.addHandler(handler)
+        try:
+            yield
+        finally:
+            html_log.propagate = old_propagate
+            html_log.handlers.remove(handler)
+
+    @staticmethod
+    @contextmanager
+    def setup_multiple(handlers: logging.Handler, namespaces: list[str]) -> Iterator[None]:
+        """Context manager to set and clear the HTML handler on multiple namespaces."""
+        with ExitStack() as stack:
+            for namespace in namespaces:
+                stack.enter_context(HtmlLogging.setup_single(handlers, namespace))
+            yield
+
+    @staticmethod
+    @contextmanager
+    def setup(handler: logging.Handler, log_to_all: bool = False) -> Iterator[None]:
+        """Context manager to setup HTML logging on human namespaces."""
+
+        if log_to_all:
+            yield
+            return
+
+        with HtmlLogging.setup_multiple(
+            handler, ["human.user.html", "human.tracing", "human.plugin"]
+        ):
+            yield
 
 
 class SpanLogger:
@@ -227,4 +276,31 @@ def get_global_logger(name: str) -> TestLogger:
     :param name: Name of the logger, typically __name__
     """
     logger = logging.getLogger(name)
+    return TestLogger(logger)
+
+
+def get_logger(name: str, html_only: bool = True) -> TestLogger:
+    """Return a logger that supports pytest-human features under the human namespace.
+
+    While get_global_logger supports any namespace, this function always uses the human logging
+    namespace, with the added benefit of controlling whether the logger logs only to the HTML log
+    or to all handlers (including HTML).
+
+    By default logs only to HTML log. To log to all handlers, set html_only=False.
+
+    :param name: Name of the logger, typically __name__
+    :param html_only:   If True, returns a logger that only logs to the HTML handler.
+                        Overriden by --html-log-to-all flag.
+    """
+    if html_only:
+        logger = _USER_HTML_NAMESPACE.getChild(name)
+        return TestLogger(logger)
+
+    logger = _USER_NAMESPACE.getChild(name)
+    return TestLogger(logger)
+
+
+def _get_internal_logger(name: str) -> TestLogger:
+    """Return an internal logger for pytest-human library code."""
+    logger = _INTERNAL_NAMESPACE.getChild(name)
     return TestLogger(logger)
