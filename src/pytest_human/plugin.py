@@ -15,7 +15,11 @@ import pytest
 from _pytest._code.code import ExceptionRepr
 from _pytest.nodes import Node
 
-from pytest_human._flags import is_output_to_test_tmp
+from pytest_human._flags import (
+    is_live_logging_enabled,
+    is_output_to_test_tmp,
+    is_quiet_mode_enabled,
+)
 from pytest_human.exceptions import HumanLogLevelWarning
 from pytest_human.html_handler import HtmlFileHandler, HtmlHandlerContext
 from pytest_human.human import Human
@@ -65,24 +69,32 @@ class HtmlLogPlugin:
         return _get_internal_logger(namespace)
 
     @staticmethod
-    def _get_session_scoped_logs_dir(item: pytest.Item) -> Path:
-        """Get the session-scoped logs directory."""
-        path = item.session.config._tmp_path_factory.getbasetemp() / "session_logs"  # type: ignore # noqa: SLF001
+    def _ensure_default_log_dir(session_config: pytest.Config) -> Path:
+        """Create and return the default log dir exists.
+
+        This is a central session temp direcotry for all test logs.
+        """
+        path = session_config._tmp_path_factory.getbasetemp() / "session_logs"  # type: ignore # noqa: SLF001
         path.mkdir(parents=True, exist_ok=True)
         return path
 
-    @classmethod
-    def _session_scoped_test_log_path(cls, item: pytest.Item) -> Path:
-        """Get the session-scoped test log path."""
-        logs_dir = cls._get_session_scoped_logs_dir(item)
-        return cls._get_test_log_path(item, logs_dir)
-
     @staticmethod
-    def _get_test_log_path(item: pytest.Item, logs_dir: Path) -> Path:
-        """Create a test log path inside the given logs directory."""
-        logs_dir = logs_dir.resolve()
+    def _create_safe_filename(item: pytest.Item) -> str:
+        """Create a safe filename for the test item."""
         safe_test_name = re.sub(r"[^\w]", "_", item.name)[:35]
-        return logs_dir / f"{safe_test_name}.html"
+        return f"{safe_test_name}.html"
+
+    @classmethod
+    def _get_session_log_dir(cls, session_config: pytest.Config) -> Path:
+        """Get the session-scoped logs directory."""
+        if custom_dir := session_config.getoption("html_output_dir"):
+            custom_dir = custom_dir.resolve()
+            custom_dir.mkdir(parents=True, exist_ok=True)
+            return custom_dir
+
+        # if "html-use-test-tmp" is set, we still return this default dir
+        # because the log is created here first and moved later on.
+        return cls._ensure_default_log_dir(session_config)
 
     def _get_test_doc_string(self, item: pytest.Item) -> str | None:
         """Get the docstring of the test function, if any."""
@@ -119,8 +131,8 @@ class HtmlLogPlugin:
         cls,
         terminal: pytest.TerminalReporter,
         config: pytest.Config,
-        test_name: str,
         log_path: Path,
+        test_name: Optional[str] = None,
         flush: bool = False,
     ) -> None:
         """Log the HTML log path to the terminal."""
@@ -129,9 +141,15 @@ class HtmlLogPlugin:
             return
 
         terminal.ensure_newline()
-        terminal.write("🌎 Test ")
-        terminal.write(f"{test_name}", bold=True)
-        terminal.write(" HTML log at ")
+        terminal.write("🌎")
+
+        if test_name:
+            terminal.write(" Test ")
+            terminal.write(f"{test_name}", bold=True)
+            terminal.write(" HTML log at ")
+        else:
+            terminal.write(" HTML logs at ")
+
         terminal.write(f"{log_path.resolve().as_uri()}", bold=True, cyan=True)
         terminal.line("")
 
@@ -153,8 +171,8 @@ class HtmlLogPlugin:
         cls._print_test_report_location(
             terminal,
             item.config,
-            item.name,
             log_path,
+            item.name,
             flush,
         )
 
@@ -181,11 +199,6 @@ class HtmlLogPlugin:
             self._warned_about_log_level = True
 
         logging.warning(msg)
-
-    @classmethod
-    def _is_live_logging_enabled(cls, config: pytest.Config) -> bool:
-        """Check if live logging is enabled."""
-        return config.getini("log_cli")
 
     @pytest.hookimpl(tryfirst=True, hookwrapper=True)
     def pytest_runtest_protocol(
@@ -214,19 +227,13 @@ class HtmlLogPlugin:
         self.test_tmp_path = None
         self._test_reports_paths[item.name] = html_handler.path
 
-        if self._is_live_logging_enabled(item.config):
+        if is_live_logging_enabled(item.config):
             self._print_item_report_location(item, log_path, flush=True)
 
     def _get_log_path(self, item: pytest.Item) -> Path:
-        if custom_dir := item.config.getoption("html_output_dir"):
-            custom_dir.resolve().mkdir(parents=True, exist_ok=True)
-            return self._get_test_log_path(item, custom_dir)
-
-        if item.config.getoption("html_use_test_tmp"):
-            # Will be transferred on test setup to the correct location
-            return self._session_scoped_test_log_path(item)
-
-        return self._session_scoped_test_log_path(item)
+        parent_dir = self._get_session_log_dir(item.session.config)
+        filename = self._create_safe_filename(item)
+        return parent_dir / filename
 
     def _format_fixture_call(
         self, fixturedef: pytest.FixtureDef, request: pytest.FixtureRequest
@@ -424,23 +431,42 @@ class HtmlLogPlugin:
         logger = _get_internal_logger("plugin.internalerror")
         logger.critical(f"Internal pytest error: {excrepr!s}", highlight=True)
 
-    @pytest.hookimpl(trylast=True)
-    def pytest_terminal_summary(
+    def _print_locations_summary(
         self, terminalreporter: pytest.TerminalReporter, config: pytest.Config
     ) -> None:
-        """Log all HTML log paths to the terminal summary."""
+        """Log HTML log paths to the terminal summary."""
+
         if self._test_reports_paths:
             terminalreporter.write_sep("-", "pytest-human HTML log reports")
+
+        if not is_output_to_test_tmp(config) and len(self._test_reports_paths) > 1:
+            self._print_test_report_location(
+                terminalreporter,
+                config,
+                self._get_session_log_dir(config),
+            )
+            return
 
         for test_name, log_path in self._test_reports_paths.items():
             self._print_test_report_location(
                 terminalreporter,
                 config,
-                test_name,
                 log_path,
+                test_name,
             )
 
         if self._test_reports_paths:
             terminalreporter.write_sep("-")
+
+    @pytest.hookimpl(trylast=True)
+    def pytest_terminal_summary(
+        self, terminalreporter: pytest.TerminalReporter, config: pytest.Config
+    ) -> None:
+        """Log all HTML log paths to the terminal summary."""
+
+        if is_quiet_mode_enabled(config) or is_live_logging_enabled(config):
+            return
+
+        self._print_locations_summary(terminalreporter, config)
 
         terminalreporter.flush()
