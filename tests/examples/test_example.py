@@ -4,7 +4,8 @@ import inspect
 import logging
 import time
 
-from pytest_human.log import get_logger, traced
+from pytest_human.log import get_logger
+from pytest_human.tracing import traced
 
 
 @traced

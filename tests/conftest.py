@@ -3,7 +3,7 @@ from collections.abc import Iterator
 import pytest
 from playwright.sync_api import Locator, LocatorAssertionsImpl, Page
 
-from pytest_human.log import trace_calls, trace_public_api
+from pytest_human.tracing import trace_calls, trace_public_api
 
 pytest_plugins = "pytester"
 

@@ -54,7 +54,7 @@ def test_source_span_no_git(pytester: pytest.Pytester, page: Page) -> None:
 
 def test_source_traced_no_git(pytester: pytest.Pytester, page: Page) -> None:
     pytester.makepyfile("""
-            from pytest_human.log import traced
+            from pytest_human.tracing import traced
             from logging import DEBUG
 
             @traced(log_level=DEBUG)

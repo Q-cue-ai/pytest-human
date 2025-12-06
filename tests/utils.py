@@ -4,7 +4,7 @@ from pathlib import Path
 from _pytest.pytester import RunResult
 from playwright.sync_api import Locator, Page, expect
 
-from pytest_human.log import traced
+from pytest_human.tracing import traced
 
 
 @traced

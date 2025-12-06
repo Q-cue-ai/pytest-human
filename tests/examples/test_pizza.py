@@ -6,7 +6,8 @@ import time
 
 import pytest
 
-from pytest_human.log import get_logger, trace_public_api, traced
+from pytest_human.log import get_logger
+from pytest_human.tracing import trace_public_api, traced
 from tests.examples.external_delivery import ExternalDeliveryService
 
 log = get_logger(__name__)
