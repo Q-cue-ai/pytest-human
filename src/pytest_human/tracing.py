@@ -35,12 +35,13 @@ def _get_class_name(func: Callable) -> str:
     return func_components[0]
 
 
-def _format_call_string(
+def _format_call_string(  # noqa: PLR0913
     func: Callable,
     args: tuple,
     kwargs: dict,
     suppress_params: bool = False,
     suppress_self: bool = True,
+    suppress_none: bool = False,
 ) -> str:
     sig = inspect.signature(func)
     bound_args = sig.bind(*args, **kwargs)
@@ -53,7 +54,9 @@ def _format_call_string(
     for name, value in bound_args.arguments.items():
         if suppress_self and name == "self":
             continue
-        params.append(f"{name}={value!r}")
+
+        if suppress_none and value is None:
+            continue
 
     if not suppress_params:
         param_str = ", ".join(params)
@@ -97,6 +100,7 @@ def traced(
     suppress_return: bool = False,
     suppress_params: bool = False,
     suppress_self: bool = True,
+    suppress_none: bool = False,
 ) -> Callable: ...
 
 
@@ -109,16 +113,18 @@ def traced(
     suppress_return: bool = False,
     suppress_params: bool = False,
     suppress_self: bool = True,
+    suppress_none: bool = False,
 ) -> Callable[[Callable], Callable]: ...
 
 
-def traced(
+def traced(  # noqa: PLR0913
     func: Optional[Callable] = None,
     *,
     log_level: int = logging.INFO,
     suppress_return: bool = False,
     suppress_params: bool = False,
     suppress_self: bool = True,
+    suppress_none: bool = False,
 ) -> Callable[[Callable], Callable]:
     """Decorate log method calls with parameters and return values.
 
@@ -127,12 +133,13 @@ def traced(
     :param suppress_return: If True, do not log the return value.
     :param suppress_params: If True, do not log the parameters.
     :param suppress_self: If True, do not log the 'self' parameter for methods. True by default.
+    :param suppress_none: If True, do not log parameters with None value.
     """
 
     def decorator(func: Callable) -> Callable:
-        logger = get_logger(func.__module__)
         is_async = inspect.iscoroutinefunction(func)
-        extra = {"_traced": True}
+        extra = {_TRACED_TAG: True}
+        logger = _get_internal_logger("tracing.functions")
 
         if is_async:
 
@@ -151,6 +158,7 @@ def traced(
                         kwargs,
                         suppress_params=suppress_params,
                         suppress_self=suppress_self,
+                        suppress_none=suppress_none,
                     )
                     # account for context manager and wrapper frames
                     log_kwargs = _add_stacklevel({}, 2)
@@ -185,7 +193,12 @@ def traced(
 
             with _in_trace():
                 func_str = _format_call_string(
-                    func, args, kwargs, suppress_params=suppress_params, suppress_self=suppress_self
+                    func,
+                    args,
+                    kwargs,
+                    suppress_params=suppress_params,
+                    suppress_self=suppress_self,
+                    suppress_none=suppress_none,
                 )
                 # account for context manager and wrapper frames
                 log_kwargs = _add_stacklevel({}, 2)
@@ -309,6 +322,7 @@ def trace_calls(  # noqa: ANN201
     :param suppress_return: If True, do not log the return value.
     :param suppress_params: If True, do not log the parameters.
     :param suppress_self: If True, do not log the 'self' parameter for methods. True by default.
+    :param suppress_none: If True, do not log parameters with None value.
     """
     try:
         for target in args:
@@ -336,6 +350,7 @@ def trace_public_api(  # noqa: ANN201
     :param suppress_return: If True, do not log the return value.
     :param suppress_params: If True, do not log the parameters.
     :param suppress_self: If True, do not log the 'self' parameter for methods. True by default.
+    :param suppress_none: If True, do not log parameters with None value.
     """
     methods = []
     for container in args:
