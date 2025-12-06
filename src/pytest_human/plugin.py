@@ -14,7 +14,6 @@ from typing import Optional, cast
 import pytest
 from _pytest._code.code import ExceptionRepr
 from _pytest.nodes import Node
-from rich.pretty import pretty_repr
 
 from pytest_human._flags import is_output_to_test_tmp
 from pytest_human.exceptions import HumanLogLevelWarning
@@ -28,7 +27,7 @@ from pytest_human.log import (
     _get_internal_logger,
 )
 from pytest_human.repo import Repo
-from pytest_human.tracing import get_function_location
+from pytest_human.tracing import _format_result, get_function_location
 
 
 class HtmlLogPlugin:
@@ -238,8 +237,8 @@ class HtmlLogPlugin:
             if arg == "request":
                 arg_list.append("request")
                 continue
-            result = request.getfixturevalue(arg)
-            arg_list.append(f"{arg}={pretty_repr(result)}")
+            value = request.getfixturevalue(arg)
+            arg_list.append(f"{arg}={_format_result(value)}")
 
         s += ", ".join(arg_list)
 
@@ -256,19 +255,19 @@ class HtmlLogPlugin:
 
         logger = _get_internal_logger("tracing.fixture.setup")
         call_str = self._format_fixture_call(fixturedef, request)
-        extra = {"_location": get_function_location(fixturedef.func)}
+        extra = {_LOCATION_TAG: get_function_location(fixturedef.func), _TRACED_TAG: True}
         with logger.span.debug(f"setup fixture {call_str}", highlight=True, extra=extra):
             result = yield
             try:
                 fix_result = result.get_result()
                 logger.debug(
-                    f"setup fixture {fixturedef.argname}() -> {pretty_repr(fix_result)}",
+                    f"setup fixture {fixturedef.argname}() -> {_format_result(fix_result)}",
                     highlight=True,
                     extra=extra,
                 )
             except Exception as e:
                 logger.error(
-                    f"setup fixture {fixturedef.argname}() !-> {pretty_repr(e)}",
+                    f"setup fixture {fixturedef.argname}() !-> {_format_result(e)}",
                     highlight=True,
                     extra=extra,
                 )
@@ -416,7 +415,7 @@ class HtmlLogPlugin:
         """Log all assertion comparisons to the HTML log."""
         test = config.stash[self.test_item_key]
         logger = self._get_test_logger(test)
-        logger.error(f"assert {pretty_repr(left)} {op} {pretty_repr(right)}", highlight=True)
+        logger.error(f"assert {_format_result(left)} {op} {_format_result(right)}", highlight=True)
 
         return None
 

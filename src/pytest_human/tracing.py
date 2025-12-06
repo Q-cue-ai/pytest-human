@@ -42,6 +42,7 @@ def _format_call_string(  # noqa: PLR0913
     suppress_params: bool = False,
     suppress_self: bool = True,
     suppress_none: bool = False,
+    truncate_values: bool = True,
 ) -> str:
     sig = inspect.signature(func)
     bound_args = sig.bind(*args, **kwargs)
@@ -54,9 +55,24 @@ def _format_call_string(  # noqa: PLR0913
     for name, value in bound_args.arguments.items():
         if suppress_self and name == "self":
             continue
+        default_repr = _is_default_repr(value)
+
+        if name == "self" and default_repr:
+            params.append(f"{name}")
+            continue
 
         if suppress_none and value is None:
             continue
+
+        if _is_default_repr(value):
+            params.append(f"{name}=<{type(value).__name__}>")
+            continue
+
+        if not truncate_values:
+            params.append(f"{name}={pretty_repr(value)}")
+            continue
+
+        params.append(f"{name}={_truncated_prepr(value)}")
 
     if not suppress_params:
         param_str = ", ".join(params)
@@ -101,6 +117,7 @@ def traced(
     suppress_params: bool = False,
     suppress_self: bool = True,
     suppress_none: bool = False,
+    truncate_values: bool = True,
 ) -> Callable: ...
 
 
@@ -114,6 +131,7 @@ def traced(
     suppress_params: bool = False,
     suppress_self: bool = True,
     suppress_none: bool = False,
+    truncate_values: bool = True,
 ) -> Callable[[Callable], Callable]: ...
 
 
@@ -125,6 +143,7 @@ def traced(  # noqa: PLR0913
     suppress_params: bool = False,
     suppress_self: bool = True,
     suppress_none: bool = False,
+    truncate_values: bool = True,
 ) -> Callable[[Callable], Callable]:
     """Decorate log method calls with parameters and return values.
 
@@ -134,6 +153,7 @@ def traced(  # noqa: PLR0913
     :param suppress_params: If True, do not log the parameters.
     :param suppress_self: If True, do not log the 'self' parameter for methods. True by default.
     :param suppress_none: If True, do not log parameters with None value.
+    :param truncate_values: If True, do not truncate long values.
     """
 
     def decorator(func: Callable) -> Callable:
@@ -159,6 +179,7 @@ def traced(  # noqa: PLR0913
                         suppress_params=suppress_params,
                         suppress_self=suppress_self,
                         suppress_none=suppress_none,
+                        truncate_values=truncate_values,
                     )
                     # account for context manager and wrapper frames
                     log_kwargs = _add_stacklevel({}, 2)
@@ -170,7 +191,7 @@ def traced(  # noqa: PLR0913
                             log_kwargs = _add_stacklevel({}, 1)
                             with _out_of_trace():
                                 result = await func(*args, **kwargs)
-                            result_str = "<suppressed>" if suppress_return else pretty_repr(result)
+                            result_str = _format_result(result, suppress_return, truncate_values)
                             logger.debug(
                                 f"async {func_str} -> {result_str}", highlight=True, **log_kwargs
                             )
@@ -199,6 +220,7 @@ def traced(  # noqa: PLR0913
                     suppress_params=suppress_params,
                     suppress_self=suppress_self,
                     suppress_none=suppress_none,
+                    truncate_values=truncate_values,
                 )
                 # account for context manager and wrapper frames
                 log_kwargs = _add_stacklevel({}, 2)
@@ -208,7 +230,7 @@ def traced(  # noqa: PLR0913
                     try:
                         with _out_of_trace():
                             result = func(*args, **kwargs)
-                        result_str = "<suppressed>" if suppress_return else pretty_repr(result)
+                        result_str = _format_result(result, suppress_return, truncate_values)
                         logger.debug(f"{func_str} -> {result_str}", highlight=True, **log_kwargs)
                         return result
                     except Exception as e:
@@ -308,6 +330,31 @@ def get_function_location(func: Callable) -> dict[str, Any]:
         }
 
 
+def _is_default_repr(obj: object) -> bool:
+    """Check if the object's __repr__ is the default one from object."""
+    return type(obj).__repr__ is object.__repr__
+
+
+def _truncated_prepr(obj: Any) -> str:
+    """Get a truncated pretty representation of an object."""
+    return pretty_repr(obj, max_string=512, max_depth=3, max_length=10)
+
+
+def _format_result(obj: Any, suppress_result: bool = False, truncate_values: bool = True) -> str:
+    """Format the result for logging."""
+    if suppress_result:
+        return "<suppressed>"
+
+    if _is_default_repr(obj):
+        cls = type(obj)
+        return f"<{cls.__qualname__}>"
+
+    if not truncate_values:
+        return pretty_repr(obj)
+
+    return _truncated_prepr(obj)
+
+
 @contextmanager
 def trace_calls(  # noqa: ANN201
     *args: Callable, **kwargs: Any
@@ -323,6 +370,7 @@ def trace_calls(  # noqa: ANN201
     :param suppress_params: If True, do not log the parameters.
     :param suppress_self: If True, do not log the 'self' parameter for methods. True by default.
     :param suppress_none: If True, do not log parameters with None value.
+    :param truncate_values: If True, do not truncate long values.
     """
     try:
         for target in args:
@@ -351,6 +399,7 @@ def trace_public_api(  # noqa: ANN201
     :param suppress_params: If True, do not log the parameters.
     :param suppress_self: If True, do not log the 'self' parameter for methods. True by default.
     :param suppress_none: If True, do not log parameters with None value.
+    :param truncate_values: If True, do not truncate long values.
     """
     methods = []
     for container in args:
