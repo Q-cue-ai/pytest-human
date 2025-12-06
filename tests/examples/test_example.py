@@ -112,3 +112,12 @@ def test_artifacts(human):
     [10:00:05] Line 3 of the log.
     """)
     human.artifacts.add_log_text(log_content, "sample.log", description="Sample log file")
+
+
+def test_standard_logging(human):
+    # pytest-human logger
+    human.log.info("Using human fixture")
+
+    # Standard Python logger - also captured in HTML
+    logger = logging.getLogger(__name__)
+    logger.error("Using standard logger")
