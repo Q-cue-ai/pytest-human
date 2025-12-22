@@ -24,7 +24,7 @@ jobs:
         run: python -m build
 
       - name: Upload distribution artifacts
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: dist
           path: dist/
@@ -63,7 +63,7 @@ jobs:
 
       - name: Upload Playwright Output
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: wheel-test-playwright-output-${{ matrix.python-version }}
           path: ${{ github.workspace }}/playwright-output/
@@ -71,7 +71,7 @@ jobs:
 
       - name: Upload Human Report Output
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: wheel-test-human-output-${{ matrix.python-version }}
           path: ${{ github.workspace }}/human-output/
