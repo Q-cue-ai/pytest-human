@@ -44,7 +44,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Download distribution artifacts
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: dist
           path: dist/
@@ -89,7 +89,7 @@ jobs:
       url: https://pypi.org/p/pytest-human
     steps:
       - name: Download distribution artifacts
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: dist
           path: dist/
