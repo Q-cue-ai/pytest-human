@@ -99,7 +99,7 @@ def test_full_pizza_order_workflow(human, expected_toppings):
     # Use highlight=True to syntax highlight the order details
     human.log.debug(f"Order details: {order_details}", highlight=True)
 
-    with human.span.info("Phase 1: 👨‍🍳 Preparing Pizza"):
+    with human.span.info("Phase 1: Preparing Pizza"):
         dough = prepare_dough(order_details["size"])
         pizza_base = add_sauce_and_cheese(dough, "tomato", "mozzarella")
 
@@ -112,13 +112,13 @@ def test_full_pizza_order_workflow(human, expected_toppings):
 
         human.log.info("Preparation complete. Ready for oven.")
 
-    with human.span.info("Phase 2: 🔥 Baking Pizza"):
+    with human.span.info("Phase 2: Baking Pizza"):
         baked_pizza = bake_pizza(pizza_in_progress)
 
         # This print statement will be captured as stdout
         print(f"KITCHEN_ALARM: Pizza {baked_pizza} is ready!")
 
-    with human.span.info("Phase 3: 🚚 Delivery"):
+    with human.span.info("Phase 3: Delivery"):
         human.log.debug(f"Contacting delivery partner for {order_details['address']}")
 
         # These methods will be automatically traced by our fixture
