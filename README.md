@@ -10,7 +10,8 @@
 
 A pytest plugin for generating beautiful, human-readable HTML reports for individual tests with collapsible nested logging spans and syntax highlighting. Inspired by Robot Framework and Playwright reports.
 
-Unlike other pytest HTML report plugins, **pytest-human** creates a separate HTML log file for each test, aimed at helping you dive into specific parts of the test that are relevant for debugging.
+Unlike other pytest HTML report plugins, **pytest-human** creates a separate HTML log file for each test, aimed at helping you dive into specific parts of the test that are relevant for debugging, while hiding unrelated logs.
+
 Works with standard python logging, no need to rewrite existing tests to get going!
 
 
@@ -53,20 +54,22 @@ pip install pytest-human
 1. Enable the plugin when running pytest:
 
     ```bash
-    pytest --enable-html-log --log-level DEBUG --html-output-dir output/
+    pytest --enable-html-log
     ```
-
-    Setting the log level is important as the pytest default is high (`WARNING`).
 
 2. Use the `human` object and the `@traced` decorator in your tests:
 
     ```python
     from pytest_human.tracing import traced
+    from pytest_human.log import get_logger
 
+    log = get_logger(__name__)
+
+    # Each call to this function will be logged
     @traced
     def insert_db(data):
         query = "INSERT INTO flowers (petals) VALUES ('{{1,2,3,4,5}}');"
-        logging.info(f"executing {query=}")
+        log.info(f"executing {query=}")
         return len(data)
 
     def test_example(human):
@@ -90,12 +93,13 @@ pip install pytest-human
     At the end of individual tests you will see a similar line:
 
     ```console
-    🌎 Test test_single_stage_ui HTML log at file:///tmp/pytest-of-john.doe/pytest-2/session_logs/test_frobulator.html
+    🌎 Test test_example HTML log at file:///tmp/pytest-of-john.doe/pytest-2/session_logs/test_example.html
     ```
 
     You can <kbd>Ctrl</kbd>/<kbd>⌘</kbd>-Click the link in most terminals to open the file.
 
 4. Debug!
+
     ![Screenshot](https://raw.githubusercontent.com/Q-cue-ai/pytest-human/refs/heads/main/assets/test_example.png)
 
 
@@ -133,7 +137,7 @@ Control the minimum log level:
 
 ```bash
 # Use pytest's global log level.
-# Opt to use this setting.
+# Opt to use this setting in order to capture non-human python logs.
 pytest --enable-html-log --log-level DEBUG
 
 # Set log level for HTML logs specifically.
@@ -159,8 +163,6 @@ you can use `--html-log-to-all`, which will log everything to the [root logger](
 - `human_test_log_path` - Path of the html log file for the current test
 ### Logging Methods
 
-![Screenshot](https://raw.githubusercontent.com/Q-cue-ai/pytest-human/refs/heads/main/assets/test_logging_methods.png)
-
 ```python
 def test_logging_methods(human):
     # Basic logging at different levels
@@ -181,6 +183,8 @@ def test_logging_methods(human):
     human.log.info(code, highlight=True)
 ```
 
+![Screenshot](https://raw.githubusercontent.com/Q-cue-ai/pytest-human/refs/heads/main/assets/test_logging_methods.png)
+
 ### Direct logger access
 
 Get the test logger programmatically, this allows to tweak the source name and is useful if you don't want to pass the human object around.
@@ -199,7 +203,6 @@ Create nested, collapsible sections in your HTML logs.
 
 This allows partitioning the log into sections and diving only into the parts of the logs that are relevant to your debug session.
 
-![Screenshot](https://raw.githubusercontent.com/Q-cue-ai/pytest-human/refs/heads/main/assets/test_spans.png)
 
 ```python
 def test_spans(human):
@@ -221,6 +224,8 @@ def test_spans(human):
 
     human.log.info("Operation completed")
 ```
+
+![Screenshot](https://raw.githubusercontent.com/Q-cue-ai/pytest-human/refs/heads/main/assets/test_spans.png)
 
 ## Method Tracing
 
@@ -273,13 +278,13 @@ called functions as to reduce log noise.
 
 The `@traced` decorator is very useful for debugging but it is unfortunately restricted to code you own.
 
-In order to log third-party methods, you can use the `trace_calls` and `trace_public_api` methods, which monkey patch third party code with human tracing.
+In order to trace third-party methods, you can use the `trace_calls` and `trace_public_api` methods, which wrap third party code with human tracing.
 
-`trace_calls` adds logging to a list of functions, while `trace_public_api` adds logging to all public methods of modules/classes.
+`trace_calls` adds tracing to a list of functions, while `trace_public_api` adds tracing to all public methods of modules/classes.
 
 ```python
 import pytest
-from playwright.sync_api import Locator, LocatorAssertionsImpl, Page
+from playwright.sync_api import Locator, LocatorAssertions, Page
 from pytest_human.tracing import trace_calls, trace_public_api
 
 @pytest.fixture(autouse=True)
@@ -289,15 +294,24 @@ def log_3rdparty_methods():
             pytest.Pytester.runpytest,
             pytest.Pytester.makepyfile,
         ),
+
+        # set a custom configuration for a traced function
         trace_calls(Page.screenshot, suppress_return=True, suppress_self=False, suppress_none=True),
+
         # this skips Page.screenshot as it is already defined above
         trace_public_api(
-            Page, Locator, LocatorAssertionsImpl, suppress_self=False, suppress_none=True
+            Page, Locator, LocatorAssertions, suppress_self=False, suppress_none=True
         ),
+
+        # alternatively use a full string path. This also works when regular objects fail.
+        trace_calls("requests.get")
     ):
         yield
 ```
 
+### Fixture tracing
+
+Each fixture setup and teardown calls are traced with parameters and return value, similar to the `@traced` decorator. This happens without any user action and are located in the `Test Setup` and `Test Teardown` spans.
 
 ## Artifacts
 
@@ -335,7 +349,7 @@ def test_standard_logging(human):
 
     # Standard Python logger - also captured in HTML
     logger = logging.getLogger(__name__)
-    logger.error("Using standard logger")
+    logger.info("Using standard logger")
 ```
 
 > [!NOTE]
@@ -358,7 +372,7 @@ pytest --enable-html-log --log-level trace
 ```
 
 
-### Keyboard navigation
+## Keyboard navigation
 You can use the keyboard to navigate around the log.
 * Press <kbd>Tab</kbd> and <kbd>Shift</kbd>+<kbd>Tab</kbd> to jump between the expand buttons (+).
 * Press <kbd>Enter</kbd> to expand and collapse a span when hovering over a button.
@@ -384,15 +398,6 @@ Alternatively use tox
 ```bash
 tox
 ```
-
-### Building Documentation
-
-```bash
-mkdocs serve
-```
-
-Documentation is still TBD
-
 
 ## License
 
