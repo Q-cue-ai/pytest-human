@@ -420,6 +420,39 @@ def test_tracing_trace_calls(pytester: pytest.Pytester, page: Page) -> None:
     )
 
 
+def test_tracing_trace_calls_str(pytester: pytest.Pytester, page: Page) -> None:
+    pytester.makepyfile("""
+        from pytest_human.tracing import trace_calls
+        import os
+        import base64
+
+        def test_example(human):
+            os.path.join("path", "one")
+
+            with trace_calls("os.path.join", "base64.b64encode"):
+                os.path.join("path", "two")
+                base64.b64encode(b"three")
+
+            base64.b64encode(b"three")
+            os.path.join("path", "three")
+    """)
+
+    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=debug")
+    html_path = utils.find_test_log_location(result)
+    assert result.ret == 0
+
+    page.goto(html_path.as_uri())
+    path_call = utils.open_span(page, "posixpath.join(")
+    expect(path_call.locator("td.msg-cell").last).to_contain_text(
+        re.compile(r"posixpath.join\(.*-> 'path/two'")
+    )
+
+    base_call = utils.open_span(page, "base64.b64encode(")
+    expect(base_call.locator("td.msg-cell").last).to_contain_text(
+        re.compile(r"base64.b64encode\(.*-> b'dGhyZWU='")
+    )
+
+
 def test_tracing_trace_calls_infinite_recursion(pytester: pytest.Pytester, page: Page) -> None:
     """
     The logging system itself calls os.path.basename, so this test make sure
@@ -475,6 +508,30 @@ def test_tracing_trace_public_api_module(pytester: pytest.Pytester, page: Page) 
     expect(factorial_call.locator("td.msg-cell").last).to_contain_text(
         re.compile(r"math\.factorial\(\w+=5\) -> 120")
     )
+
+
+def test_tracing_trace_public_api_module_str(pytester: pytest.Pytester, page: Page) -> None:
+    """
+    Adds logging to all public methods in a module
+    """
+    pytester.makepyfile("""
+        from pytest_human.tracing import trace_public_api
+        import email.mime.text
+
+        def test_example(human):
+            email.mime.text.MIMEText("x", "y")
+            with trace_public_api("email.mime.text.MIMEText", suppress_none=True):
+                email.mime.text.MIMEText("body", "plain")
+
+            email.mime.text.MIMEText("z", "y")
+    """)
+    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=debug")
+    html_path = utils.find_test_log_location(result)
+    assert result.ret == 0
+
+    page.goto(html_path.as_uri())
+    init_call = utils.open_span(page, "MIMEText.__init__(")
+    expect(init_call.locator("td.msg-cell").last).to_contain_text("MIMEText.__init__(")
 
 
 def test_tracing_trace_public_api_class(pytester: pytest.Pytester, page: Page) -> None:
