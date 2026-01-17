@@ -18,6 +18,10 @@ def test_tracing_log_fixtures_setup(pytester: pytest.Pytester, page: Page) -> No
         def sandwich(foobulator):
             return foobulator + 2
 
+        @pytest.fixture(scope="session", autouse=True)
+        def autouse_fixture():
+            pass
+
         def test_example(sandwich):
             assert True
     """)
@@ -28,14 +32,19 @@ def test_tracing_log_fixtures_setup(pytester: pytest.Pytester, page: Page) -> No
 
     page.goto(html_path.as_uri())
     test_setup = utils.open_span(page, "Test setup")
-    sandwich_setup = utils.open_span(test_setup, "setup fixture sandwich(foobulator=3)")
+    sandwich_setup = utils.open_span(test_setup, "setup fixture function sandwich(foobulator=3)")
     expect(sandwich_setup.locator("td.msg-cell").last).to_contain_text(
         "setup fixture sandwich() -> 5"
     )
 
-    foobulator_setup = utils.open_span(test_setup, "setup fixture foobulator()")
+    foobulator_setup = utils.open_span(test_setup, "setup fixture function foobulator()")
     expect(foobulator_setup.locator("td.msg-cell").last).to_contain_text(
         "setup fixture foobulator() -> 3"
+    )
+
+    autouse_setup = utils.open_span(test_setup, "setup fixture session autouse autouse_fixture()")
+    expect(autouse_setup.locator("td.msg-cell").last).to_contain_text(
+        "setup fixture autouse_fixture() -> None"
     )
 
 
@@ -63,14 +72,58 @@ def test_tracing_log_fixtures_setup_async(pytester: pytest.Pytester, page: Page)
 
     page.goto(html_path.as_uri())
     test_setup = utils.open_span(page, "Test setup")
-    sandwich_setup = utils.open_span(test_setup, "setup fixture sandwich(foobulator=")
+    sandwich_setup = utils.open_span(
+        test_setup, "setup fixture async function sandwich(foobulator=3)"
+    )
     expect(sandwich_setup.locator("td.msg-cell").last).to_contain_text(
         "setup fixture sandwich() -> "
     )
 
-    foobulator_setup = utils.open_span(test_setup, "setup fixture foobulator()")
+    foobulator_setup = utils.open_span(test_setup, "setup fixture async function foobulator()")
     expect(foobulator_setup.locator("td.msg-cell").last).to_contain_text(
         "setup fixture foobulator() -> "
+    )
+
+
+def test_tracing_log_fixtures_setup_scopes(pytester: pytest.Pytester, page: Page) -> None:
+    pytester.makepyfile("""
+        import pytest
+
+        @pytest.fixture(autouse=True)
+        def autouse_fixture():
+            pass
+
+        @pytest.fixture(scope="module")
+        def module_fixture():
+            pass
+
+        @pytest.fixture(scope="session")
+        def session_fixture():
+            pass
+
+        def test_example(session_fixture, module_fixture):
+            assert True
+    """)
+
+    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=debug")
+    html_path = utils.find_test_log_location(result)
+    assert result.ret == 0
+
+    page.goto(html_path.as_uri())
+    test_setup = utils.open_span(page, "Test setup")
+    autouse_setup = utils.open_span(test_setup, "setup fixture function autouse autouse_fixture()")
+    expect(autouse_setup.locator("td.msg-cell").last).to_contain_text(
+        "setup fixture autouse_fixture() -> None"
+    )
+
+    module_setup = utils.open_span(test_setup, "setup fixture module module_fixture()")
+    expect(module_setup.locator("td.msg-cell").last).to_contain_text(
+        "setup fixture module_fixture() -> None"
+    )
+
+    session_setup = utils.open_span(test_setup, "setup fixture session session_fixture()")
+    expect(session_setup.locator("td.msg-cell").last).to_contain_text(
+        "setup fixture session_fixture() -> None"
     )
 
 
@@ -97,10 +150,10 @@ def test_tracing_log_fixtures_teardown(pytester: pytest.Pytester, page: Page) ->
     page.goto(html_path.as_uri())
     test_teardown = utils.open_span(page, "Test teardown")
     expect(
-        test_teardown.locator("td.msg-cell").filter(has_text="Tore down fixture sandwich()")
+        test_teardown.locator("td.msg-cell").filter(has_text="Clean fixture function sandwich()")
     ).to_have_count(1)
     expect(
-        test_teardown.locator("td.msg-cell").filter(has_text="Tore down fixture foobulator()")
+        test_teardown.locator("td.msg-cell").filter(has_text="Clean fixture function foobulator()")
     ).to_have_count(1)
 
 
@@ -132,10 +185,57 @@ def test_tracing_log_fixtures_teardown_async(pytester: pytest.Pytester, page: Pa
     page.goto(html_path.as_uri())
     test_teardown = utils.open_span(page, "Test teardown")
     expect(
-        test_teardown.locator("td.msg-cell").filter(has_text="Tore down fixture sandwich()")
+        test_teardown.locator("td.msg-cell").filter(
+            has_text="Clean fixture async function sandwich()"
+        )
     ).to_have_count(1)
     expect(
-        test_teardown.locator("td.msg-cell").filter(has_text="Tore down fixture foobulator()")
+        test_teardown.locator("td.msg-cell").filter(
+            has_text="Clean fixture async function foobulator()"
+        )
+    ).to_have_count(1)
+
+
+def test_tracing_log_fixtures_teardown_scopes(pytester: pytest.Pytester, page: Page) -> None:
+    pytester.makepyfile("""
+        import pytest
+
+        @pytest.fixture(autouse=True)
+        def autouse_fixture():
+            pass
+
+        @pytest.fixture(scope="module")
+        def module_fixture():
+            pass
+
+        @pytest.fixture(scope="session")
+        def session_fixture():
+            pass
+
+        def test_example(session_fixture, module_fixture):
+            assert True
+    """)
+
+    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=debug")
+    html_path = utils.find_test_log_location(result)
+    assert result.ret == 0
+
+    page.goto(html_path.as_uri())
+    test_teardown = utils.open_span(page, "Test teardown")
+    expect(
+        test_teardown.locator("td.msg-cell").filter(
+            has_text="Clean fixture function autouse autouse_fixture()"
+        )
+    ).to_have_count(1)
+    expect(
+        test_teardown.locator("td.msg-cell").filter(
+            has_text="Clean fixture module module_fixture()"
+        )
+    ).to_have_count(1)
+    expect(
+        test_teardown.locator("td.msg-cell").filter(
+            has_text="Clean fixture session session_fixture()"
+        )
     ).to_have_count(1)
 
 
