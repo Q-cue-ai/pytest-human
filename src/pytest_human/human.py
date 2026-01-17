@@ -42,7 +42,14 @@ class HumanAttachments:
         self._logs: list[_Attachment] = []
 
     def add_log_file(self, file_path: Path | str, description: str | None = None) -> None:
-        """Attach a log file to the test report."""
+        """Attach a log file to the test report. This version reads the log from a file.
+
+        Args:
+            file_path: The path to the log file.
+            description: An optional description of the log. It is shown as a comment above the log.
+
+        """
+
         file_path = Path(file_path)
         if not file_path.is_file():
             raise FileNotFoundError(f"Log file not found: {file_path}")
@@ -51,7 +58,14 @@ class HumanAttachments:
         self.add_log_text(log, file_path.name, description)
 
     def add_log_text(self, log_text: str, file_name: str, description: str | None = None) -> None:
-        """Attach a log file in string form to the test report."""
+        """Attach a log file in string form to the test report. Accepts log content as string.
+
+        Args:
+            log_text: The log content as a string.
+            file_name: The name of the log file.
+            description: An optional description of the log. It is shown as a comment above the log.
+
+        """
         self._logs.append(
             _Attachment(
                 type=_AttachmentType.LOG,
@@ -96,6 +110,13 @@ class Human:
     """Human fixture object."""
 
     def __init__(self, test: pytest.Item, html_only: bool = True) -> None:
+        """Initialize the Human fixture.
+
+        Args:
+            test (pytest.Item): The pytest test item.
+            html_only (bool, optional): If `True`, the logger will only log to the HTML report.
+
+        """
         self._test = test
         self.log = get_logger(test.name, html_only=html_only)
         self.artifacts = HumanAttachments()
