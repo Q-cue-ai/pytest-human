@@ -306,7 +306,8 @@ def _patch_method_logger(target: Callable | str, **kwargs: Any) -> Iterator[None
     found = getattr(container, method_name)
 
     if getattr(found, "_is_patched_logger", False):
-        logging.warning(f"Target {target.__qualname__} is already patched for logging.")
+        target_name = getattr(target, "__qualname__", str(target))
+        logging.warning(f"Target {target_name} is already patched for logging.")
         yield
         return
 

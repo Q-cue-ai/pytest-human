@@ -299,8 +299,8 @@ def get_logger(name: str, html_only: bool = True) -> TestLogger:
 
     Args:
         name: Name of the logger, typically `__name__`.
-        html_only:   If True, returns a logger that only logs to the HTML handler.
-                    Overriden by --html-log-to-all flag.
+        html_only:  If True, returns a logger that only logs to the HTML handler.
+                    Overridden by --html-log-to-all flag.
 
     Returns:
         TestLogger: The logger instance.
