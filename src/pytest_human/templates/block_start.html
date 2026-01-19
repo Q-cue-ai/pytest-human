@@ -1,0 +1,21 @@
+<tr id="header_{{ block_id }}" class="log-level-{{ record.levelname.lower() }}">
+    <td class="toggle-cell" onclick="toggle('{{ block_id }}')">
+        <button id="toggle-{{ block_id }}">[+]</button>
+    </td>
+    <td class="time-cell">{{ timestamp }}</td>
+    <td class="level-cell">{{ record.levelname }}</td>
+    <td class="source-cell">{{ escaped_source_link | safe }}</td>
+    <td class="msg-cell">{{ escaped_msg | safe }}</td>
+    <td class="duration-cell" id="{{ duration_id }}">...</td>
+</tr>
+<tr id="{{ block_id }}" class="nested-block" aria-expanded="false" style="display: none;">
+    <td colspan="6" class ="nested-block-td">
+        <table class="log-table" role="treegrid">
+            <colgroup>
+                <col style="width: 3rem;">
+                <col style="width: 10rem;">
+                <col style="width: 7rem;">
+                <col style="width: 10rem;">
+                <col style="width: 100%;">
+                <col style="width: 6rem;">
+            </colgroup>
