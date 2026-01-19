@@ -254,6 +254,23 @@ class HtmlLogPlugin:
         s += ")"
         return s
 
+    def get_fixture_type(self, fixturedef: pytest.FixtureDef) -> str:
+        """Get the fixture decorator string."""
+
+        params = []
+
+        if inspect.isasyncgenfunction(fixturedef.func) or inspect.iscoroutinefunction(
+            fixturedef.func
+        ):
+            params.append("async")
+
+        params.append(f"{fixturedef.scope}")
+
+        if hasattr(fixturedef, "_autouse") and fixturedef._autouse:  # noqa: SLF001
+            params.append("autouse")
+
+        return " ".join(params)
+
     @pytest.hookimpl(hookwrapper=True)
     def pytest_fixture_setup(
         self, fixturedef: pytest.FixtureDef, request: pytest.FixtureRequest
@@ -263,7 +280,10 @@ class HtmlLogPlugin:
         logger = _get_internal_logger("tracing.fixture.setup")
         call_str = self._format_fixture_call(fixturedef, request)
         extra = {_LOCATION_TAG: get_function_location(fixturedef.func), _TRACED_TAG: True}
-        with logger.span.debug(f"setup fixture {call_str}", highlight=True, extra=extra):
+        fixture_type = self.get_fixture_type(fixturedef)
+        with logger.span.debug(
+            f"Setup fixture {fixture_type} {call_str}", highlight=True, extra=extra
+        ):
             result = yield
             try:
                 fix_result = result.get_result()
@@ -338,7 +358,10 @@ class HtmlLogPlugin:
 
         logger = _get_internal_logger("tracing.fixture.teardown")
         extra = {_LOCATION_TAG: get_function_location(fixturedef.func), _TRACED_TAG: True}
-        logger.debug(f"Tore down fixture {fixturedef.argname}()", highlight=True, extra=extra)
+        fixture_type = self.get_fixture_type(fixturedef)
+        logger.debug(
+            f"Clean fixture {fixture_type} {fixturedef.argname}()", highlight=True, extra=extra
+        )
 
     @staticmethod
     def _strip_ansi_codes(text: str) -> str:

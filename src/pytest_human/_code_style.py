@@ -53,7 +53,7 @@ class _ReportCodeStyle(Style):
         Keyword.Declaration: "bold " + SECONDARY_BLUE,
         Keyword.Namespace: "bold " + PRIMARY_BLUE,
         Keyword.Type: "bold " + PRIMARY_BLUE,
-        Operator: PRIMARY_BLUE,
+        Operator: SECONDARY_BLUE,
         Operator.Word: "bold " + SECONDARY_BLUE,
         Name: FOREGROUND,
         Name.Class: "bold " + PRIMARY_BLUE,

@@ -7,11 +7,13 @@ import time
 from pytest_human.log import get_logger
 from pytest_human.tracing import traced
 
+log = get_logger(__name__)
+
 
 @traced
 def insert_db(data):
     query = "INSERT INTO flowers (petals) VALUES ('{{1,2,3,4,5}}');"
-    logging.info(f"executing {query=}")
+    log.info(f"executing {query=}")
     return len(data)
 
 

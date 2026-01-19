@@ -5,9 +5,10 @@ from __future__ import annotations
 import functools
 import inspect
 import logging
+import pkgutil
 import threading
 from collections.abc import Callable, Iterator
-from contextlib import contextmanager
+from contextlib import ExitStack, contextmanager
 from pathlib import Path
 from typing import Any, Optional, overload
 
@@ -64,7 +65,7 @@ def _format_call_string(  # noqa: PLR0913
         if suppress_none and value is None:
             continue
 
-        if _is_default_repr(value):
+        if default_repr:
             params.append(f"{name}=<{type(value).__name__}>")
             continue
 
@@ -147,13 +148,17 @@ def traced(  # noqa: PLR0913
 ) -> Callable[[Callable], Callable]:
     """Decorate log method calls with parameters and return values.
 
-    :param log_level: The log level that will be used for logging.
-                      Errors are always logged with ERROR level.
-    :param suppress_return: If True, do not log the return value.
-    :param suppress_params: If True, do not log the parameters.
-    :param suppress_self: If True, do not log the 'self' parameter for methods. True by default.
-    :param suppress_none: If True, do not log parameters with None value.
-    :param truncate_values: If True, do not truncate long values.
+    Args:
+        func: The function to decorate.
+        log_level: The log level that will be used for logging.
+            Errors are always logged with `ERROR` level.
+        suppress_return: If `True`, do not log the return value.
+        suppress_params: If `True`, do not log the parameters.
+        suppress_self: If `True`, do not log the `self` parameter for methods.
+            `True` by default.
+        suppress_none: If `True`, do not log parameters with `None` value.
+        truncate_values: If `True`, do not truncate long values.
+
     """
 
     def decorator(func: Callable) -> Callable:
@@ -245,7 +250,7 @@ def traced(  # noqa: PLR0913
     return decorator
 
 
-def _locate_function(func: Callable) -> tuple[Any, str]:
+def _locate_function_callable(func: Callable) -> tuple[Any, str]:
     module = inspect.getmodule(func)
     if module is None:
         raise ValueError(
@@ -268,29 +273,78 @@ def _locate_function(func: Callable) -> tuple[Any, str]:
     return container, method_name
 
 
-def _patch_method_logger(target: Callable, **kwargs: Any) -> None:
+def _locate_function_str(func_path: str) -> tuple[Any, str]:
+    if "." not in func_path:
+        raise ValueError(
+            f"Cannot patch function '{func_path}': it must be a full path (e.g. 'module.func') "
+        )
+
+    path, func = func_path.rsplit(".", 1)
+
+    try:
+        container = pkgutil.resolve_name(path)
+    except (ImportError, AttributeError, ValueError) as e:
+        raise ValueError(f"Cannot locate container '{path}'") from e
+
+    return container, func
+
+
+def _locate_function(func: Callable | str) -> tuple[Any, str]:
+    if isinstance(func, str):
+        return _locate_function_str(func)
+
+    return _locate_function_callable(func)
+
+
+@contextmanager
+def _patch_method_logger(target: Callable | str, **kwargs: Any) -> Iterator[None]:
     """Patch a method or function to log its calls using traced decorator.
 
     This is useful to log 3rd party library methods without modifying their source code.
     """
-    if getattr(target, "_is_patched_logger", False):
-        logging.warning(f"Target {target.__qualname__} is already patched for logging.")
+    container, method_name = _locate_function(target)
+    found = getattr(container, method_name)
+
+    if getattr(found, "_is_patched_logger", False):
+        target_name = getattr(target, "__qualname__", str(target))
+        logging.warning(f"Target {target_name} is already patched for logging.")
+        yield
         return
 
-    container, method_name = _locate_function(target)
-
-    decorated = traced(**kwargs)(target)
-    decorated._is_patched_logger = True  # noqa: SLF001
+    decorated = traced(**kwargs)(found)
 
     setattr(container, method_name, decorated)
+    decorated._is_patched_logger = True  # noqa: SLF001
 
-    return
+    try:
+        yield
+    finally:
+        setattr(container, method_name, found)
+        decorated._is_patched_logger = False  # noqa: SLF001
 
 
-def _get_public_methods(container: Any) -> list[Callable]:
-    """Get all public methods of a class or module."""
+def _get_public_methods(container: Any | str, suppress_init: bool = False) -> list[Callable]:
+    """Get all public methods of a class or module.
+
+    Args:
+        container: The class or module to get the public methods from.
+            Can also be a string path to the module or class.
+        suppress_init: If `True`, do not include `__init__` method.
+
+    Returns:
+        A list of public methods.
+
+    """
     methods = []
+
+    if isinstance(container, str):
+        container = pkgutil.resolve_name(container)
+
     for name, member in inspect.getmembers(container):
+        if name == "__init__" and not suppress_init:
+            if member is not object.__init__:
+                methods.append(member)
+            continue
         if name.startswith("_"):
             continue
         if inspect.isroutine(member):
@@ -301,8 +355,12 @@ def _get_public_methods(container: Any) -> list[Callable]:
 def get_function_location(func: Callable) -> dict[str, Any]:
     """Get the source location of a function or method.
 
-    :param func: The function or method to get the location for.
-    :return: An extra dictionary for logging
+    Args:
+        func: The function or method to get the location for.
+
+    Returns:
+        A logging extra dictionary with function location information.
+
     """
     func = inspect.unwrap(func)
     try:
@@ -357,52 +415,71 @@ def _format_result(obj: Any, suppress_result: bool = False, truncate_values: boo
 
 @contextmanager
 def trace_calls(  # noqa: ANN201
-    *args: Callable, **kwargs: Any
+    *args: Callable | str, **kwargs: Any
 ):
     """Context manager to log calls to a method or function using traced decorator.
 
     This is useful to log 3rd party library methods without modifying their source code
     and adding a decorator.
 
-    :param log_level: The log level that will be used for logging.
+    Using the function syntax (e.g. `module.func`) is preferred over using the string syntax
+    (e.g. `"module.func"`), for ergonomic and type checking reasons.
+    However, tracing module-level functions may fail in some edge cases,
+    while the string syntax is more robust in those cases.
+
+    Args:
+    *args: The methods or functions to trace. These can be direct callable objects
+        (e.g., `Page.screenshot`) or dot-separated string paths
+        (e.g., `"requests.get"`).
+    **kwargs: Additional keyword arguments passed to the `traced` decorator.
+    log_level (int, optional): The log level that will be used for logging.
                       Errors are always logged with ERROR level.
-    :param suppress_return: If True, do not log the return value.
-    :param suppress_params: If True, do not log the parameters.
-    :param suppress_self: If True, do not log the 'self' parameter for methods. True by default.
-    :param suppress_none: If True, do not log parameters with None value.
-    :param truncate_values: If True, do not truncate long values.
+    suppress_return (bool, optional): If `True`, do not log the return value.
+    suppress_params (bool, optional): If `True`, do not log the parameters.
+    suppress_self (bool, optional): If `True`, do not log the `self` parameter for methods.
+                                    `True` by default.
+    suppress_none (bool, optional): If `True`, do not log parameters with `None` value.
+    truncate_values (bool, optional): If `True`, do not truncate long values.
+
+    Example:
+    ```python
+        with trace_calls(Page.screenshot, "requests.get", suppress_return=True):
+            some_page.screenshot()
+            requests.get("https://www.q.ai")
+    ```
+
     """
-    try:
+    with ExitStack() as stack:
         for target in args:
-            _patch_method_logger(target, **kwargs)
+            stack.enter_context(_patch_method_logger(target, **kwargs))
         yield
-    finally:
-        for target in args:
-            container, method_name = _locate_function(target)
-            current = getattr(container, method_name)
-            if getattr(current, "_is_patched_logger", False):
-                setattr(container, method_name, target)
 
 
 @contextmanager
 def trace_public_api(  # noqa: ANN201
-    *args: Any, **kwargs: Any
+    *args: Any, suppress_init: bool = False, **kwargs: Any
 ):
     """Context manager to log calls to all public methods of a class or module.
 
     This is useful to log 3rd party library methods without modifying their source code
     and adding a decorator.
 
-    :param log_level: The log level that will be used for logging.
-                      Errors are always logged with ERROR level.
-    :param suppress_return: If True, do not log the return value.
-    :param suppress_params: If True, do not log the parameters.
-    :param suppress_self: If True, do not log the 'self' parameter for methods. True by default.
-    :param suppress_none: If True, do not log parameters with None value.
-    :param truncate_values: If True, do not truncate long values.
+    Args:
+        *args: The classes or modules to trace.
+        **kwargs: Additional keyword arguments passed to the `traced` decorator.
+        log_level: The log level that will be used for logging.
+            Errors are always logged with `ERROR` level.
+        suppress_init: If `True`, do not log `__init__` method calls.
+        suppress_return: If `True`, do not log the return value.
+        suppress_params: If `True`, do not log the parameters.
+        suppress_self: If `True`, do not log the `self` parameter for methods.
+            `True` by default.
+        suppress_none: If `True`, do not log parameters with `None` value.
+        truncate_values: If `True`, do not truncate long values.
+
     """
     methods = []
     for container in args:
-        methods.extend(_get_public_methods(container))
+        methods.extend(_get_public_methods(container, suppress_init=suppress_init))
     with trace_calls(*methods, **kwargs):
         yield

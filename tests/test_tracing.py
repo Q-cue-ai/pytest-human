@@ -18,6 +18,10 @@ def test_tracing_log_fixtures_setup(pytester: pytest.Pytester, page: Page) -> No
         def sandwich(foobulator):
             return foobulator + 2
 
+        @pytest.fixture(scope="session", autouse=True)
+        def autouse_fixture():
+            pass
+
         def test_example(sandwich):
             assert True
     """)
@@ -28,14 +32,19 @@ def test_tracing_log_fixtures_setup(pytester: pytest.Pytester, page: Page) -> No
 
     page.goto(html_path.as_uri())
     test_setup = utils.open_span(page, "Test setup")
-    sandwich_setup = utils.open_span(test_setup, "setup fixture sandwich(foobulator=3)")
+    sandwich_setup = utils.open_span(test_setup, "setup fixture function sandwich(foobulator=3)")
     expect(sandwich_setup.locator("td.msg-cell").last).to_contain_text(
         "setup fixture sandwich() -> 5"
     )
 
-    foobulator_setup = utils.open_span(test_setup, "setup fixture foobulator()")
+    foobulator_setup = utils.open_span(test_setup, "setup fixture function foobulator()")
     expect(foobulator_setup.locator("td.msg-cell").last).to_contain_text(
         "setup fixture foobulator() -> 3"
+    )
+
+    autouse_setup = utils.open_span(test_setup, "setup fixture session autouse autouse_fixture()")
+    expect(autouse_setup.locator("td.msg-cell").last).to_contain_text(
+        "setup fixture autouse_fixture() -> None"
     )
 
 
@@ -63,14 +72,58 @@ def test_tracing_log_fixtures_setup_async(pytester: pytest.Pytester, page: Page)
 
     page.goto(html_path.as_uri())
     test_setup = utils.open_span(page, "Test setup")
-    sandwich_setup = utils.open_span(test_setup, "setup fixture sandwich(foobulator=")
+    sandwich_setup = utils.open_span(
+        test_setup, "setup fixture async function sandwich(foobulator=3)"
+    )
     expect(sandwich_setup.locator("td.msg-cell").last).to_contain_text(
         "setup fixture sandwich() -> "
     )
 
-    foobulator_setup = utils.open_span(test_setup, "setup fixture foobulator()")
+    foobulator_setup = utils.open_span(test_setup, "setup fixture async function foobulator()")
     expect(foobulator_setup.locator("td.msg-cell").last).to_contain_text(
         "setup fixture foobulator() -> "
+    )
+
+
+def test_tracing_log_fixtures_setup_scopes(pytester: pytest.Pytester, page: Page) -> None:
+    pytester.makepyfile("""
+        import pytest
+
+        @pytest.fixture(autouse=True)
+        def autouse_fixture():
+            pass
+
+        @pytest.fixture(scope="module")
+        def module_fixture():
+            pass
+
+        @pytest.fixture(scope="session")
+        def session_fixture():
+            pass
+
+        def test_example(session_fixture, module_fixture):
+            assert True
+    """)
+
+    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=debug")
+    html_path = utils.find_test_log_location(result)
+    assert result.ret == 0
+
+    page.goto(html_path.as_uri())
+    test_setup = utils.open_span(page, "Test setup")
+    autouse_setup = utils.open_span(test_setup, "setup fixture function autouse autouse_fixture()")
+    expect(autouse_setup.locator("td.msg-cell").last).to_contain_text(
+        "setup fixture autouse_fixture() -> None"
+    )
+
+    module_setup = utils.open_span(test_setup, "setup fixture module module_fixture()")
+    expect(module_setup.locator("td.msg-cell").last).to_contain_text(
+        "setup fixture module_fixture() -> None"
+    )
+
+    session_setup = utils.open_span(test_setup, "setup fixture session session_fixture()")
+    expect(session_setup.locator("td.msg-cell").last).to_contain_text(
+        "setup fixture session_fixture() -> None"
     )
 
 
@@ -97,10 +150,10 @@ def test_tracing_log_fixtures_teardown(pytester: pytest.Pytester, page: Page) ->
     page.goto(html_path.as_uri())
     test_teardown = utils.open_span(page, "Test teardown")
     expect(
-        test_teardown.locator("td.msg-cell").filter(has_text="Tore down fixture sandwich()")
+        test_teardown.locator("td.msg-cell").filter(has_text="Clean fixture function sandwich()")
     ).to_have_count(1)
     expect(
-        test_teardown.locator("td.msg-cell").filter(has_text="Tore down fixture foobulator()")
+        test_teardown.locator("td.msg-cell").filter(has_text="Clean fixture function foobulator()")
     ).to_have_count(1)
 
 
@@ -132,10 +185,57 @@ def test_tracing_log_fixtures_teardown_async(pytester: pytest.Pytester, page: Pa
     page.goto(html_path.as_uri())
     test_teardown = utils.open_span(page, "Test teardown")
     expect(
-        test_teardown.locator("td.msg-cell").filter(has_text="Tore down fixture sandwich()")
+        test_teardown.locator("td.msg-cell").filter(
+            has_text="Clean fixture async function sandwich()"
+        )
     ).to_have_count(1)
     expect(
-        test_teardown.locator("td.msg-cell").filter(has_text="Tore down fixture foobulator()")
+        test_teardown.locator("td.msg-cell").filter(
+            has_text="Clean fixture async function foobulator()"
+        )
+    ).to_have_count(1)
+
+
+def test_tracing_log_fixtures_teardown_scopes(pytester: pytest.Pytester, page: Page) -> None:
+    pytester.makepyfile("""
+        import pytest
+
+        @pytest.fixture(autouse=True)
+        def autouse_fixture():
+            pass
+
+        @pytest.fixture(scope="module")
+        def module_fixture():
+            pass
+
+        @pytest.fixture(scope="session")
+        def session_fixture():
+            pass
+
+        def test_example(session_fixture, module_fixture):
+            assert True
+    """)
+
+    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=debug")
+    html_path = utils.find_test_log_location(result)
+    assert result.ret == 0
+
+    page.goto(html_path.as_uri())
+    test_teardown = utils.open_span(page, "Test teardown")
+    expect(
+        test_teardown.locator("td.msg-cell").filter(
+            has_text="Clean fixture function autouse autouse_fixture()"
+        )
+    ).to_have_count(1)
+    expect(
+        test_teardown.locator("td.msg-cell").filter(
+            has_text="Clean fixture module module_fixture()"
+        )
+    ).to_have_count(1)
+    expect(
+        test_teardown.locator("td.msg-cell").filter(
+            has_text="Clean fixture session session_fixture()"
+        )
     ).to_have_count(1)
 
 
@@ -320,6 +420,39 @@ def test_tracing_trace_calls(pytester: pytest.Pytester, page: Page) -> None:
     )
 
 
+def test_tracing_trace_calls_str(pytester: pytest.Pytester, page: Page) -> None:
+    pytester.makepyfile("""
+        from pytest_human.tracing import trace_calls
+        import os
+        import base64
+
+        def test_example(human):
+            os.path.join("path", "one")
+
+            with trace_calls("os.path.join", "base64.b64encode"):
+                os.path.join("path", "two")
+                base64.b64encode(b"three")
+
+            base64.b64encode(b"three")
+            os.path.join("path", "three")
+    """)
+
+    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=debug")
+    html_path = utils.find_test_log_location(result)
+    assert result.ret == 0
+
+    page.goto(html_path.as_uri())
+    path_call = utils.open_span(page, "posixpath.join(")
+    expect(path_call.locator("td.msg-cell").last).to_contain_text(
+        re.compile(r"posixpath.join\(.*-> 'path/two'")
+    )
+
+    base_call = utils.open_span(page, "base64.b64encode(")
+    expect(base_call.locator("td.msg-cell").last).to_contain_text(
+        re.compile(r"base64.b64encode\(.*-> b'dGhyZWU='")
+    )
+
+
 def test_tracing_trace_calls_infinite_recursion(pytester: pytest.Pytester, page: Page) -> None:
     """
     The logging system itself calls os.path.basename, so this test make sure
@@ -375,6 +508,30 @@ def test_tracing_trace_public_api_module(pytester: pytest.Pytester, page: Page) 
     expect(factorial_call.locator("td.msg-cell").last).to_contain_text(
         re.compile(r"math\.factorial\(\w+=5\) -> 120")
     )
+
+
+def test_tracing_trace_public_api_module_str(pytester: pytest.Pytester, page: Page) -> None:
+    """
+    Adds logging to all public methods in a module
+    """
+    pytester.makepyfile("""
+        from pytest_human.tracing import trace_public_api
+        import email.mime.text
+
+        def test_example(human):
+            email.mime.text.MIMEText("x", "y")
+            with trace_public_api("email.mime.text.MIMEText", suppress_none=True):
+                email.mime.text.MIMEText("body", "plain")
+
+            email.mime.text.MIMEText("z", "y")
+    """)
+    result = pytester.runpytest_subprocess("--enable-html-log", "--log-level=debug")
+    html_path = utils.find_test_log_location(result)
+    assert result.ret == 0
+
+    page.goto(html_path.as_uri())
+    init_call = utils.open_span(page, "MIMEText.__init__(")
+    expect(init_call.locator("td.msg-cell").last).to_contain_text("MIMEText.__init__(")
 
 
 def test_tracing_trace_public_api_class(pytester: pytest.Pytester, page: Page) -> None:

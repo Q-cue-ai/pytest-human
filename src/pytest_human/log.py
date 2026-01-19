@@ -280,7 +280,9 @@ def _add_stacklevel_py310_compat(kwargs: dict[str, Any], added: int = 1) -> dict
 def get_global_logger(name: str) -> TestLogger:
     """Return a logger that supports pytest-human features in any logging namespace.
 
-    :param name: Name of the logger, typically __name__
+    Args:
+        name: Name of the logger, typically `__name__`.
+
     """
     logger = logging.getLogger(name)
     return TestLogger(logger)
@@ -295,9 +297,14 @@ def get_logger(name: str, html_only: bool = True) -> TestLogger:
 
     By default logs only to HTML log. To log to all handlers, set html_only=False.
 
-    :param name: Name of the logger, typically __name__
-    :param html_only:   If True, returns a logger that only logs to the HTML handler.
-                        Overriden by --html-log-to-all flag.
+    Args:
+        name: Name of the logger, typically `__name__`.
+        html_only:  If True, returns a logger that only logs to the HTML handler.
+                    Overridden by --html-log-to-all flag.
+
+    Returns:
+        TestLogger: The logger instance.
+
     """
     if html_only:
         logger = _USER_HTML_NAMESPACE.getChild(name)
