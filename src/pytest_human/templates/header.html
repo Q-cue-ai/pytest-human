@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <style>
+        {% include 'styles.css' %}
+    </style>
+    <style>{{ code_style_defs }}</style>
+    <script>
+        {% include 'script.js' %}
+    </script>
+</head>
+<body>
+    <div class="report-header">
+        <div class="header-main">
+            <h1>{{ title }}</h1>
+            {% if description %}
+            <p class="description">{{ description }}</p>
+            {% endif %}
+        </div>
+        <div class="search-container">
+            <svg class="search-icon" viewBox="0 0 512 512">
+                <path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z"
+                  fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/>
+                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10"
+                  stroke-width="32" d="M338.29 338.29L448 448"/>
+            </svg>
+            <input type="text" id="search-input"
+                   placeholder="Press / to search (regex)"
+                   oninput="searchLogs()"
+                   onfocus="this.select()">
+            <button id="clear-search-btn" onclick="clearSearchText()" title="Clear search">
+                <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
+                   <path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.75.75 0 1 1 1.06 1.06L9.06 8l3.22 3.22a.75.75 0 1 1-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 0 1-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path>
+                </svg>
+            </button>
+            <span id="search-counter">0 / 0</span>
+            <div class="search-controls">
+                <button onclick="prevResult()" title="Previous result" id="search-prev">
+                    <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
+                        <path d="M3.22 10.72a.75.75 0 0 0 1.06 0L8 7.06l3.72 3.66a.75.75 0 1 0 1.06-1.06l-4.25-4.15a.75.75 0 0 0-1.06 0L3.22 9.66a.75.75 0 0 0 0 1.06Z">
+                        </path>
+                    </svg>
+                </button>
+                <button onclick="nextResult()" title="Next result" id="search-next">
+                    <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
+                        <path d="M12.78 5.28a.75.75 0 0 0-1.06 0L8 8.94l-3.72-3.66a.75.75 0 0 0-1.06 1.06l4.25 4.15a.75.75 0 0 0 1.06 0l4.25-4.15a.75.75 0 0 0 0-1.06Z">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="log-container">
+        <table class="log-table" role="treegrid">
+            <colgroup>
+                <col style="width: 3rem;">
+                <col style="width: 10rem;">
+                <col style="width: 7rem;">
+                <col style="width: 10rem;">
+                <col style="width: 100%;">
+                <col style="width: 6rem;">
+            </colgroup>

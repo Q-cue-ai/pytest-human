@@ -1,0 +1,8 @@
+<tr class="log-level-{{ record.levelname.lower() }}">
+    <td></td>
+    <td class="time-cell">{{ timestamp }}</td>
+    <td class="level-cell">{{ record.levelname }}</td>
+    <td class="source-cell">{{ escaped_source_link | safe }}</td>
+    <td class="msg-cell">{{ escaped_message | safe }}</td>
+    <td class="duration-cell"></td>
+</tr>

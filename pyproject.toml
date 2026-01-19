@@ -46,6 +46,7 @@ classifiers = [
 
 dependencies = [
  "gitpython==3.*",
+ "jinja2>=3.1",
  "pytest>=8",
  "rich==14.*",
 ]
@@ -54,6 +55,9 @@ urls.Changelog = "https://github.com/Q-cue-ai/pytest-human/releases"
 urls.Issues = "https://github.com/Q-cue-ai/pytest-human/issues"
 urls.Repository = "https://github.com/Q-cue-ai/pytest-human"
 entry-points.pytest11.human = "pytest_human._hooks"
+
+[tool.setuptools.package-data]
+"pytest_human" = ["templates/*"]
 
 [tool.ruff]
 line-length = 100
