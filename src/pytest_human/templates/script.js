@@ -1,14 +1,20 @@
 let searchResults = [];
 let currentResultIndex = -1;
 
-document.addEventListener('keydown', function (event) {
+document.addEventListener('keydown', (event) => {
     const searchInput = document.getElementById('search-input');
     if (event.key === '/') {
         event.preventDefault();
         searchInput.focus();
-    } else if (event.key === 'Escape') {
+        return;
+    }
+
+    if (event.key === 'Escape') {
         searchInput.blur();
-    } else if (event.key === 'Enter' && document.activeElement === searchInput) {
+        return;
+    }
+
+    if(event.key === 'Enter' && document.activeElement === searchInput) {
         event.preventDefault();
         if (event.shiftKey) {
             prevResult();
@@ -174,7 +180,7 @@ function updateSearchCounter() {
     if (searchResults.length > 0) {
         counter.textContent = `${currentResultIndex + 1} / ${searchResults.length}`;
     } else if (document.getElementById('search-input').value.length >= 2) {
-        counter.textContent = `0 / 0`;
+        counter.textContent = '0 / 0';
     } else {
         counter.textContent = '';
     }
@@ -184,7 +190,7 @@ function expandParents(element) {
     let current = element;
     while (current && current !== document.body) {
         if (current.classList.contains('nested-block') && current.style.display === 'none') {
-            const header = document.getElementById('header_' + current.id);
+            const header = document.getElementById(`header_${current.id}`);
             if (header) {
                 const toggleButton = header.querySelector('.toggle-cell');
                 if (toggleButton) {
@@ -198,7 +204,9 @@ function expandParents(element) {
 
 function removeActiveHighlights() {
     const previouslyActive = document.querySelectorAll('.highlight.active');
-    previouslyActive.forEach(el => el.classList.remove('active'));
+    for (const el of previouslyActive) {
+        el.classList.remove('active');
+    }
 }
 
 function scrollToResult(element) {
@@ -208,7 +216,9 @@ function scrollToResult(element) {
     const matchId = element.dataset.matchId;
     if (matchId) {
         const allFragmentsForMatch = document.querySelectorAll(`.highlight[data-match-id='${matchId}']`);
-        allFragmentsForMatch.forEach(el => el.classList.add('active'));
+        for (const el of allFragmentsForMatch) {
+            el.classList.add('active');
+        }
     }
 
     element.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -231,7 +241,7 @@ function prevResult() {
 
 function toggle(id) {
     const e = document.getElementById(id);
-    const t = document.getElementById('toggle-' + id);
+    const t = document.getElementById(`toggle-${id}`);
     if (e.style.display === 'none') {
         e.style.display = 'table-row';
         e.setAttribute('aria-expanded', 'true');
@@ -283,7 +293,7 @@ function finalizeSpan(blockId, durationId, durationMs) {
 }
 
 function setSpanSeverity(blockId, cssClass) {
-    const headerRow = document.getElementById('header_' + blockId);
+    const headerRow = document.getElementById(`header_${blockId}`);
     if (!headerRow) return;
     const classesToRemove = Array.from(headerRow.classList).filter(c => c.startsWith('log-level-'));
     for (const c of classesToRemove) {
