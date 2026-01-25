@@ -9,7 +9,7 @@ from playwright.sync_api import (
 
 from pytest_human.tracing import trace_calls, trace_public_api
 
-pytest_plugins = "pytester"
+pytest_plugins = ["pytester", "tests.playwright_fixtures"]
 
 
 @pytest.fixture(autouse=True)
